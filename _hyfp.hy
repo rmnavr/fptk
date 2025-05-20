@@ -6,9 +6,8 @@
     ; (sys.path.append "../HyExt")
 
     ; (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
-    ; (import  _fp *)
-    ; (require _fp [f:: fm lns &+ &+> l> l>=] :readers [L])
-
+    ; (import  _hyfp *)
+    ; (require _hyfp [f:: fm p: pluckm lns &+ &+> l> l>=] :readers [L])
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -19,7 +18,7 @@
     (require hyrule [ of
                       as-> -> ->> doto
                       case branch unless lif
-                      do_n list_n
+                      do_n list_n ; these and apply_n have syntax: f(n x)
                       ncut ])
 
     (import math
@@ -46,9 +45,9 @@
                    prod :as product ; product(seq)
                  ])
 
+    ; «add» and «mul» from operator lib are funcs of 2 args, so I don't use them
     (import operator [ neg  
                        truediv :as div
-                       ; «add» and «mul» are funcs of 2 args
                        eq
                        ne :as neq
                      ])
@@ -70,37 +69,41 @@
 
     (import hyrule [ thru assoc inc dec sign constantly xor
                      flatten    ; non-mutating btw
+                     rest       ; returns iterator
                      butlast    ; returns generator
                      drop_last  ; returns generator // drop_last(n, seq)
-                     rest       ; returns iterator
                      distinct   ; returns generator
                    ])
 
-    (import funcy  [ lmap lfilter lmapcat   ; returns list       
-                     take                   ; returns first n elems // take(n, seq)
-                     first second last nth  ; returns one elem      // nth(n, seq)
+    (import funcy  [ even odd
+                     isnone notnone 
+                     lmap lfilter lmapcat   ; returns list       
+                     take                   ; returns first n elems 
+                     first second last nth  ; returns one elem      
                      drop                   ; returns iterator
                      re_find re_test re_all re_finder re_tester
                      curry partial rpartial autocurry
                      compose rcompose ljuxt
-                     identity   ; same as hyrule.constantly
-                     lpluck pluck pluck_attr lpluck_attr ; // lpluck(i, seq) -> works on lists/dicts
+                     identity               ; f(x)=x, do not confuse with constantly(x)=42
+                     pluck lpluck
+                     pluck_attr lpluck_attr ; // lpluck(i, seq) -> works on lists/dicts
                      group_by
                      ])
 
     ;  first
     ;  | second
-    ;  | |   last
-    ;  | |   |
+    ;  | |   
+    ;  | |     last
+    ;  | |     |
     ; [1 2 3 4 5]
-    ;  \_____/ butlast
-    ;    \_____/ rest
+    ;  \_____/ butlast, drop_last(1,xs)  , take(4,xs)
+    ;    \_____/ rest , drop(1,xs)       , take_last(4,sx)
 
 ; _____________________________________________________________________________/ }}}1
 
 ; MY FUNCS:
 
-; Core, Math, Functional ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; Core, Math, Logic ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; core:
 
@@ -125,17 +128,20 @@
                 (return (lmap (pflip div norm) v0))
                 (return v0)))
 
-    ; functional:
+; _____________________________________________________________________________/ }}}1
+; Functional ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-        (defn lzip [#* args] (list (zip #* args)))    ;
-        (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
-        (defn pflip [f a] (fn [%x] (f %x a)))         ; (lmap (pflip div 0.1) (thru 1 3))
+    (defn apply_n [f n arg] ((compose #* (list_n n f)) arg))
 
-        (defn fltr1st [predicate iterable]
-            (next (gfor x iterable :if (predicate x) x) None))
+    (defn fltr1st [f xs] (next (gfor &x xs :if (f &x) &x) None))
 
-        (defn asListable [f lst] (f #* lst))          ; (asListable plus [1 2 3])
-        (defn asVariadic [f #* args] (f [#* args]))   ; (asVariadic sum 1 2 3)
+    (defn lzip [#* args] (list (zip #* args)))    ;
+    (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
+    (defn pflip [f a] (fn [%x] (f %x a)))         ; (lmap (pflip div 0.1) (thru 1 3))
+
+    ; required because hy is bad at #* parsing with -> macro
+    (defn asListable [f lst] (f #* lst))          ; (asListable plus [1 2 3])
+    (defn asVariadic [f #* args] (f [#* args]))   ; (asVariadic sum 1 2 3)
 
 ; _____________________________________________________________________________/ }}}1
 ; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -213,6 +219,76 @@
             (print "")))
 
 ; _____________________________________________________________________________/ }}}1
+; [helper funcs for macroses] ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; (- 1)
+	(-> (defn _isNegInteger
+            [ arg
+            ]
+            (and (= (type arg) hy.models.Expression)
+                 (= (get arg 0) (hy.models.Symbol "-"))
+                 (= (len arg) 2)
+                 (= (type (get arg 1)) hy.models.Integer)))
+		eval_and_compile)
+
+    ; (head ...)
+	(-> (defn _isExprWithHeadSymbol
+            [ arg
+              #^ str head
+            ]
+            (and (= (type arg) hy.models.Expression)
+                 (= (get arg 0) (hy.models.Symbol head))))
+		eval_and_compile)
+
+; ■ .dotted ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (-> (defn _isDotted
+            [ arg
+            ]
+            (and (= (type arg) hy.models.Expression)
+                 (= (get arg 0) (hy.models.Symbol "."))
+                 (= (get arg 1) (hy.models.Symbol "None"))))
+        eval_and_compile)
+
+    (-> (defn _extractDotted
+            [ arg
+            ]
+            (get arg 2))
+        eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+; ■ :attr: (not used) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    ; leftover from lns macro:
+    ; 
+    ;(_isAttrAccess &arg)
+    ;(setv (get args &i) (hy.models.Symbol (_extractAttrName &arg)))
+
+    ; leftover from pluckm macro:
+    ; 
+    ; (_isAttrAccess indx)
+    ; (return `(lpluck_attr ~(_extractAttrName indx) ~iterable))) 
+
+	(-> (defn #^ bool
+            _isAttrAccess
+            [ arg
+            ]
+            (setv arg_str (str arg))
+            (and (= (type arg) hy.models.Keyword)
+                 (> (len arg_str) 2)
+                 (= (get arg_str (- 1)) ":")))
+		eval_and_compile)
+
+	(-> (defn #^ str
+            _extractAttrName
+            [ arg
+            ]
+            (cut (str arg) 1 (- 1)))
+		eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+
+; _____________________________________________________________________________/ }}}1
 
 ; f:: (for readable functions annotations) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -265,6 +341,7 @@
 ; fm  (defmacro similar to #L macro) — works in REPL ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; recognizes %1..%9 as arguments
+    ; nested fm calls will not work as intended
 
     (defmacro fm [expr]
         (import hyrule [flatten thru])
@@ -299,7 +376,7 @@
 ; lens: lns, &+, &+>, l>, l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 ; ■ Macro: lns (upgrades lens arg syntax) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
-
+    
     (defmacro lns [#* macro_args]
         (import  hyrule [rest])
         ;
@@ -310,36 +387,26 @@
                       (= (type &arg) hy.models.String)   ; "str" -> ["str"]
                       (= (type &arg) hy.models.Symbol))  ; vrbl -> [vrbl]
                   (setv (get args &i) [&arg]) 
-                  ; Keyword: :ololo -> ["ololo"]
-                  (= (type &arg) hy.models.Keyword)
-                  (setv (get args &i) [(get (str &arg) (slice 1 None))]) ; (str :x) will give ":x", this is why slice is required
+                  ; .attr -> attr
+                  (_isDotted &arg)
+                  (setv (get args &i) (_extractDotted &arg))
                   ; (-1) -> [(- 1)]
-                  (and (= (type &arg) hy.models.Expression)
-                       (= (get &arg 0) (hy.models.Symbol "-"))
-                       (= (len &arg) 2)
-                       (= (type (get &arg 1)) hy.models.Integer))
+                  (_isNegInteger &arg)
                   (setv (get args &i) [&arg])
-                  ; .pups -> pups
-                  (and (= (type &arg) hy.models.Expression)
-                       (= (get &arg 0) (hy.models.Symbol "."))
-                       (= (get &arg 1) (hy.models.Symbol "None")))
-                  (setv (get args &i) (get &arg 2))
                   ; (mth> f 1) -> (call "f" 1)
-                  (and (= (type &arg) hy.models.Expression)
-                       (= (get &arg 0) (hy.models.Symbol "mth>")))
-                  (setv (get args &i) `(call ~(str (get &arg 1)) ~@(get &arg (slice 2 None)))) 
+                  (_isExprWithHeadSymbol &arg "mth>")
+                  (setv (get args &i) `(call ~(str (_extractDotted (get &arg 1)))
+                                            ~@(get &arg (slice 2 None)))) 
                   ; (mut> f 1) -> (call_mut "f" 1)
-                  (and (= (type &arg) hy.models.Expression)
-                       (= (get &arg 0) (hy.models.Symbol "mut>")))
-                  (setv (get args &i) `(call_mut ~(str (get &arg 1)) ~@(get &arg (slice 2 None))))))
-        ; process (dndr> ...): // TODO: recognise (dndr> & ...) as bitwise_and
+                  (_isExprWithHeadSymbol &arg "mut>")
+                  (setv (get args &i) `(call_mut ~(str (_extractDotted (get &arg 1)))
+                                                ~@(get &arg (slice 2 None))))))
+        ; process (dndr> ...) // TODO: recognise (dndr> & ...) as bitwise_and
         (setv last_arg (get args (- 1)))
-        (cond (and (= (type last_arg) hy.models.Expression)
-                   (= (get last_arg 0) (hy.models.Symbol "dndr>")))
+        (cond (_isExprWithHeadSymbol last_arg "dndr>")
              `(->  (. lens ~@(get args (slice 0 (- 1))))
                   ~(get last_arg (slice 1 None)))
-              (and (= (type last_arg) hy.models.Expression)
-                   (= (get last_arg 0) (hy.models.Symbol "dndr>>")))
+              (_isExprWithHeadSymbol last_arg "dndr>>")
              `(->> (. lens ~@(get args (slice 0 (- 1))))
                   ~(get last_arg (slice 1 None)))
               True
@@ -404,20 +471,19 @@
              (- 1)                  ; -> [(- 1)]    // GetitemLens(...) // only works for Integers! (- vrbl) will translate to (- vrbl), which will most likely give error
              [(- vrbl 1)]           ; no change
              "str"                  ; -> ["str"]    // GetitemLens(...)     
-             :str                   ; -> ["str"]    // GetitemLens(...)
              .attr                  ; -> attr       // GetZoomAttrTraversal('attr')
              (Each))                ; no change
-        (lns 1 (mth>   sort 1))     ; -> (call "f" 1)
-        (lns 1 (mut>   sort 1))     ; -> (call_mut "f" 1)
+        (lns 1 (mth>   .sort 1))    ; -> (call "f" 1)
+        (lns 1 (mut>   .sort 1))    ; -> (call_mut "f" 1)
         (lns 1 (dndr>  / 1))        ; -> (/ (lens) 1)
         (lns 1 (dndr>> / 1))        ; -> (/ 1 (lens))
         ;
         (lns 1 2)                                   ; define UL
-        (lns 1 2 (mth> sort 1))                     ; define SF
+        (lns 1 2 (mut> .sort 1 :shallow True))      ; define SF
         (&   (lns 1) (lns 2 (dndr> + 1)))           ; «&» usage #1: composition (ULs + last one can be UL/SF)
         (&   data (lns 1 2 (get)) (lns 2 (get)))    ; «&» usage #2: SFs application (one by one)
         (&+  (lns 1) (lns 2) (set "here"))          ; / compose ULs and SF ...
-        (&+> data (lns 1) (lns 2) (mut> reverse))   ; \ .. and then apply
+        (&+> data (lns 1) (lns 2) (mut> .reverse))  ; \ .. and then apply
         (l>  data 1 2 (set "here"))                 ; define SF and apply
         (l>= data1 (Each) (modify math.sqrt))       ; define SF, apply, upd value
         ; same as:
@@ -452,17 +518,12 @@
 ; pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defmacro pluckm [indx iterable]
-        (cond ; .attr
-              (and (= (type indx) hy.models.Expression)
-                   (= (get indx 0) (hy.models.Symbol "."))
-                   (= (get indx 1) (hy.models.Symbol "None")))
-              (return `(lpluck_attr ~(str (get indx 2)) ~iterable))
-              ; :keyword
-              (= (type indx) hy.models.Keyword)
-              (return `(lpluck ~(get (str indx) (slice 1 None)) ~iterable))) 
+        (cond ; .attr -> attr
+              (_isDotted indx)
+              (return `(lpluck_attr ~(str (_extractDotted indx)) ~iterable))
               ; 
               True
-              (return `(lpluck ~indx ~iterable)))
+              (return `(lpluck ~indx ~iterable))))
 
     (_test_lines _test_macro_Pluckm "pluckm"
         (do (setv xs [[0 1] [2 3]])
@@ -474,13 +535,33 @@
             "vrbls initialized"
         )
         ;
-        (pluckm  0      xs)    ; -> (lpluck      0       xs)
+        (pluckm 0       xs)    ; -> (lpluck      0       xs)
         (pluckm i       xs)    ; -> (lpluck      i       xs)
-        (pluckm (- 1 1) xs)    ; -> (lpluck      (- 2 1) xs)
-        (pluckm :x      ds)    ; -> (lpluck      "x"     ds)
+        (pluckm (- 1 1) xs)    ; -> (lpluck      (- 1 1) xs)
         (pluckm "x"     ds)    ; -> (lpluck      "x"     ds)
-        (pluckm .x      ps)    ; -> (lpluckattr  "x"     ps)
+        (pluckm .x      ps)    ; -> (lpluck_attr "x"     ps)
     )
 
 ; _____________________________________________________________________________/ }}}1
-    
+; p:  (pipe of partials) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ;(rcompose f1 f2)
+    ;(-> data  f1 f2)
+    ;(l> data   1  2)
+    ;(p> data  f1 f2)
+
+    (defmacro p: [#* args]
+        (import funcy [partial])
+        (setv pargs (lfor &arg args
+                          (if (= (type &arg) hy.models.Expression)
+                             `(partial ~@(cut &arg 0 None))
+                             `(partial ~&arg))))
+        `(rcompose ~@pargs)
+        )
+
+    (when False
+        (print (lmap (p: (flip minus 10) neg str) [1 2 3]))
+    )
+
+; _____________________________________________________________________________/ }}}1
+
