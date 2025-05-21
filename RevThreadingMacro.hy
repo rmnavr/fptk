@@ -43,9 +43,3 @@
 	(<<- print (** 3) 2)	
 	(<- print (** 3) 2)	
 
-    (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
-    (import  _hyfp *)
-    (require _hyfp [f:: fm p: pluckm lns &+ &+> l> l>=] :readers [L])
-
-    (print (lmap (p: (minus 4) str) [3 8]))
-    (print (lmap (p: (flip minus 4) str) [3 8]))

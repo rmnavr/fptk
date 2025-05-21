@@ -29,6 +29,7 @@
 // Macroses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	@@ TODO: restric macroses imput, throw errors
+	@@ TODO: => with .attr recognition as getattr
 
 	• f::	(f:: int -> int -> (of Tuple int str))
 	• L#	(rename of #% macro)	
@@ -44,10 +45,19 @@
 	  - (pluckm "2" xs)
 	  - (pluckm vrbl xs)
 	  - (pluckm .x xs)				// attr   can't be passed as arg, use (pluck_attr "attr" ..)
-	• p:	(p: abs (flip func a))	// pipe of partials @@ todo: (. ss), .attr recognition
+	• p>	(p> abs (flip func a))	// pipe of partials @@ todo: (. ss), .attr recognition
+
+
+    // (rcompose f1 f2)
+    // (-> data  f1 f2)
+    // (l> data   1  2)
+    // (p> data  f1 f2)
+    ; not required for p> :
+    ; (. dpg (create 3)) -> use (dpg.create 3) instead
+
 
 // ____________________________________________________________________________/ }}}1
-// Incubator ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Macroses: pending ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	+ (gat xs .attr)	// intended usage: with -> macros... or just include this feature in => macro?
 	+ <- <<-
@@ -55,6 +65,14 @@
 	+ <<= <=_
 
 // ____________________________________________________________________________/ }}}1
+
+	@@ todo: pass kwargs in p>
+	@@ todo: doc
+	! вместо Хаскель-синтаксиса, попытайся придумать эквивалентный Хай-синтаксис
+	- который был бы идиоматичен и тоже макс удобен, и хотелось бы про который сказать:
+	- «ну это уже выбор между Хай и Хаскелем, тут уже вопрос предпочтений», а не «как же криво оно всё сделано!»
+
+	apply_n -> change syntax
 
 // New Functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
