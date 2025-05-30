@@ -1,0 +1,110 @@
+
+	// INFO
+// Original Dot Macro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	in normal code:
+		obj.attr				// will return attr
+		obj.method				// will return method as «Callable» 
+		(.method obj 1 2)		// will call method
+		(. obj (method 1 2))	// will call method
+		(. obj attr)			// will return attr
+		(. obj method)			// will return method as «Callable»
+		(. obj [1] ["attr"])	// will access index 1 and key "attr"
+
+	in macro «->»:
+		(-> obj .attr)			// will give error
+		(-> obj .method)		// will expand to: (. obj (method))
+		(-> obj (.method 1))	// will expand to: (. obj (method 1))
+
+// ____________________________________________________________________________/ }}}1
+// Compositions order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (rcompose f1 f2)
+    (-> data  f1 f2)
+    (l> data   1  2)
+    (p> data  f1 f2)
+
+// ____________________________________________________________________________/ }}}1
+// Functions arguments order logic ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(f params vrbl) // good for p> and ->> macro
+	(f vrbl params) // good for -> macro
+
+// ____________________________________________________________________________/ }}}1
+ 
+	// TODO
+// My macroses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	Existing macroses list:
+
+		f::
+		#L
+		fm
+		p>						
+		lns, &+, &+>, l>, l>=	// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
+		pluckm
+
+	TODO:
+		
+		p>	- (. ss) recognition
+			- (. dpg (create 3)) -> but use (dpg.create 3) instead	// none is working right now
+			- pass kwargs
+			- [1] and ["key"] access
+
+		=>	- optional «it»
+			- .attr access (instead of forcefully seeing it as method, as it is in -> macro)
+			- [1] and ["key"] access
+
+		=>> - ...
+
+		<<= <=_
+
+// ____________________________________________________________________________/ }}}1
+// New functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	re_...
+	apply_n -> change syntax
+	insert elem at
+	split_at/by
+	partition
+	rotate list
+	group_by
+
+	group by, split by, getters
+	for_each (similar to lmap)
+	- smul
+	- lmul
+	- [zeroQ negQ oddQ] $ 3 // or/and
+
+	- fltr1st -> funcy.some
+	- take_last
+
+	- lreversed
+	- lstarmap
+
+	- split (at by f) -> more like sift, returns 2 lists
+	  split_at (n)	  -> just one cut,   returns 2 lists
+	  split_by (f)	  -> just one cut,   returns 2 lists
+	  takewhile
+	  dropwhile
+
+	- none
+	  one
+
+	- merge
+	  join
+	  cat
+	  
+	- map
+	  walk
+
+	- without
+
+	- count_by
+	  count_reps
+	  group_by
+	  group_by_keys
+	  group_values
+
+// ____________________________________________________________________________/ }}}1
+
