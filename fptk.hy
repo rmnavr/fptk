@@ -181,7 +181,21 @@
 ; _____________________________________________________________________________/ }}}1
 ; Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import funcy [re_find re_test re_all re_finder re_tester])
+    (import funcy [ re_find             ; re_find(regex_patters, string, flags=0), returns simplest possible form
+                    re_test             ; test match
+                    re_all              ; list of all matches in simplest possible form
+                    re_finder re_tester
+                  ])
+
+    (import re [ sub   :as re_sub   ; re_sub(regex_pattern, replacement, string, count=0, flags=0)
+                 split :as re_split ; re_split(r"\s+", text)
+               ])
+    ; match, search, findall, finditer, split, compile, fullmatch, escape
+
+    ; non-escaped:  .  ^  $  *  +  ? {2,4} [abc]      ( | )     
+    ; escaped:     \. \^ \$ \* \+ \? \{ \} $$_bracket $_parenthesis \| \\ \' \"
+    ; special:     \d \D \w \W \s \S \b \B \n \r \f \v
+    ; raw strings: r"\d+" = "\\d+"
 
 ; _____________________________________________________________________________/ }}}1
 ; Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -201,14 +215,16 @@
 ; _____________________________________________________________________________/ }}}1
 
 ; for Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; (setv [t_s prompt outp] (execution_time ...))
     
-    (defn #^ (of Tuple str Any)
+    (defn #^ (of Tuple float str Any) #_ "[time1_in_s prompt f_result]"
         execution_time
         [ #^ Callable f
           *
-          #^ int      [n 1]
+          #^ int      [n     1]
           #^ str      [tUnit "ns"]      #_ "s/ms/us/ns"
-          #^ str      [msg "..benchmark.."]
+          #^ str      [msg   "..benchmark.."]
         ]
         "returns tuple: 1) str of test result 2) function execution result"
         (setv _count hy.I.time.perf_counter)
@@ -219,6 +235,7 @@
         (do_n (dec n) (f))
         (setv t1 (_count))
         (setv seconds (- t1 t0))
+        (setv _time_1_s (/ seconds n))
         ;
         (case tUnit
             "s"  (do (setv time_n   seconds)
@@ -229,7 +246,7 @@
                      (setv unit_str "us"))
             "ns" (do (setv time_n   (* seconds 1000000000))
                      (setv unit_str "ns")))
-        (setv time_1 (/ time_n n))
+        (setv time_1   (/ time_n n))
         ;
         (setv line_01       f"/ ({msg})")
         (setv line_02_time1 f"\\ {time_1 :.3f} {unit_str}")
@@ -238,7 +255,7 @@
         ;
         (setv _prompt (sconcat line_01 "\n" 
                                line_02_time1 " as " line_02_n " // " line_02_timeN))
-        (return [_prompt _outp]))
+        (return [_time_1_s _prompt _outp]))
 
     ; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
