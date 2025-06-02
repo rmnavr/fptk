@@ -33,6 +33,11 @@
 // ____________________________________________________________________________/ }}}1
  
 	// TODO
+
+	+ is type
+	+ is of union lol
+	+ execution time -> as decorator that prints result, but executes 1 time for finale?
+
 // My macroses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	Existing macroses list:
@@ -45,6 +50,10 @@
 		pluckm
 
 	TODO:
+		
+		? what about #* #** in -> and p> macro?
+
+		·······························
 		
 		p>	- (. ss) recognition
 			- (. dpg (create 3)) -> but use (dpg.create 3) instead	// none is working right now
