@@ -1,12 +1,33 @@
+#!/usr/bin/env python
+
+import setuptools
 from setuptools import setup, find_packages
+from setuptools.command.install import install
+
+# copy-paste from «hyrule» install:
+class install(install):
+    def run(self):
+        super().run()
+        import py_compile
+        import hy  
+        for path in set(self.get_outputs()):
+            if path.endswith(".hy"):
+                py_compile.compile(
+                    path,
+                    invalidation_mode=py_compile.PycInvalidationMode.CHECKED_HASH,
+                )
+
+requires = [
+    'hy >= 1'
+]
 
 setup(
     name='fptk',
     version='0.0.1',
-    packages=find_packages(include=['fptk', 'fptk.*']),
-    install_requires=[
-        'hy >= 1'
-    ],
+    setup_requires=['wheel'] + requires,
+    install_requires=requires,
+    packages = setuptools.find_packages(exclude = ["private*"]),
+    package_data={'': ['*.hy']},
     author='Roman Averyanov',
     author_email='averrmn@gmail.com',
     description='Curated list of functional-programming imports for hy lang',
