@@ -37,6 +37,9 @@
 	+ is type
 	+ is of union lol
 	+ execution time -> as decorator that prints result, but executes 1 time for finale?
+	+ prepend
+	+ split_at_elem
+	+ pick_pos 0 1 2 7 -1
 
 // My macroses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
