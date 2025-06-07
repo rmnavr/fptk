@@ -1,3 +1,3 @@
 import hy
-from fptk.hy_init import *
-hy.eval(hy.read('(require fptk.hy-init :macros * :readers *)'))
+from fptk.__init_hy__ import *
+hy.eval(hy.read('(require fptk.__init_hy__ :macros * :readers *)'))
