@@ -45,12 +45,15 @@ Unlike `#L`, `fm` is REPL-friendly:
 
 ## `p>` — pipe of partials
 
-Works similar to hyrule `->` macro, but accepts only functions.
-Functions are partially applicated using funcy.partial.
+Works similar to hyrule `->` macro, but accepts only callables.
+Internally funcy.partial is used to implement partial application
 
 Example:
 ```hy
-(list (map (p> abs (operator.add 4) str) (range -10 0)))
+(list (map (p> abs (operator.add 4) (flip div 4) str) (range -10 0)))
+; BTW «flip» and «div» are functions from fptk
+; - «flip» flips argument order for 2-argument function
+; - div works like operator.truediv
 ```
 
 ## `pluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
