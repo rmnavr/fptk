@@ -1,4 +1,4 @@
-**fptk** — functional toolkit for hy-lang.
+# **fptk** — functional toolkit for hy-lang
 
 Intended usage of hyfptk is to call:
 ```hy
@@ -9,7 +9,10 @@ which will import curated list of FP-relevant libs, classes, functions and macro
 > This approach is inspired by Wolfram Mathematica, in which all language functions are always in the main context.
 > Still, nothing forbids you from importing functions individually.
 
-Other possible usage (if you don't want to pollute main context with all the functions) is importing only fptk macroses.
+Other possible usage (if you don't want to pollute main context with all the functions) is importing only fptk macroses like:
+```hy
+(require fptk [f:: p> fm lns &+ &+> l> l>=] :readers [L])
+```
 
 **fptk** contains of:
 * curated list of basic and fp-related libs (from itertools/math/random to [funcy](https://github.com/ingolemo/python-lenses) and [lenses](https://github.com/ingolemo/python-lenses))
