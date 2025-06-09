@@ -65,6 +65,10 @@ Example:
 
 ## lenses-related macroses: `lns`, `&+`, `&+>`, `l>`, `l>=`
 
+Those macroses are used together with [lenses](https://github.com/ingolemo/python-lenses)) library.
+They simplify lens definition, composition and application.
+Macroses `l>` and `&+>` work best together with hyrule `->` macro.
+
 ```hy
 (lns 1 "dict" vrbl .attr (Each))           ; attr   can't be passed as arg, use (GetAttr  "attr") if needed
 (lns 1 (mth> .sort))                       ; method can't be passed as arg, use (call     "mth" ..) if needed
@@ -73,10 +77,10 @@ Example:
 (lns 1 (dndr>> / 1))                       
 
 (lns 1 (Each) (set 3))                     ; can define UL/SF
-(l>  xl 1 (Each) (modify sqrt))            ; define SF and apply
-(l>= xl 1 (Each) (modify sqrt))            ; define SF, apply, upd value
+(l>  xs 1 (Each) (modify sqrt))            ; define SF and apply
+(l>= xs 1 (Each) (modify sqrt))            ; define SF, apply, upd value
 (&+  (lns 1) (lns 2) (set "here"))         ; / compose ULs and «SF-maker-func» ...
-(&+> xl (lns 1) (mut> .reverse))           ; \ .. and then apply
+(&+> xs (lns 1) (mut> .reverse))           ; \ .. and then apply
 ```
 
 # Installation
