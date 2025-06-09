@@ -14,7 +14,7 @@ Other possible usage (if you don't want to pollute main context with all the fun
 (require fptk [f:: p> fm lns &+ &+> l> l>= pluckm] :readers [L])
 ```
 
-**fptk** contains of:
+**fptk** contains:
 * curated list of basic and fp-related libs (from itertools/math/random to [funcy](https://github.com/Suor/funcy) and [lenses](https://github.com/ingolemo/python-lenses))
 * curated list of functions (like `sin`, `flip`, `first` and many others)
 * curated list of hyrule macroses
