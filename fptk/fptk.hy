@@ -1,16 +1,4 @@
 
-; For outer usage of this lib ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; (import sys)
-    ; (. sys.stdout (reconfigure :encoding "utf-8"))
-    ; (sys.path.append "../HyExt")
-
-    ; (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
-    ; (import  _fptk *)
-    ; (require _fptk [f:: fm p> pluckm lns &+ &+> l> l>=] :readers [L])
-
-; _____________________________________________________________________________/ }}}1
-
 ; Modules: General, Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [ of
@@ -19,24 +7,32 @@
                       do_n list_n ; these and apply_n have syntax: f(n x)
                       ncut ])
 
-    (import math
+    (import sys             
+            os
+            math
             operator
-            random)
-
-    (import pprint [pprint]
+            random
+            pprint [pprint]
             re)
+
+    (sys.stdout.reconfigure :encoding "utf-8")
+
+    (import itertools
+            functools
+            )
 
     (import dataclasses     [dataclass]
             enum            [Enum]
             abc             [ABC abstractmethod]
-            pydantic        [BaseModel StrictInt StrictStr StrictFloat]
-            returns.result  [Result Success Failure]
             typing          [List Tuple TypedDict Dict Union Generator Any Optional Callable Literal Type]
             )
 
-    (import itertools
-            functools
-            funcy)
+    ; 3rd party libs :
+
+    (import funcy
+            pydantic        [BaseModel StrictInt StrictStr StrictFloat]
+            returns.result  [Result Success Failure]
+            )
 
 ; _____________________________________________________________________________/ }}}1
 

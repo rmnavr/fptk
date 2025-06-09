@@ -17,15 +17,19 @@ class install(install):
                     invalidation_mode=py_compile.PycInvalidationMode.CHECKED_HASH,
                 )
 
-requires = [
-    'hy >= 1'
+libs_required = [
+    'hy >= 1',
+    'funcy >= 2',
+    'returns >= 0.25',
+    'pydantic >= 1.10',
+    'lenses >= 1.2'
 ]
 
 setup(
     name='fptk',
     version='0.0.1',
-    setup_requires=['wheel'] + requires,
-    install_requires=requires,
+    setup_requires=['wheel'] + libs_required,
+    install_requires=libs_required,
     packages = setuptools.find_packages(exclude = ["private*"]),
     package_data={'': ['*.hy']},
     author='Roman Averyanov',

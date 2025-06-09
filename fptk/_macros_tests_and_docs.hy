@@ -1,5 +1,5 @@
 
-; Inbox ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
     (import  fptk *)
@@ -184,12 +184,14 @@
 ; _____________________________________________________________________________/ }}}1
 ; usage/docs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	(f:: int -> int -> (of Tuple int str))
+    (setv funcType (f:: int -> int => (of Tuple int str)))
+    (f:: int -> int => (of Tuple int str))
 
     #L(* %1 2)      ; renaming of #% macro
 
 	(fm (* %1 2))  
 
+    (list (map (p> abs (operator.add 4) str) (range -10 0)))
     (lmap (p> (nth 1) str) [[1 2 3] [1 2 3]])               
     (lmap (p> .x (flip minus 10) str) ps)
     (lmap (p> (.mth 3 4) str) ps)
