@@ -75,3 +75,9 @@ Example:
 (&+  (lns 1) (lns 2) (set "here"))         ; / compose ULs and «SF-maker-func» ...
 (&+> xl (lns 1) (mut> .reverse))           ; \ .. and then apply
 ```
+
+# Installation
+
+```
+pip install git+https://github.com/rmnavr/fptk.git@0.0.1
+```
