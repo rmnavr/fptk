@@ -11,7 +11,7 @@ which will import curated list of FP-relevant libs, classes, functions and macro
 
 Other possible usage (if you don't want to pollute main context with all the functions) is importing only fptk macroses like:
 ```hy
-(require fptk [f:: p> fm lns &+ &+> l> l>=] :readers [L])
+(require fptk [f:: p> fm lns &+ &+> l> l>= pluckm] :readers [L])
 ```
 
 **fptk** contains of:
