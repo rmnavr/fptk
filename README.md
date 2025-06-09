@@ -26,10 +26,7 @@ Other possible usage (if you don't want to pollute main context with all the fun
 ## `f::` — macros for annotating Callables
 ```hy
 (f:: int -> int => (of Tuple int str))
-```
-will be seen as:
-```py
-Callable[[int, int], Tuple[int, str]]
+; which is equivalent of py-code: Callable[[int, int], Tuple[int, str]]
 ```
 
 ## `#L` — reader macro synonim for hyrule `#%` macro
