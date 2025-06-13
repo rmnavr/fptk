@@ -1,145 +1,139 @@
 
-; Modules: General, Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; IMPORTS:
 
-    (require hyrule [ of
-                      as-> -> ->> doto
-                      case branch unless lif
-                      do_n list_n ; these and apply_n have syntax: f(n x)
-                      ncut ])
+; Import: Modules (General, Typing) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import sys             
+    (import ; Basic:
+            sys
             os
             math
             operator
             random
             pprint [pprint]
-            re)
-
-    (sys.stdout.reconfigure :encoding "utf-8")
-
-    (import itertools
+            hyrule
+            re
+            ;
+            itertools
             functools
-            )
-
-    (import dataclasses     [dataclass]
+            ; 
+            dataclasses     [dataclass]
             enum            [Enum]
             abc             [ABC abstractmethod]
             typing          [List Tuple TypedDict Dict Union Generator Any Optional Callable Literal Type]
-            )
+            ; 3rd party:
+            funcy
+            pydantic        [BaseModel StrictInt StrictStr StrictFloat validate_arguments]
+            returns.result  [Result Success Failure])
 
-    ; 3rd party libs :
+    (setv StrictNumber (get Union #(StrictInt StrictFloat)))
 
-    (import funcy
-            pydantic        [BaseModel StrictInt StrictStr StrictFloat]
-            returns.result  [Result Success Failure]
-            )
+    (sys.stdout.reconfigure :encoding "utf-8")
+
+; _____________________________________________________________________________/ }}}1
+; Import: Functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (require hyrule [ of as-> -> ->>
+                      doto case branch unless lif
+                      ncut
+                      do_n list_n ])
+
+    ; Compositions:
+    (import hyrule [ constantly ]
+            funcy  [ identity curry partial rpartial autocurry compose rcompose ljuxt ])
+
+    ; APL:
+    (import lenses    [ lens ]
+            functools [ reduce ]  ; THEORY: reduce + monoid = 2-arg-function for free becomes n-arg-function
+            itertools [ starmap takewhile dropwhile cycle ]
+            hyrule    [ thru assoc flatten distinct ]
+            funcy     [ lmap lfilter lmapcat first second last nth
+                        pluck lpluck pluck_attr lpluck_attr group_by partition_by count_by ])
+
+    ; Math:
+    (import hyrule   [ inc dec sign xor ]
+            math     [ pi sin cos tan degrees radians acos asin atan atan2
+                       sqrt dist hypot log exp log10 prod :as product #_ "product(seq)" ]
+            operator [ neg truediv :as div ])
+
+    ; Logic/Checks:
+    (import operator [ eq ne :as neq ]
+            funcy    [ even odd isnone notnone ])
+
+    ; Regex:
+    (import funcy [ re_find re_test re_all re_finder re_tester ])
+    (import re    [ sub :as re_sub split :as re_split ])
+
+    ; Random:
+    (import random [ choice randint uniform :as randfloat random :as rand01 ]) ; shuffle — is mutating
 
 ; _____________________________________________________________________________/ }}}1
 
-; Functional (compositions) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; MY FUNCS:
 
-    (import hyrule [constantly])
+; Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import funcy  [ identity               ; f(x)=x, do not confuse with constantly(x)=42
-                     curry partial rpartial autocurry
-                     compose rcompose ljuxt           
-                   ])
+    ; pluck      (funcy /function)
+    ; pluck_attr (funcy /function)
+    ; pluckm     (pups  /macro)
 
+    ; get        (hy    /macro)
+    ; cut        (hy    /macro)
+    ; slice      (hy    /function)
+    ; ncut       (hy    /macro)
+    ;
+    ; assoc      (hyrule/function)
+    ; nth        (funcy /function)
+
+    ; funcy /first
+    ; funcy /second
+    (defn third       [xs] (if (<= (len xs) 2) (return None) (return (get xs 2))))
+    (defn fourth      [xs] (if (<= (len xs) 3) (return None) (return (get xs 3))))
+    ; funcy /last
+    (defn beforelast  [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
+
+    (defn rest        [xs]   (list (hyrule.rest      xs)))          ; [_ 2 3 4 5]   x1
+    (defn drop_firstN [n xs] (list (funcy.drop n xs)))              ; [_ _ 3 4 5]
+    (defn lastN       [n xs] (get xs (slice (- (len xs) n) None)))  ; [_ _ 3 4 5]
+    (defn butlast     [xs]   (list (hyrule.butlast   xs)))          ; [1 2 3 4 _]   x1
+    (defn drop_lastN  [n xs] (list (hyrule.drop_last n xs)))        ; [1 2 3 _ _]
+    (defn firstN      [n xs] (list (funcy.take n xs)))              ; [1 2 3 _ _]
+
+    ; ==========================================================================
+
+    (defn pick [ns xs] (lfor &n ns (get xs &n)))
+
+; _____________________________________________________________________________/ }}}1
+; Compositions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; do_n
+    ; list_n
     (defn apply_n [f n arg] ((compose #* (list_n n f)) arg))
-    ; (do_n 3 (print 1))
-    ; (lmap (p> str (sconcat "-> ") len) (list_n 10 identity))
 
     (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
     (defn pflip [f a] (fn [%x] (f %x a)))         ; (lmap (pflip div 0.1) (thru 1 3))
 
-    ; required because hy is bad at #* parsing with -> macro
+    ; maybe not needed:
     (defn asListable [f lst] (f #* lst))          ; (asListable plus [1 2 3])
     (defn asVariadic [f #* args] (f [#* args]))   ; (asVariadic sum 1 2 3)
 
 ; _____________________________________________________________________________/ }}}1
-; APL (threaders, getters, setters) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-; ■ doc (getters) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
-
-    ; M get
-    ; M cut
-    ; M ncut
-    ; F slice
-    ; F nth
-
-    ;  x1 elem:           | xN elems:
-    ;                     |
-    ;  | second           | 
-    ;  | |                |
-    ;  | |     last       |
-    ;  | |     |          | 
-    ; [1 2 3 4 5]         |
-    ;  \_____/   butlast  | drop_last(1,xs) <> take(4,xs)
-    ;    \_____/ rest     | drop(1,xs)      <> x take_last(4,sx)
-
-    ; F pluck
-    ; F pluck_attr
-    ; M pluck_m
-
-; ________________________________________________________________________/ }}}2
-
-    (import lenses [lens]) 
-
-    (import functools [reduce]) ; THEORY: reduce + monoid = 2-arg-function for free becomes n-arg-function
-
-    (import itertools [starmap takewhile dropwhile cycle])
-
-    (import hyrule [ thru assoc
-                     flatten    ; non-mutating btw; full-depth
-                     rest       ; returns iterator
-                     butlast    ; returns generator
-                     drop_last  ; returns generator 
-                     distinct   ; returns generator
-                   ])
-
-    (import funcy  [ lmap lfilter lmapcat   ; returns list       
-                     take                   ; returns first n elems 
-                     first second last nth  ; returns one elem      
-                     drop                   ; returns iterator
-                     pluck lpluck
-                     pluck_attr lpluck_attr ; // lpluck(i, seq) -> works on lists/dicts
-                     group_by partition_by
-                     count_by
-                   ])
-
-    (defn third  [xs] (if (<= (len xs) 2) (return None) (return (get xs 2))))
-    (defn fourth [xs] (if (<= (len xs) 3) (return None) (return (get xs 3))))
+; APL ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn fltr1st [f xs] (next (gfor &x xs :if (f &x) &x) None))
 
-    (defn lzip [#* args] (list (zip #* args)))    ;
-    (defn lstarmap [f xs] (list (starmap f xs)))  ;
+    (defn lzip [#* args] (list (zip #* args)))
+    (defn lstarmap [f xs] (list (starmap f xs)))
+    (defn lreversed [xs] (list (reversed xs)))
 
-; _____________________________________________________________________________/ }}}1
-; List methods ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
+    ; list methods:
     (defn count_occurrences [elem container] (container.count elem))
 
 ; _____________________________________________________________________________/ }}}1
 ; Math, +/* synonims ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import hyrule [ inc dec sign xor ])
-
-    (import math [ pi sin cos tan degrees radians acos asin atan atan2 
-                   sqrt dist hypot log exp log10 
-                   prod :as product ; product(seq)
-                 ])
-
-    ; «add» and «mul» from operator lib are funcs of 2 args, so I don't use them
-    (import operator [ neg  
-                       truediv :as div
-                     ])
-
     (defn normalize [v0]
         (setv norm (hypot #* v0))
-        (if (!= norm 0)
-            (return (lmap (pflip div norm) v0))
-            (return v0)))
+        (if (!= norm 0) (return (lmap (pflip div norm) v0)) (return v0)))
 
     (defn minus   [x y] (- x y))
     (defn mul     [#* args] (* #* args))    ; just a synonim for * (but a function, not macros)
@@ -151,14 +145,6 @@
 
 ; _____________________________________________________________________________/ }}}1
 ; Logic, Checks (Q) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (import operator [ eq
-                       ne :as neq
-                     ])
-
-    (import funcy  [ even odd
-                     isnone notnone 
-                   ])
 
     (defn not_ [f #* args #** kwargs] (not (f #* args #** kwargs)))
 
@@ -174,8 +160,7 @@
             (funcy.str_join sep seq)
             (funcy.str_join seq)))
 
-    (defn str_replace [string old new [count (- 1)]]
-        (string.replace old new count))
+    (defn str_replace [string old new [count (- 1)]] (string.replace old new count))
 
     (defn #^ str  lowercase [#^ str string] (string.lower))
     (defn #^ bool endswith  [#^ str string #^ str ending] (string.endswith ending))
@@ -186,31 +171,16 @@
 ; _____________________________________________________________________________/ }}}1
 ; Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import funcy [ re_find             ; re_find(regex_patters, string, flags=0), returns simplest possible form
-                    re_test             ; test match
-                    re_all              ; list of all matches in simplest possible form
-                    re_finder re_tester
-                  ])
+    ; re_find(regex_patters, string, flags=0), re_test -> match, re_all -> list of all matches
+    ; re_sub(regex_pattern, replacement, string, count=0, flags=0)
+    ; re_split(r"\s+", text)
 
-    (import re [ sub   :as re_sub   ; re_sub(regex_pattern, replacement, string, count=0, flags=0)
-                 split :as re_split ; re_split(r"\s+", text)
-               ])
-    ; match, search, findall, finditer, split, compile, fullmatch, escape
+    ; re: match, search, findall, finditer, split, compile, fullmatch, escape
 
-    ; non-escaped (commands):  .  ^  $  *  +  ? {2,4} [abc]      ( | )     
-    ; escaped (literals):     \. \^ \$ \* \+ \? \{ \} $$_bracket $_parenthesis \| \\ \' \"
-    ; special:     \d \D \w \W \s \S \b \B \n \r \f \v
-    ; raw strings: r"\d+" = "\\d+"
-
-; _____________________________________________________________________________/ }}}1
-; Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (import random [ choice
-                     randint
-                     uniform :as randfloat
-                     random  :as rand01
-                     ; shuffle — is mutating
-                   ])
+    ; non-escaped (commands):   .  ^  $  *  +  ? {2,4} [abc]      ( | )
+    ; escaped (literals):      \. \^ \$ \* \+ \? \{ \} $$_bracket $_parenthesis \| \\ \' \"
+    ; special:                 \d \D \w \W \s \S \b \B \n \r \f \v
+    ; raw strings:             r"\d+" = "\\d+"
 
 ; _____________________________________________________________________________/ }}}1
 ; Utils ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -219,12 +189,12 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-; for Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; FOR BENCHMARKING:
 
-    ; (setv [t_s prompt outp] (execution_time ...))
-    
+; with_execution_time ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (defn #^ (of Tuple float str Any) #_ "[time1_in_s prompt f_result]"
-        execution_time
+        with_execution_time
         [ #^ Callable f
           *
           #^ int      [n     1]
@@ -243,22 +213,18 @@
         (setv _time_1_s (/ seconds n))
         ;
         (case tUnit
-            "s"  (do (setv time_n   seconds)
-                     (setv unit_str " s"))
-            "ms" (do (setv time_n   (* seconds 1000))
-                     (setv unit_str "ms"))
-            "us" (do (setv time_n   (* seconds 1000000))
-                     (setv unit_str "us"))
-            "ns" (do (setv time_n   (* seconds 1000000000))
-                     (setv unit_str "ns")))
-        (setv time_1   (/ time_n n))
+            "s"  (do (setv time_n    seconds            ) (setv unit_str " s"))
+            "ms" (do (setv time_n (* seconds 1000)      ) (setv unit_str "ms"))
+            "us" (do (setv time_n (* seconds 1000000)   ) (setv unit_str "us"))
+            "ns" (do (setv time_n (* seconds 1000000000)) (setv unit_str "ns")))
+        (setv time_1 (/ time_n n))
         ;
         (setv line_01       f"/ ({msg})")
         (setv line_02_time1 f"\\ {time_1 :.3f} {unit_str}")
         (setv line_02_n     (str_replace f"average of {n :,} runs" "," "'"))
         (setv line_02_timeN f"test duration: {seconds :.3f} s")
         ;
-        (setv _prompt (sconcat line_01 "\n" 
+        (setv _prompt (sconcat line_01 "\n"
                                line_02_time1 " as " line_02_n " // " line_02_timeN))
         (return [_time_1_s _prompt _outp]))
 
@@ -304,8 +270,8 @@
 
     (when False
         '.attr                      ; only used in macroses
-        'obj.attr                   ; / access attr (no call) 
-        '(. obj attr)               ; \ 
+        'obj.attr                   ; / access attr (no call)
+        '(. obj attr)               ; \
         '(. obj (mth arg1 arg2))    ; access mth (and call))
         '(.mth obj arg1 arg2)       ; access mth (and call))
 
@@ -372,14 +338,14 @@
 ; ■ :attr: // NOT USED ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     ; leftover from lns macro:
-    ; 
+    ;
     ;(_isAttrAccess &arg)
     ;(setv (get args &i) (hy.models.Symbol (_extractAttrName &arg)))
 
     ; leftover from pluckm macro:
-    ; 
+    ;
     ; (_isAttrAccess indx)
-    ; (return `(lpluck_attr ~(_extractAttrName indx) ~iterable))) 
+    ; (return `(lpluck_attr ~(_extractAttrName indx) ~iterable)))
 
 	(-> (defn #^ bool
             _isAttrAccess
@@ -401,7 +367,6 @@
 ; ________________________________________________________________________/ }}}2
 
 ; _____________________________________________________________________________/ }}}1
-
 ; f:: (for readable functions annotations) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defmacro f:: [#* macro_args]
@@ -460,7 +425,7 @@
                                     args))
         (setv args (filter (fn [%x] (and (.isdigit (get %x 1))                  ; "%1..%9"
                                          (!= "0" (get %x 1))))
-                                    args))               
+                                    args))
         (setv args (sorted args))
         (if (= (len args) 0)
             (setv maxN 0)
@@ -479,10 +444,10 @@
         (setv pargs [])
         (for [&arg args]
               (cond ; .x  -> (partial flip getattr "x")
-                    (_isDotted &arg) 
+                    (_isDotted &arg)
                     (pargs.append `(partial flip getattr ~(str (_extractDotted &arg))))
                     ; (. mth 2 3) -> ...
-                    (_isDottedCall &arg) 
+                    (_isDottedCall &arg)
                     (do (pargs.append `(partial flip getattr
                                             ~(str (get (_extractDottedCall &arg) "head")))) ; -> mth)
                         (pargs.append `(partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
@@ -521,7 +486,7 @@
 ; lens: lns, &+, &+>, l>, l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 ; ■ Macro: lns (upgrades lens arg syntax) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
-    
+
     (defmacro lns [#* macro_args]
         (import  hyrule [rest])
         ;
@@ -531,7 +496,7 @@
                   (or (= (type &arg) hy.models.Integer)  ; 1 -> [1]
                       (= (type &arg) hy.models.String)   ; "str" -> ["str"]
                       (= (type &arg) hy.models.Symbol))  ; vrbl -> [vrbl]
-                  (setv (get args &i) [&arg]) 
+                  (setv (get args &i) [&arg])
                   ; .attr -> attr
                   (_isDotted &arg)
                   (setv (get args &i) (_extractDotted &arg))
@@ -541,7 +506,7 @@
                   ; (mth> f 1) -> (call "f" 1)
                   (_isExprWithHeadSymbol &arg "mth>")
                   (setv (get args &i) `(call ~(str (_extractDotted (get &arg 1)))
-                                            ~@(get &arg (slice 2 None)))) 
+                                            ~@(get &arg (slice 2 None))))
                   ; (mut> f 1) -> (call_mut "f" 1)
                   (_isExprWithHeadSymbol &arg "mut>")
                   (setv (get args &i) `(call_mut ~(str (_extractDotted (get &arg 1)))
@@ -604,7 +569,7 @@
         (cond ; .attr -> attr
               (_isDotted indx)
               (return `(lpluck_attr ~(str (_extractDotted indx)) ~iterable))
-              ; 
+              ;
               True
               (return `(lpluck ~indx ~iterable))))
 
