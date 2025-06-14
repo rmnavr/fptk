@@ -149,16 +149,14 @@
             "vrbls initialized"
         )
         ;
-        (pluckm 0       xs)    ; -> (lpluck      0       xs)
-        (pluckm i       xs)    ; -> (lpluck      i       xs)
-        (pluckm (- 1 1) xs)    ; -> (lpluck      (- 1 1) xs)
-        (pluckm "x"     ds)    ; -> (lpluck      "x"     ds)
-        (pluckm .x      ps)    ; -> (lpluck_attr "x"     ps)
+        (pluckm 0       xs)    ; (lpluck      0       xs)
+        (pluckm i       xs)    ; (lpluck      i       xs)
+        (pluckm (- 1 1) xs)    ; (lpluck      (- 1 1) xs)
+        (pluckm "x"     ds)    ; (lpluck      "x"     ds)
+        (pluckm .x      ps)    ; (lpluck_attr "x"     ps)
     )
 
-
 ; _____________________________________________________________________________/ }}}1
-
 
 ; === Usage/Docs ===
 

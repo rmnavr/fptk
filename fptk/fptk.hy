@@ -3,9 +3,10 @@
 
 ; Import: Modules (General, Typing) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+    (import sys)
+    (sys.stdout.reconfigure :encoding "utf-8")
+
     (import ; Basic:
-            sys
-            os
             math
             operator
             random
@@ -27,19 +28,17 @@
 
     (setv StrictNumber (get Union #(StrictInt StrictFloat)))
 
-    (sys.stdout.reconfigure :encoding "utf-8")
-
 ; _____________________________________________________________________________/ }}}1
 ; Import: Functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (require hyrule [ of as-> -> ->>
-                      doto case branch unless lif
-                      ncut
-                      do_n list_n ])
+    (require hyrule   [ of as-> -> ->>
+                        doto case branch unless lif
+                        ncut
+                        do_n list_n ])
 
     ; Compositions:
-    (import hyrule [ constantly ]
-            funcy  [ identity curry partial rpartial autocurry compose rcompose ljuxt ])
+    (import hyrule    [ constantly ]
+            funcy     [ identity curry partial rpartial autocurry compose rcompose ljuxt ])
 
     ; APL:
     (import lenses    [ lens ]
@@ -50,21 +49,21 @@
                         pluck lpluck pluck_attr lpluck_attr group_by partition_by count_by ])
 
     ; Math:
-    (import hyrule   [ inc dec sign xor ]
-            math     [ pi sin cos tan degrees radians acos asin atan atan2
-                       sqrt dist hypot log exp log10 prod :as product #_ "product(seq)" ]
-            operator [ neg truediv :as div ])
+    (import hyrule    [ inc dec sign xor ]
+            math      [ pi sin cos tan degrees radians acos asin atan atan2
+                        sqrt dist hypot log exp log10 prod :as product #_ "product(seq)" ]
+            operator  [ neg truediv :as div ])
 
     ; Logic/Checks:
-    (import operator [ eq ne :as neq ]
-            funcy    [ even odd isnone notnone ])
+    (import operator  [ eq ne :as neq ]
+            funcy     [ even odd isnone notnone ])
 
     ; Regex:
-    (import funcy [ re_find re_test re_all re_finder re_tester ])
-    (import re    [ sub :as re_sub split :as re_split ])
+    (import funcy     [ re_find re_test re_all re_finder re_tester ])
+    (import re        [ sub :as re_sub split :as re_split ])
 
     ; Random:
-    (import random [ choice randint uniform :as randfloat random :as rand01 ]) ; shuffle — is mutating
+    (import random    [ choice randint uniform :as randfloat random :as rand01 ]) ; shuffle — is mutating
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -91,10 +90,10 @@
     ; funcy /last
     (defn beforelast  [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
 
-    (defn rest        [xs]   (list (hyrule.rest      xs)))          ; [_ 2 3 4 5]   x1
+    (defn rest        [xs]   (list (hyrule.rest xs)))               ; [_ 2 3 4 5]   x1
     (defn drop_firstN [n xs] (list (funcy.drop n xs)))              ; [_ _ 3 4 5]
     (defn lastN       [n xs] (get xs (slice (- (len xs) n) None)))  ; [_ _ 3 4 5]
-    (defn butlast     [xs]   (list (hyrule.butlast   xs)))          ; [1 2 3 4 _]   x1
+    (defn butlast     [xs]   (list (hyrule.butlast xs)))            ; [1 2 3 4 _]   x1
     (defn drop_lastN  [n xs] (list (hyrule.drop_last n xs)))        ; [1 2 3 _ _]
     (defn firstN      [n xs] (list (funcy.take n xs)))              ; [1 2 3 _ _]
 
@@ -134,6 +133,10 @@
     (defn normalize [v0]
         (setv norm (hypot #* v0))
         (if (!= norm 0) (return (lmap (pflip div norm) v0)) (return v0)))
+
+    (defn half       [x] (/ x 2))
+    (defn double     [x] (* x 2))
+    (defn reciprocal [x] (/ 1 x))
 
     (defn minus   [x y] (- x y))
     (defn mul     [#* args] (* #* args))    ; just a synonim for * (but a function, not macros)
