@@ -14,24 +14,24 @@ However main purpose of **fptk** is to tune hy/py to my own programming preferen
 Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main context by calling:
 ```hy
 (import fptk *)
-(require fptk *)
+(require fptk * :readers *)
 ```
-It imports libs like itertools/math/[funcy](https://github.com/Suor/funcy)/[lenses](https://github.com/ingolemo/python-lenses)/etc. ,
-and provides many utility functions like `flip` (flips arguments order of function), `first` (gets 1st elem of collection), `plus`, `sin`, etc.
 
 It is easier to see full list of imported entities directly inside fptk.hy file (it is nicely organized).
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
-Overview of things **fptk** aims to unite (and bring into main context):
+Overview of things **fptk** aims to unite and bring into main context:
+
+It imports libs like itertools/math///etc. ,
 - [x] Basic math (math)
-- [x] Regexes (re, funcy)
+- [x] Regexes (re, [funcy](https://github.com/Suor/funcy))
 - [x] Standard FP/APL features like mapping/filtering/threading (funcy, itertools)
 - [x] Functional composition/piping/currying (hyrule, funcy, itertools)
-- [x] Lenses for manipulating deeply nested immutable data (lenses)
-- [ ] Types checking during creating objects and calling functions (pydantic)
+- [x] Lenses for manipulating deeply nested immutable data ([lenses](https://github.com/ingolemo/python-lenses))
+- [ ] Types checking during creating objects and calling functions (([pydantic](https://github.com/pydantic/pydantic))
 - [ ] Immutable structures (under consideration)
-- [ ] Monadic machinery (returns)
+- [ ] Monadic machinery (([returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
