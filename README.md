@@ -3,22 +3,35 @@
 
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-**fptk** tunes hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
-It's main purpose is to bring curated list of math/FP-related libs/classes/functions/macroses into main context by calling:
+**fptk** provides several usefull macroses for hy: 
+```hy
+(require fptk [f:: p> pluckm])
+(require fptk [lns &+ &+> l> l>=])
+(require fptk [fm] :readers [L])
+```
+
+However main purpose of **fptk** is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
+Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main context by calling:
 ```hy
 (import fptk *)
 (require fptk *)
 ```
-It imports libs from itertools/math/random to [funcy](https://github.com/Suor/funcy) and [lenses](https://github.com/ingolemo/python-lenses))
+It imports libs like itertools/math/[funcy](https://github.com/Suor/funcy)/[lenses](https://github.com/ingolemo/python-lenses)/etc. ,
 and provides many utility functions like `flip` (flips arguments order of function), `first` (gets 1st elem of collection), `plus`, `sin`, etc.
-It is easier to see full list of the imported entities directly inside fptk.hy file (it is nicely organized).
 
-> This approach is inspired by Wolfram Mathematica, in which all language functions are always in the main context.
+It is easier to see full list of imported entities directly inside fptk.hy file (it is nicely organized).
 
-For general usage, you might be interested in macroses that **fptk** provides: 
-```hy
-(require fptk [ f:: p> fm pluckm lns &+ &+> l> l>= ] :readers [L])
-```
+> Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
+
+Overview of things **fptk** aims to unite (and bring into main context):
+- [x] Basic math (math)
+- [x] Regexes (re, funcy)
+- [x] Standard FP/APL features like mapping/filtering/threading (funcy, itertools)
+- [x] Functional composition/piping/currying (hyrule, funcy, itertools)
+- [x] Lenses for manipulating deeply nested immutable data (lenses)
+- [ ] Types checking during creating objects and calling functions (pydantic)
+- [ ] Immutable structures (under consideration)
+- [ ] Monadic machinery (returns)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
