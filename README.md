@@ -56,13 +56,13 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 
 `#L` is just synonim for hyrule's `#%` macro. 
 ```hy
-#L(* %1 2)
+#L(* %1 2) ; 
 ```
 
 ## `fm` — normal macro for writing lambdas
 
 ```hy
-(fm (* %1 2))
+(fm (* %1 2)) ; expands to: (fn [%1] (* %1 2))
 ```
 
 `fm` has functionality similar to `#L`, but:
@@ -79,11 +79,15 @@ Internally piping is implemented via partial application with [funcy.partial](ht
 
 Example:
 ```hy
-(setv pipe (p> abs
-               (operator.add 4)
-               (operator.truediv 4)
-               str))
-(list (map pipe (range -10 0)))
+(setv xs (range -4 0))               ; [-4 -3 -2 -1]
+
+                                     ; after application to xs will produce at each step:
+(setv pipe (p> abs                   ; [4 3 2 1]
+               (operator.add 4)      ; [8 7 6 5]
+               (operator.truediv 10) ; [1.25 1.43 1.67 2.00]
+               str))                 ; ['1.25' '1.43' '1.67' '2.00']
+
+(list (map pipe xs))                 ; ['1.25' '1.43' '1.67' '2.00']
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -99,11 +103,13 @@ Reason for this is the following:
 * Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
 
 ```hy
-(pluckm 0       xs) ; (lpluck      0       xs)
-(pluckm i       xs) ; (lpluck      i       xs)
-(pluckm (- 1 1) xs) ; (lpluck      (- 1 1) xs)
-(pluckm "key"   ds) ; (lpluck      "key"   ds)
-(pluckm .attr   ps) ; (lpluck_attr "attr"  ps) ; use lpluck_attr if attribute name is needed to be passed as parameter
+(pluckm 0       xs) ; expands to: (lpluck      0       xs)
+(pluckm i       xs) ; expands to: (lpluck      i       xs)
+(pluckm (- 1 1) xs) ; expands to: (lpluck      (- 1 1) xs)
+(pluckm "key"   ds) ; expands to: (lpluck      "key"   ds)
+(pluckm .attr   cs) ; expands to: (lpluck_attr "attr"  cs)
+
+; use (lpluck_attr "attr" cs) if attribute name is needed to be passed as parameter
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
