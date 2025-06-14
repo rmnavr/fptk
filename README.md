@@ -9,6 +9,7 @@
 (require fptk [lns &+ &+> l> l>=])
 (require fptk [fm] :readers [L])
 ```
+*(see macroses description below)*
 
 However main purpose of **fptk** is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
 Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main context by calling:
@@ -17,21 +18,19 @@ Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/
 (require fptk * :readers *)
 ```
 
-It is easier to see full list of imported entities directly inside fptk.hy file (it is nicely organized).
+It is easier to see full list of imported entities directly inside `fptk.hy` file (it is nicely organized).
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
 Overview of things **fptk** aims to unite and bring into main context:
-
-It imports libs like itertools/math///etc. ,
 - [x] Basic math (math)
 - [x] Regexes (re, [funcy](https://github.com/Suor/funcy))
 - [x] Standard FP/APL features like mapping/filtering/threading (funcy, itertools)
 - [x] Functional composition/piping/currying (hyrule, funcy, itertools)
 - [x] Lenses for manipulating deeply nested immutable data ([lenses](https://github.com/ingolemo/python-lenses))
-- [ ] Types checking during creating objects and calling functions (([pydantic](https://github.com/pydantic/pydantic))
-- [ ] Immutable structures (under consideration)
-- [ ] Monadic machinery (([returns](https://github.com/dry-python/returns))
+- [ ] WIP: Types checking during creating objects and calling functions ([pydantic](https://github.com/pydantic/pydantic))
+- [ ] WIP: Immutable structures (under consideration)
+- [ ] WIP: Monadic machinery ([returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
@@ -53,37 +52,38 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- #L, fm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `#L` — reader macro synonim for hyrule `#%` macro
+## `#L` — reader macro for writing lambdas
 
-`#L` is macro for writing lambdas like: 
+`#L` is just synonim for hyrule's `#%` macro. 
 ```hy
 #L(* %1 2)
 ```
 
-## `fm` — normal macro with functionality same to `#L`
+## `fm` — normal macro for writing lambdas
 
 ```hy
 (fm (* %1 2))
 ```
 
-Unlike `#L`, `fm` is REPL-friendly.
-
-`fm` currently supports only args of form %1..%9 (while `#L` can also work with args and kwargs).
+`fm` has functionality similar to `#L`, but:
+- unlike `#L`, `fm` is REPL-friendly
+- `fm` currently supports only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `p>` — pipe of partials
 
-Works similar to hyrule `->` macro, but accepts only callables.
-Internally piping is implemented via partial application with funcy.partial
+Works similar to hyrule `->` macro, but accepts only callables and does not need to be called immediately.
+Internally piping is implemented via partial application with [funcy.partial](https://funcy.readthedocs.io/en/stable/funcs.html#partial).
 
 Example:
 ```hy
-(list (map (p> abs (operator.add 4) (flip div 4) str) (range -10 0)))
-; BTW «flip» and «div» are functions from fptk
-; - «flip» flips argument order for 2-argument function
-; - «div» is operator.truediv
+(setv pipe (p> abs
+               (operator.add 4)
+               (operator.truediv 4)
+               str))
+(list (map pipe (range -10 0)))
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -91,27 +91,27 @@ Example:
 
 ## `pluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
 
-Pluckm extends funcy.lpluck to recognize `(pluckm .attr)` syntax for accessing attributes.
+Pluckm extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
+to be able to recognize `(pluckm .attr)` syntax for accessing attributes.
 
 Reason for this is the following:
+* In hy original syntax `.attr` is the way to access attribute, not `"attr"` (how lpluck_attr does it)
 * Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
-* In hy original syntax `.attr` is the way to access attribute, not `"attr"`
 
 ```hy
-(pluckm 0       xs)     ; (lpluck      0       xs)
-(pluckm i       xs)     ; (lpluck      i       xs)
-(pluckm (- 1 1) xs)     ; (lpluck      (- 1 1) xs)
-(pluckm "key"   ds)     ; (lpluck      "key"   ds)
-(pluckm .attr   ps)     ; (lpluck_attr "attr"  ps) 
+(pluckm 0       xs) ; (lpluck      0       xs)
+(pluckm i       xs) ; (lpluck      i       xs)
+(pluckm (- 1 1) xs) ; (lpluck      (- 1 1) xs)
+(pluckm "key"   ds) ; (lpluck      "key"   ds)
+(pluckm .attr   ps) ; (lpluck_attr "attr"  ps) ; use lpluck_attr if attribute name is needed to be passed as parameter
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
-
 <!-- Lenses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## lenses-related macroses: `lns`, `&+`, `&+>`, `l>`, `l>=`
 
-Those macroses are used together with [lenses](https://github.com/ingolemo/python-lenses)) library.
+Those macroses should be used together with [lenses](https://github.com/ingolemo/python-lenses) library.
 They simplify lens definition, composition and application.
 Macroses `l>` and `&+>` work best together with hyrule `->` macro.
 
@@ -131,6 +131,13 @@ Macroses `l>` and `&+>` work best together with hyrule `->` macro.
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
+
+<!-- TODO:
+
+    - p>     upd/docs
+    - lenses upd/docs
+
+-->
 
 # Installation
 
