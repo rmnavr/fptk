@@ -2,8 +2,8 @@
 ; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
-    (import  fpext *)
-    (require macro * :readers *)
+    (import  fptk.fpext *)
+    (require fptk.macro * :readers *)
 
 ; _____________________________________________________________________________/ }}}1
 
