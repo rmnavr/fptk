@@ -3,28 +3,36 @@
 
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-**fptk** provides several usefull macroses for hy:
-```hy
-(require fptk [f:: p> pluckm])
-(require fptk [lns &+ &+> l> l>=])
-(require fptk [fm] :readers [L])
-```
-*(see macroses description below)*
+**fptk** serves 2 distinct purposes.
 
-However main purpose of **fptk** is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
-Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main context by calling:
-```hy
-(import fptk *)
-(require fptk * :readers *)
-```
+*First purpose* is to provide several macros relevant for functional programming.
+
+*Second purpose* is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
+Intended usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main scope.
+
+> Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
 It is easier to see full list of imported entities directly inside
 [fptk.hy](https://github.com/rmnavr/fptk/blob/main/fptk/fptk.hy) file (it is nicely organized).
 
+Both purposes are achieved simply by calling:
+```hy
+(import fptk *)
+(require * :readers *)
+```
 
-> Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
+Table of Content:
+- [topics that fptk covers](#Topics-that-fptk-covers)
+- [fptk macros](#fptk-macros)
+- [Installation](#Installation)
 
-Overview of things **fptk** aims to unite and bring into main context:
+<!-- __________________________________________________________________________/ }}}1 -->
+
+# Topics that fptk covers
+
+<!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+As a FP-tuning lib, fptk aims to unite and bring into main scope:
 - [x] Basic math (math)
 - [x] Regexes (re, [funcy](https://github.com/Suor/funcy))
 - [x] Standard FP/APL features like mapping/filtering/threading (funcy, itertools)
@@ -36,7 +44,7 @@ Overview of things **fptk** aims to unite and bring into main context:
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
-# fptk Macroses
+# fptk macros
 
 <!-- f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
