@@ -1,9 +1,9 @@
 
-; import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
-    (import  fptk *)
-    (require fptk [f:: fm p> pluckm lns &+ &+> l> l>=] :readers [L])
+    (import  fpext *)
+    (require macro [f:: fm p> pluckm lns &+ &+> l> l>=] :readers [L])
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -11,11 +11,11 @@
 
 ; Testing setup ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (setv _test_macro_FAnnot    False)
-    (setv _test_macro_FM        False)
-    (setv _test_macroses_Lens   False)
-    (setv _test_macro_Pluckm    False)
-    (setv _test_macro_pipe      False)
+    (setv _test_macro_FAnnot    True)
+    (setv _test_macro_FM        True)
+    (setv _test_macroses_Lens   True)
+    (setv _test_macro_Pluckm    True)
+    (setv _test_macro_pipe      True)
 
     (defn _test_lines
         [ #^ bool testQ

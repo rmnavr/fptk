@@ -32,7 +32,7 @@ Table of Contents:
 
 # Topics that fptk covers
 
-<!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 As a FP-tuning lib, fptk aims to unite and bring into main scope:
 - [x] Basic math (math)
@@ -60,10 +60,10 @@ One possible usage might be defining interfaces (if functions are used in that r
 ```
 
 Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument separator rather than hyrule's macro `->`.
-And `->` can be used instead of last `=>`. This is simply visual preference and has no impact on the code.
+Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- #L, fm, fm> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `#L` — reader macro for writing lambdas
 
@@ -72,16 +72,16 @@ And `->` can be used instead of last `=>`. This is simply visual preference and 
 #L(* %1 2) ; equivalent to: (fn [%1] (* %1 2))
 ```
 
-## `fm` and `fm>` — macro for writing lambdas
+## `fm` and `f>` — macro for writing lambdas
 
 ```hy
-(fm  (* %1 2))         ; expands to: (fn [%1] (* %1 2))
-(fm> (* %1 %2 10) 3 4) ; immediately applicates — will give here: 3*4*10 = 120
+(fm (* %1 2))         ; expands to: (fn [%1] (* %1 2))
+(f> (* %1 %2 10) 3 4) ; immediately applicates — will give here: 3*4*10 = 120
 ```
 
-`fm` and `fm>` have functionality similar to `#L`, but:
-- unlike `#L`, `fm` and `fm>` are REPL-friendly
-- `fm` and `fm>` currently support only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
+`fm` and `f>` have functionality similar to `#L`, but:
+- `fm` and `f>` are more REPL-friendly in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly 0.24), than `#L`
+- `fm` and `f>` currently support only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -106,7 +106,8 @@ Example:
 (print (pipe x))                     ; returns <class 'str'>
 ```
 
-Notice that unlike in `->` macro, `.x` is seen as attribute access rather than method call.
+Notice that unlike in `->` macro, `.attr` is seen as attribute access rather than method call.
+This is also in accordance with `.attr` usage inside another fptk macros.
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -135,7 +136,7 @@ Reason for this is the following:
 
 ## lenses-related macroses: `lns`, `&+`, `&+>`, `l>`, `l>=`
 
-Those macroses should be used together with [lenses](https://github.com/ingolemo/python-lenses) library.
+These macros should be used together with [lenses](https://github.com/ingolemo/python-lenses) library.
 They simplify lens definition, composition and application.
 
 ### `lns` macro in details
@@ -176,6 +177,11 @@ Reasoning for creating syntax (```.attr``` and ```(mth> .sort)```) that can't pa
 ### All lenses macros
 
 Most important objects in lenses are UnboundLens and StateFunction, which will be further referred to as UL and SF.
+```hy
+; lns can be used to define both UL or SF:
+(lns 1 (Each))                      ; (. lens [1] (Each))
+(lns 1 (Each) (set 3))              ; (. lens [1] (Each) (set 3))
+```
 
 For context, original lenses library offers `&` and `&=` functions used like so:
 ```hy
@@ -184,18 +190,8 @@ For context, original lenses library offers `&` and `&=` functions used like so:
 (&= xs (. lens (Each) (modify sqrt)))        ; applicating SF to xs and updating xs value
 ```
 
-Symbols in fptk macros names `l>`, `l>=`, `&+` and `&+>` in general mean:
-- `l` — expects `lns` macro syntax
-- `&` — combine
-- `+` — expects getter/setter at the end
-- `>` — apply
-
-fptk lens macros usages:
+Those original functions `&` and `&=` are accompanied by fptk lens macros (`l>`, `l>=`, `&+` and `&+>`) in the following manner:
 ```hy
-; lns is used to define UL or SF:
-(lns 1 (Each))                      ; (. lens [1] (Each))
-(lns 1 (Each) (set 3))              ; (. lens [1] (Each) (set 3))
-
 ; l> is used to apply SF, l>= also updates value:
 (l>  xs 1 (Each) (modify sqrt))     ; ((. lens [1] (Each) (modify sqrt)) xs)
 (l>= xs 1 (Each) (modify sqrt))     ; (setv xs ((. lens [1] (Each) (modify sqrt)) xs))
@@ -205,6 +201,12 @@ fptk lens macros usages:
 (&+ (lns 1) (lns 2) (set "here"))   ; (& (. lens [1]) (. lens [2] (set "here")))
 (&+> xs (lns 1) (mut> .sort))       ; ((& (. lens [1] (call_mut "sort"))) xs)
 ```
+
+So, in general, symbols in fptk macros names (`l>`, `l>=`, `&+` and `&+>`) mean:
+- `l` — expects `lns` macro syntax
+- `&` — combine
+- `+` — expects getter/setter at the end
+- `>` — apply
 
 <!-- __________________________________________________________________________/ }}}1 -->
 

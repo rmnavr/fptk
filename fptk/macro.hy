@@ -1,5 +1,5 @@
 
-	(require hyrule [->])
+	(require hyrule [-> of])
     (import funcy [partial rcompose])
     (import operator)
 
@@ -257,7 +257,7 @@
 		 ~expr))
 
 ; _____________________________________________________________________________/ }}}1
-; fm, fm> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; recognizes %1..%9 as arguments
 	; nested fm calls will not work as intended
@@ -282,7 +282,7 @@
 		; (print (hy.repr `(fn [~@inputs] ~expr)))
 		(return `(fn [~@inputs] ~expr)))
 
-	(defmacro fm> [lambda_def #* args]
+	(defmacro f> [lambda_def #* args]
 		(return `((fm ~lambda_def) ~@args)))
 
 ; _____________________________________________________________________________/ }}}1
