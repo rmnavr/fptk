@@ -1,4 +1,4 @@
     
-    (import  fptk.fptk *)
-    (require fptk.fptk * :readers *)
+    (import  fptk.core *)
+    (require fptk.macro * :readers *)
 

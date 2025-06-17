@@ -3,7 +3,7 @@
 
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-**fptk** provides several usefull macroses for hy: 
+**fptk** provides several usefull macroses for hy:
 ```hy
 (require fptk [f:: p> pluckm])
 (require fptk [lns &+ &+> l> l>=])
@@ -18,7 +18,9 @@ Supposed usage of fptk is bringing curated list of math/FP-related libs/classes/
 (require fptk * :readers *)
 ```
 
-It is easier to see full list of imported entities directly inside `fptk.hy` file (it is nicely organized).
+It is easier to see full list of imported entities directly inside
+[fptk.hy](https://github.com/rmnavr/fptk/blob/main/fptk/fptk.hy) file (it is nicely organized).
+
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
@@ -50,24 +52,25 @@ One possible usage might be defining interfaces (if functions are used in that r
 Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument separator rather than hyrule's macro `->`.
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- #L, fm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- #L, fm, fm> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `#L` — reader macro for writing lambdas
 
-`#L` is just synonim for hyrule's `#%` macro. 
+`#L` is just synonim for hyrule's `#%` macro.
 ```hy
-#L(* %1 2) ; 
+#L(* %1 2) ; equivalent to: (fn [%1] (* %1 2))
 ```
 
-## `fm` — normal macro for writing lambdas
+## `fm` and `fm>` — macro for writing lambdas
 
 ```hy
-(fm (* %1 2)) ; expands to: (fn [%1] (* %1 2))
+(fm  (* %1 2))         ; expands to: (fn [%1] (* %1 2))
+(fm> (* %1 %2 10) 3 4) ; immediately applicates — will give here: 3*4*10 = 120
 ```
 
-`fm` has functionality similar to `#L`, but:
-- unlike `#L`, `fm` is REPL-friendly
-- `fm` currently supports only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
+`fm` and `fm>` have functionality similar to `#L`, but:
+- unlike `#L`, `fm` and `fm>` are REPL-friendly
+- `fm` and `fm>` currently support only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -79,16 +82,20 @@ Internally piping is implemented via partial application with [funcy.partial](ht
 
 Example:
 ```hy
-(setv xs (range -4 0))               ; [-4 -3 -2 -1]
+(setv x 4)
+                                     ; after application to x will produce at each step:
+(setv pipe (p> operator.neg          ; -4
+               (abs)                 ; 4
+               (operator.add 4)      ; 8
+               str                   ; '8'
+               (.__contains__ "8")   ; True  // this line demonstrates method call
+               .__class__            ; 'str' // this line demonstrates attribute access
+               ))
 
-                                     ; after application to xs will produce at each step:
-(setv pipe (p> abs                   ; [4 3 2 1]
-               (operator.add 4)      ; [8 7 6 5]
-               (operator.truediv 10) ; [1.25 1.43 1.67 2.00]
-               str))                 ; ['1.25' '1.43' '1.67' '2.00']
-
-(list (map pipe xs))                 ; ['1.25' '1.43' '1.67' '2.00']
+(print (pipe x))                     ; returns <class 'str'>
 ```
+
+Notice that unlike in `->` macro, `.x` is seen as attribute access rather than method call.
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -119,31 +126,76 @@ Reason for this is the following:
 
 Those macroses should be used together with [lenses](https://github.com/ingolemo/python-lenses) library.
 They simplify lens definition, composition and application.
-Macroses `l>` and `&+>` work best together with hyrule `->` macro.
 
+### `lns` macro in details
+
+`lns` macro offers alternative syntax for lenses.
+
+Basic syntax:
 ```hy
-(lns 1 "dict" vrbl .attr (Each))           ; attr   can't be passed as arg, use (GetAttr  "attr") if needed
-(lns 1 (mth> .sort))                       ; method can't be passed as arg, use (call     "mth" ..) if needed
-(lns 1 (mut> .sort :shallow True))         ; method can't be passed as arg, use (call_mut "mth" ..) if needed
-(lns 1 (dndr>  / 1))                
-(lns 1 (dndr>> / 1))                       
+; standalone numbers, strings and variables are recognized as index access:
+(lns 1 -2 (- 7) "key" idx)  ; (. lens [1] [-2] [- 7] ["key"])
 
-(lns 1 (Each) (set 3))                     ; can define UL/SF
-(l>  xs 1 (Each) (modify sqrt))            ; define SF and apply
-(l>= xs 1 (Each) (modify sqrt))            ; define SF, apply, upd value
-(&+  (lns 1) (lns 2) (set "here"))         ; / compose ULs and «SF-maker-func» ...
-(&+> xs (lns 1) (mut> .reverse))           ; \ .. and then apply
+; form below is seen as attribute access:
+(lns .attr)                 ; (. lens attr)
+; notice that .attr form can't pass attr as argument, use (GetAttr "attr") instead
+
+; arbitrary expressions (i.e. that are surrounded by parentheses) are parsed without changes:
+(lns (Each) (set 3))        ; (. lens (Each) (set 3))
+
+; thus, to ensure arbitrary expression is recognized as index, you must use square brackets:
+(lns (+ i 3))               ; (. lens (+ i 3))   // will give error
+(lns [(+ i 3)])             ; (. lens [(+ i 3)]) // works ok
+```
+
+`lns` macro also recognizes 4 special forms (`mth>` `mut>` `dndr>` `dndr>>`):
+```
+(lns 1 (mth> .sort))                ; (. lens (call "sort")
+(lns 1 (mut> .copy :shallow True))  ; (. lens (call_mut "copy" :shallow True)
+(lns 1 (dndr>  / 3))                ; (/ (. lens [1]) 3)
+(lns 1 (dndr>> / 3))                ; (/ 3 (. lens [1]))
+
+; mth> and mut> can't pass method as argument, use original (call "mth" ..) or (call_mut "mth" ..) instead
+```
+
+Reasoning for creating syntax (```.attr``` and ```(mth> .sort)```) that can't pass attr/method name as argument is the same as for `pluckm` macro:
+* In hy original syntax `.smth` is the way to access attribute/method, not "smth"
+* Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
+
+### all lenses macros
+
+Most important objects in lens are UnboundLens and StateFunction, which will be further referred to as UL and SF.
+
+For context, original lens library offers `&` and `&=` functions used like so:
+```hy
+(& (. lens [1]) (. lens [2] (set 3)))        ; lens composition (ULs + last one can be UL/SF)
+(& xs (. lens [1] (get)) (. lens [2] (get))) ; SFs application (one after another)
+(&= xs (. lens (Each) (modify sqrt)))        ; applicating SF to xs and updating xs value
+```
+
+Symbols in fptk lens macros names in general mean:
+- `l` — understands `lns` macro syntax
+- `&` — combine
+- `+` — expects getter/setter at the end
+- `>` — apply
+
+fptk lens macros usages:
+```
+; lns is used to define UL or SF:
+(lns 1 (Each))                      ; (. lens [1] (Each))
+(lns 1 (Each) (set 3))              ; (. lens [1] (Each) (set 3))
+
+; l> is used to apply SF, l>= also updates value:
+(l>  xs 1 (Each) (modify sqrt))     ; ((. lens [1] (Each) (modify sqrt)) xs)
+(l>= xs 1 (Each) (modify sqrt))     ; (setv xs ((. lens [1] (Each) (modify sqrt)) xs))
+
+; &+ can combine several ULs and expects getter/setter at the end
+; &+> also applies composed SF:
+(&+ (lns 1) (lns 2) (set "here"))   ; (& (. lens [1]) (. lens [2] (set "here")))
+(&+> xs (lns 1) (mut> .sort))       ; ((& (. lens [1] (call_mut "sort"))) xs)
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
-
-
-<!-- TODO:
-
-    - p>     upd/docs
-    - lenses upd/docs
-
--->
 
 # Installation
 

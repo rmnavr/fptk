@@ -63,9 +63,10 @@
           "variables initialized"
         ]
         ;
-        (lmap (p> .x (flip minus 10)
-                     neg
-                     str)
+        (lmap (p> .x
+                  (flip minus 10)
+                  neg
+                  str)
               ps)
         (lmap (p> (.getXscaled #_ "object" 3 4)
                   (flip div 100))
@@ -200,14 +201,6 @@
     (pluckm "x"     ds)    ; -> (lpluck      "x"     ds)
     (pluckm .x      cs)    ; -> (lpluck_attr "x"     ps)    ; attr can't be passed as arg, use (pluck_attr "attr" ..) if needed
 
-                  ; / unpacks to [vrbl]
-                  ; ↓ 
-	(lns 1 "dict" vrbl .attr (Each))                        ; attr   can't be passed as arg, use (GetAttr  "attr") if needed
-	(lns 1 (mth> .sort))				                    ; method can't be passed as arg, use (call     "mth" ..) if needed
-	(lns 1 (mut> .sort :shallow True))	                    ; method can't be passed as arg, use (call_mut "mth" ..) if needed
-	(lns 1 (dndr>  / 1))				
-	(lns 1 (dndr>> / 1))                                    
-    ;
     (lns 1 (Each) (set 3))                                  ; can define UL/SF
     (l>  xl 1 (Each) (modify sqrt))                         ; define SF and apply
     (l>= xl 1 (Each) (modify sqrt))                         ; define SF, apply, upd value
