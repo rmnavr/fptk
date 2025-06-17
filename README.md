@@ -217,5 +217,5 @@ So, in general, symbols in fptk macros names (`l>`, `l>=`, `&+` and `&+>`) mean:
 # Installation
 
 ```
-pip install git+https://github.com/rmnavr/fptk.git@0.0.1
+pip install git+https://github.com/rmnavr/fptk.git@0.1.0
 ```

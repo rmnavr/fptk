@@ -20,7 +20,7 @@ class install(install):
 libs_required = [
     'hy >= 1',
     'funcy >= 2',
-    'returns >= 0.25',
+    'returns >= 0.23',
     'pydantic >= 1.10',
     'lenses >= 1.2'
 ]
