@@ -3,19 +3,17 @@
 
     (require hyrule [of as-> -> ->> doto case branch unless lif do_n list_n ncut])
     (import  fpext *)
-    (require macro [f:: fm p> pluckm lns &+ &+> l> l>=] :readers [L])
+    (require macro * :readers *)
 
 ; _____________________________________________________________________________/ }}}1
 
-; === Testing ===
-
 ; Testing setup ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (setv _test_macro_FAnnot    True)
-    (setv _test_macro_FM        True)
-    (setv _test_macroses_Lens   True)
-    (setv _test_macro_Pluckm    True)
-    (setv _test_macro_pipe      True)
+    (setv _test_macro_FAnnot   False)
+    (setv _test_macro_FM       False)
+    (setv _test_macroses_Lens  False)
+    (setv _test_macro_Pluckm   False)
+    (setv _test_macro_pipe     False)
 
     (defn _test_lines
         [ #^ bool testQ
@@ -51,6 +49,7 @@
         ((fm (abs 3)))
         ((fm (abs %1)) (- 3))
         ((fm (abs %2)) 1 (- 3))
+        (f> (abs %2) -3 -7)
     )
 
 ; _____________________________________________________________________________/ }}}1
@@ -77,11 +76,6 @@
 
 ; _____________________________________________________________________________/ }}}1
 ; lens: lns, &+, &+>, l>, l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; - [&] combine
-    ; - [+] add getter/setter
-    ; - [>] apply (requires for nice threading usage (-> macro))
-    ; - [l] understands «lns» syntax
 
     (_test_lines _test_macroses_Lens "lens macroses"
         (do (setv vrbl 3)
@@ -159,56 +153,4 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-; === Usage/Docs ===
-
-; data to work with ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; for pluckm:
-    (setv i 0)
-    (setv xs [[1 2 3] [1 2 3] [1 2 3]])
-    (setv ds [{"x" 0 "y" 1} {"x" 2 "y" 3}])
-    (defclass [dataclass] ForPluck [] (#^ int x) (#^ int y))
-    (setv cs [(ForPluck 5 6) (ForPluck 7 8)])
-
-    ; for partial:
-    (defclass [dataclass] ForPartial []
-        (#^ int x)
-        (#^ int y)
-        (defn mth [self a b] (* a b self.x)))
-    (setv ps [(ForPartial 7 8) (ForPartial 9 10)])
-
-    ; for lens:
-    (setv xl [[1 2 3] [1 2 3] [1 2 3]])
-
-; _____________________________________________________________________________/ }}}1
-; usage/docs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (setv funcType (f:: int -> int => (of Tuple int str)))
-    (f:: int -> int => (of Tuple int str))
-
-    #L(* %1 2)      ; renaming of #% macro
-
-	(fm (* %1 2))  
-
-    (list (map (p> abs (operator.add 4) str) (range -10 0)))
-    (lmap (p> (nth 1) str) [[1 2 3] [1 2 3]])               
-    (lmap (p> .x (flip minus 10) str) ps)
-    (lmap (p> (.mth 3 4) str) ps)
-
-    (pluckm 0       xs)    ; -> (lpluck      0       xs)
-    (pluckm i       xs)    ; -> (lpluck      i       xs)
-    (pluckm (- 1 1) xs)    ; -> (lpluck      (- 1 1) xs)
-    (pluckm "x"     ds)    ; -> (lpluck      "x"     ds)
-    (pluckm .x      cs)    ; -> (lpluck_attr "x"     ps)    ; attr can't be passed as arg, use (pluck_attr "attr" ..) if needed
-
-    (lns 1 (Each) (set 3))                                  ; can define UL/SF
-    (l>  xl 1 (Each) (modify sqrt))                         ; define SF and apply
-    (l>= xl 1 (Each) (modify sqrt))                         ; define SF, apply, upd value
-    (&+  (lns 1) (lns 2) (set "here"))                      ; / compose ULs and «SF-maker-func» ...
-    (&+> xl (lns 1) (mut> .reverse))                        ; \ .. and then apply
-    ; orig lens lib functionality:
-    (&   (lns 1) (lns 1) (lns 2 (dndr> + 1)))               ; #1: composition (ULs + last one can be UL/SF)
-    (&   xl (lns 1 (get)) (lns 2 (get)))                    ; #2: SFs application (one after another)
-
-; _____________________________________________________________________________/ }}}1
 

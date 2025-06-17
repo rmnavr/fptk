@@ -80,7 +80,7 @@ Also, `->` can be used instead of last `=>` (this is simply visual preference an
 ```
 
 `fm` and `f>` have functionality similar to `#L`, but:
-- `fm` and `f>` are more REPL-friendly in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly 0.24), than `#L`
+- `fm` and `f>` are more REPL-friendly than `#L` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
 - `fm` and `f>` currently support only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -117,14 +117,15 @@ This is also in accordance with `.attr` usage inside another fptk macros.
 Pluckm extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
 to be able to recognize `(pluckm .attr)` syntax for accessing attributes.
 
-Reason for this is the following:
+Reason for adding such syntax is the following:
 * In hy original syntax `.attr` is the way to access attribute, not `"attr"` (how lpluck_attr does it)
 * Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
 
 ```hy
 ; .attr syntax expands to lpluck_attr:
 (pluckm .attr cs)   ; (lpluck_attr "attr" cs)
-; notice that .attr syntax can't pass attr as argument, use (lpluck_attr "attr" cs) instead
+; [!] notice that .attr syntax can't pass attr as argument,
+;     use (lpluck_attr "attr" cs) instead
 
 ; everything else is expanded to lpluck:
 (pluckm (+ i 3) xs) ; (lpluck (+ i 3) xs)
@@ -150,7 +151,8 @@ Basic syntax of `lns` macro:
 
 ; form below is seen as attribute access:
 (lns .attr)                 ; (. lens attr)
-; notice that .attr form can't pass attr as argument, use (GetAttr "attr") instead
+; [!] notice that .attr form can't pass attr as argument,
+;     use (GetAttr "attr") instead
 
 ; arbitrary expressions (i.e. that are surrounded by parentheses) are parsed without changes:
 (lns (Each) (set 3))        ; (. lens (Each) (set 3))
@@ -167,7 +169,8 @@ Basic syntax of `lns` macro:
 (lns 1 (dndr>  / 3))                ; (/ (. lens [1]) 3)
 (lns 1 (dndr>> / 3))                ; (/ 3 (. lens [1]))
 
-; mth> and mut> can't pass method as argument, use (call "mth" ..) or (call_mut "mth" ..) instead
+; [!] notice that mth> and mut> can't pass method as argument,
+;     use (call "mth" ..) or (call_mut "mth" ..) instead
 ```
 
 Reasoning for creating syntax (```.attr``` and ```(mth> .sort)```) that can't pass attr/method name as argument is the same as for `pluckm` macro:
@@ -183,14 +186,15 @@ Most important objects in lenses are UnboundLens and StateFunction, which will b
 (lns 1 (Each) (set 3))              ; (. lens [1] (Each) (set 3))
 ```
 
-For context, original lenses library offers `&` and `&=` functions used like so:
+For context, original lenses library offers `&` and `&=` functions that are used like so:
 ```hy
 (& (. lens [1]) (. lens [2] (set 3)))        ; lens composition (ULs + last one can be UL/SF)
 (& xs (. lens [1] (get)) (. lens [2] (get))) ; SFs application (one after another)
 (&= xs (. lens (Each) (modify sqrt)))        ; applicating SF to xs and updating xs value
 ```
 
-Those original functions `&` and `&=` are accompanied by fptk lens macros (`l>`, `l>=`, `&+` and `&+>`) in the following manner:
+fptk lens macros (`l>`, `l>=`, `&+` and `&+>`) do not aim to replace original `&` and `&=` functions.
+They aim to extend number of ways in which lenses can be composed sintactically.
 ```hy
 ; l> is used to apply SF, l>= also updates value:
 (l>  xs 1 (Each) (modify sqrt))     ; ((. lens [1] (Each) (modify sqrt)) xs)
