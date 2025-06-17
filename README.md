@@ -5,15 +5,15 @@
 
 **fptk** serves 2 distinct purposes.
 
-*First purpose* is to provide several macros relevant for functional programming.
+First purpose is to provide several macros relevant for functional programming.
 
-*Second purpose* is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
+Second purpose is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
 Intended usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main scope.
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
 It is easier to see full list of imported entities directly inside
-[fptk.hy](https://github.com/rmnavr/fptk/blob/main/fptk/fptk.hy) file (it is nicely organized).
+[fpext.hy](https://github.com/rmnavr/fptk/blob/main/fptk/fpext.hy) file (it is nicely organized).
 
 Both purposes are achieved simply by calling:
 ```hy
@@ -21,7 +21,9 @@ Both purposes are achieved simply by calling:
 (require * :readers *)
 ```
 
-Table of Content:
+---
+
+Table of Contents:
 - [topics that fptk covers](#Topics-that-fptk-covers)
 - [fptk macros](#fptk-macros)
 - [Installation](#Installation)
@@ -58,6 +60,7 @@ One possible usage might be defining interfaces (if functions are used in that r
 ```
 
 Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument separator rather than hyrule's macro `->`.
+And `->` can be used instead of last `=>`. This is simply visual preference and has no impact on the code.
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- #L, fm, fm> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -118,13 +121,13 @@ Reason for this is the following:
 * Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
 
 ```hy
-(pluckm 0       xs) ; expands to: (lpluck      0       xs)
-(pluckm i       xs) ; expands to: (lpluck      i       xs)
-(pluckm (- 1 1) xs) ; expands to: (lpluck      (- 1 1) xs)
-(pluckm "key"   ds) ; expands to: (lpluck      "key"   ds)
-(pluckm .attr   cs) ; expands to: (lpluck_attr "attr"  cs)
+; .attr syntax expands to lpluck_attr:
+(pluckm .attr cs)   ; (lpluck_attr "attr" cs)
+; notice that .attr syntax can't pass attr as argument, use (lpluck_attr "attr" cs) instead
 
-; use (lpluck_attr "attr" cs) if attribute name is needed to be passed as parameter
+; everything else is expanded to lpluck:
+(pluckm (+ i 3) xs) ; (lpluck (+ i 3) xs)
+(pluckm "key" xs)   ; (lpluck "key" xs)
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -139,7 +142,7 @@ They simplify lens definition, composition and application.
 
 `lns` macro offers alternative syntax for lenses.
 
-Basic syntax:
+Basic syntax of `lns` macro:
 ```hy
 ; standalone numbers, strings and variables are recognized as index access:
 (lns 1 -2 (- 7) "key" idx)  ; (. lens [1] [-2] [- 7] ["key"])
@@ -156,39 +159,39 @@ Basic syntax:
 (lns [(+ i 3)])             ; (. lens [(+ i 3)]) // works ok
 ```
 
-`lns` macro also recognizes 4 special forms (`mth>` `mut>` `dndr>` `dndr>>`):
-```
+`lns` macro also recognizes 4 special forms (`mth>`, `mut>`, `dndr>` and `dndr>>`):
+```hy
 (lns 1 (mth> .sort))                ; (. lens (call "sort")
 (lns 1 (mut> .copy :shallow True))  ; (. lens (call_mut "copy" :shallow True)
 (lns 1 (dndr>  / 3))                ; (/ (. lens [1]) 3)
 (lns 1 (dndr>> / 3))                ; (/ 3 (. lens [1]))
 
-; mth> and mut> can't pass method as argument, use original (call "mth" ..) or (call_mut "mth" ..) instead
+; mth> and mut> can't pass method as argument, use (call "mth" ..) or (call_mut "mth" ..) instead
 ```
 
 Reasoning for creating syntax (```.attr``` and ```(mth> .sort)```) that can't pass attr/method name as argument is the same as for `pluckm` macro:
-* In hy original syntax `.smth` is the way to access attribute/method, not "smth"
+* In hy original syntax `.smth` is the way to access attribute/method, not `"smth"`
 * Attribute's names are rarely passed as parameter (it may be considered anti-pattern)
 
-### all lenses macros
+### All lenses macros
 
-Most important objects in lens are UnboundLens and StateFunction, which will be further referred to as UL and SF.
+Most important objects in lenses are UnboundLens and StateFunction, which will be further referred to as UL and SF.
 
-For context, original lens library offers `&` and `&=` functions used like so:
+For context, original lenses library offers `&` and `&=` functions used like so:
 ```hy
 (& (. lens [1]) (. lens [2] (set 3)))        ; lens composition (ULs + last one can be UL/SF)
 (& xs (. lens [1] (get)) (. lens [2] (get))) ; SFs application (one after another)
 (&= xs (. lens (Each) (modify sqrt)))        ; applicating SF to xs and updating xs value
 ```
 
-Symbols in fptk lens macros names in general mean:
-- `l` — understands `lns` macro syntax
+Symbols in fptk macros names `l>`, `l>=`, `&+` and `&+>` in general mean:
+- `l` — expects `lns` macro syntax
 - `&` — combine
 - `+` — expects getter/setter at the end
 - `>` — apply
 
 fptk lens macros usages:
-```
+```hy
 ; lns is used to define UL or SF:
 (lns 1 (Each))                      ; (. lens [1] (Each))
 (lns 1 (Each) (set 3))              ; (. lens [1] (Each) (set 3))

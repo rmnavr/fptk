@@ -1,4 +1,4 @@
     
-    (import  fptk.core *)
+    (import  fptk.fpext *)
     (require fptk.macro * :readers *)
 
