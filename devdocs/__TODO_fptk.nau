@@ -1,0 +1,98 @@
+
+	// INFO
+// Compositions order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (rcompose f1 f2)
+    (-> data  f1 f2)
+    (l> data   1  2)
+    (p> data  f1 f2)
+
+// ____________________________________________________________________________/ }}}1
+// Functions arguments order logic ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(f params vrbl) // good for p> and ->> macro
+	(f vrbl params) // good for -> macro
+
+// ____________________________________________________________________________/ }}}1
+ 
+	// MACROSES
+// My macroses ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	Existing macroses list:
+
+		f::
+		#L fm f>
+		p>						
+		lns, &+, &+>, l>, l>=	// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
+		pluckm
+
+	TODO:
+		
+		? what about #* #** in -> and p> macro?
+		? p> (attr> .x)
+		? => with my .x recognition?
+
+		·······························
+		
+		p>	- pass kwargs and such
+
+		=>	- optional «it»
+			- .attr access (instead of forcefully seeing it as method, as it is in -> macro)
+
+		=>> - ...
+
+		<<= <=_
+
+// ____________________________________________________________________________/ }}}1
+
+
+	// TODO
+
+	typeckecks (1 is of StrictNumber)
+	group_by
+	partition_by
+	count_by
+
+	+ is type
+	+ is of union lol
+	+ split_at_elem
+
+// New functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	apply_n -> change syntax
+	insert elem at
+	split_at/by
+	partition
+	rotate list
+	group_by
+
+	group by, split by, getters
+	for_each (similar to lmap)
+	- [zeroQ negQ oddQ] $ 3 // or/and
+
+	- split (at by f) -> more like sift, returns 2 lists
+	  split_at (n)	  -> just one cut,   returns 2 lists
+	  split_by (f)	  -> just one cut,   returns 2 lists
+	  takewhile
+	  dropwhile
+
+	- none
+	  one
+
+	- merge
+	  join
+	  cat
+	  
+	- map
+	  walk
+
+	- without
+
+	- count_by
+	  count_reps
+	  group_by
+	  group_by_keys
+	  group_values
+
+// ____________________________________________________________________________/ }}}1
+
