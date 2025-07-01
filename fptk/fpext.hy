@@ -31,8 +31,9 @@
 ; _____________________________________________________________________________/ }}}1
 ; Import: Functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (require hyrule   [ of as-> -> ->>
-                        doto case branch unless lif
+    (require hyrule   [ of
+                        as-> -> ->> doto
+                        case branch unless lif
                         ncut
                         do_n list_n ])
 
@@ -49,13 +50,14 @@
                         pluck lpluck pluck_attr lpluck_attr group_by partition_by count_by ])
 
     ; Math:
-    (import hyrule    [ inc dec sign xor ]
+    (import hyrule    [ inc dec sign ]
             math      [ pi sin cos tan degrees radians acos asin atan atan2
-                        sqrt dist hypot log exp log10 prod :as product #_ "product(seq)" ]
+                        sqrt dist hypot log exp log10 prod :as product ]
             operator  [ neg truediv :as div ])
 
     ; Logic/Checks:
-    (import operator  [ eq ne :as neq ]
+    (import hyrule    [ xor ]
+            operator  [ eq ne :as neq ]
             funcy     [ even odd isnone notnone ])
 
     ; Regex:
@@ -79,41 +81,22 @@
     ; cut        (hy    /macro)
     ; slice      (hy    /function)
     ; ncut       (hy    /macro)
+    ; nth        (funcy /function)
     ;
     ; assoc      (hyrule/function)
-    ; nth        (funcy /function)
 
     ; funcy /first
     ; funcy /second
-    (defn third       [xs] (if (<= (len xs) 2) (return None) (return (get xs 2))))
-    (defn fourth      [xs] (if (<= (len xs) 3) (return None) (return (get xs 3))))
+    (defn third      [xs] (if (<= (len xs) 2) (return None) (return (get xs 2))))
+    (defn fourth     [xs] (if (<= (len xs) 3) (return None) (return (get xs 3))))
     ; funcy /last
-    (defn beforelast  [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
+    (defn beforelast [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
 
-    (defn rest        [xs]   (list (hyrule.rest xs)))               ; [_ 2 3 4 5]   x1
-    (defn drop_firstN [n xs] (list (funcy.drop n xs)))              ; [_ _ 3 4 5]
-    (defn lastN       [n xs] (get xs (slice (- (len xs) n) None)))  ; [_ _ 3 4 5]
-    (defn butlast     [xs]   (list (hyrule.butlast xs)))            ; [1 2 3 4 _]   x1
-    (defn drop_lastN  [n xs] (list (hyrule.drop_last n xs)))        ; [1 2 3 _ _]
-    (defn firstN      [n xs] (list (funcy.take n xs)))              ; [1 2 3 _ _]
-
-    ; ==========================================================================
-
-    (defn pick [ns xs] (lfor &n ns (get xs &n)))
-
-; _____________________________________________________________________________/ }}}1
-; Compositions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; do_n
-    ; list_n
-    (defn apply_n [f n arg] ((compose #* (list_n n f)) arg))
-
-    (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
-    (defn pflip [f a] (fn [%x] (f %x a)))         ; (lmap (pflip div 0.1) (thru 1 3))
-
-    ; maybe not needed:
-    (defn asListable [f lst] (f #* lst))          ; (asListable plus [1 2 3])
-    (defn asVariadic [f #* args] (f [#* args]))   ; (asVariadic sum 1 2 3)
+    (defn rest       [xs] (get xs (slice 1 None)))  ; [_ 2 3 4 5]  
+    (defn butlast    [xs] (get xs (slice None -1))) ; [1 2 3 4 _]  
+    (defn drop       [n xs] (if (>= n 0) (cut xs n None) (cut xs None n)))              ; drops from start/end of the list
+    (defn take       [n xs] (if (>= n 0) (cut xs None n) (cut xs (+ (len xs) n) None))) ; takes from start/end of the list
+    (defn pick       [ns xs] (lfor &n ns (get xs &n)))
 
 ; _____________________________________________________________________________/ }}}1
 ; APL ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -128,6 +111,16 @@
     (defn count_occurrences [elem container] (container.count elem))
 
 ; _____________________________________________________________________________/ }}}1
+; Compositions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; do_n      -> returns none
+    ; list_n    -> returns ...
+    (defn apply_n [f n arg] ((compose #* (list_n n f)) arg))
+
+    (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
+    (defn pflip [f a] (fn [%x] (f %x a)))         ; (lmap (pflip div 0.1) (thru 1 3))
+
+; _____________________________________________________________________________/ }}}1
 ; Math, +/* synonims ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn normalize [v0]
@@ -138,7 +131,9 @@
     (defn double     [x] (* x 2))
     (defn reciprocal [x] (/ 1 x))
 
+    (defn ln      [x] (log x))              ; so, always with base = math.e
     (defn minus   [x y] (- x y))
+
     (defn mul     [#* args] (* #* args))    ; just a synonim for * (but a function, not macros)
     (defn smul    [#* args] (* #* args))    ; underlines usage for strings
     (defn lmul    [#* args] (* #* args))    ; underlines usage for lists
@@ -151,9 +146,9 @@
 
     (defn not_ [f #* args #** kwargs] (not (f #* args #** kwargs)))
 
-    (defn zeroQ     [x] (if (= x 0) True False))
-    (defn negativeQ [x] (if (< x 0) True False))
-    (defn positiveQ [x] (if (> x 0) True False))
+    (defn zeroQ     [x] (= x 0))
+    (defn negativeQ [x] (< x 0))
+    (defn positiveQ [x] (> x 0))
 
 ; _____________________________________________________________________________/ }}}1
 ; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -234,3 +229,5 @@
     ; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
 ; _____________________________________________________________________________/ }}}1
+
+
