@@ -3,12 +3,13 @@
 
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
+**fptk** is another alternative for libs like funcy and toolz but with an emphasis on math functions.
+
 **fptk** serves 2 distinct purposes.
 
-First purpose is to provide several macros relevant for functional programming.
-
-Second purpose is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
-Intended usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main scope.
+1. First purpose is to provide several hy macros relevant for functional programming.
+2. Second purpose is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
+   Intended usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main scope.
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
@@ -35,18 +36,32 @@ Table of Contents:
 <!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 As a FP-tuning lib, fptk aims to unite and bring into main scope:
-- [x] Basic math (math)
-- [x] Regexes (re, [funcy](https://github.com/Suor/funcy))
-- [x] Standard FP/APL features like mapping/filtering/threading (funcy, itertools)
-- [x] Functional composition/piping/currying (hyrule, funcy, itertools)
-- [x] Lenses for manipulating deeply nested immutable data ([lenses](https://github.com/ingolemo/python-lenses))
-- [ ] WIP: Types checking during creating objects and calling functions ([pydantic](https://github.com/pydantic/pydantic))
-- [ ] WIP: Immutable structures (under consideration)
-- [ ] WIP: Monadic machinery ([returns](https://github.com/dry-python/returns))
+- [x] Import fp-relevant full modules (like math, operator, itertools, ...)
+- [x] Typing (import things like List, Any, Optional, ...)
+- [x] Buffed getters (first, second, last, rest, ...), 
+  including ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
+- [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
+- [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
+- [x] Basic math (sqrt, sin/cos, exp, log, etc.)
+- [x] Logic/Checks (xor, eq/neq, even/odd, etc.)
+- [x] Basic strings manipulation (str_join, lowercase, strip, etc.)
+- [x] Regexes (libs used:: re, [funcy](https://github.com/Suor/funcy))
+- [x] Random generators (choice, randint, etc.)
+- [ ] WIP: Utils for benchmarking and debug
+- [ ] WIP: Types checking during creating objects and calling functions (source libs: [pydantic](https://github.com/pydantic/pydantic))
+- [ ] WIP: Immutable structures (source libs: under consideration)
+- [ ] WIP: Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
 # fptk macros
+
+Full list of macros:
+* `f::` — macro for annotating callables
+* `#L`, `fm`, `f>` — anonymous functions
+* `p>` — pipe of partials
+* `pluckm` — getter
+* `lns`, `&+`, `&+>`, `l>`, `l>=` — macros for lens definition/composition/application
 
 <!-- f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
