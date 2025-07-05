@@ -6,6 +6,7 @@
     + add macros (from macro.hy) recognition
     + print into output file
     + issue: (help func) won't work will my approach? -> test it
+    + replace 2 lines of lens with proper code JFK
 
 	+ Remove requirement for `;;` comments to have double-semicolon
 	+ Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`
@@ -131,6 +132,15 @@
 
 // =========================================================
 
+// curated todo list ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	• (lmapm (print %1 "pupos") xs) -> (lmap (fm ()) xs)
+	• p> not working with fn/fm
+	• emptyListQ
+	• emptyStringQ
+	• ntn from 0, nth from 1
+	• apply_n -> nest_n?
+
 	IO:
 		write_to_file (append/prepend)
 		read_from_file
@@ -165,5 +175,6 @@
 		- split/partition/chunks/group
 		- by/with/via/at
 
+// ____________________________________________________________________________/ }}}1
 
-		
+

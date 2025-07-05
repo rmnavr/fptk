@@ -1,9 +1,9 @@
 
 ; Imports ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import pyparsing :as pp)
-    (import  _fplocal *)
-    (require _fplocal *)
+    (import  pyparsing :as pp)
+    (import  _fptk_local *)
+    (require _fptk_local *)
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -149,8 +149,8 @@
         (setv result (lmap strip (org_descr.split $SEPARATOR)))
         ; normal case:
         (when (= (len result) 2)
-              (l>= fentity .signature (set (first  result)))
-              (l>= fentity .descr     (set (second result))))
+              (setv fentity.signature (first  result))
+              (setv fentity.descr     (second result)))
         ; non-import-info case:
         (when (= (len result) 5)
               (setv fentity (FEntity :kind          FEntityKind.NON_IMPORT_INFO
@@ -178,7 +178,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; lmap everywhere is honestly not required, since normally only 1 elem is expected
+    ; lmap everywhere is honestly not required, since normally only 1 elem is expected (but hey)
 ; find import_module ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv FPTK_IM (+ LPAR "import"

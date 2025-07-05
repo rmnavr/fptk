@@ -1,4 +1,8 @@
 
+    (require hyrule [comment])
+
+    ; MAIN IMPORTS/DEFINITIONS:
+
 ; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import sys)
@@ -19,7 +23,6 @@
 ; [GROUP] Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [of])
-    (require hyrule [comment])
 
     (import dataclasses [dataclass])
     (import enum        [Enum])
@@ -96,7 +99,7 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (comment "hy | base | if | (if check true false) | ")
+    (comment "hy | base | if   | (if check true false)          | ")
     (comment "hy | base | cond | (cond check1 do1 ... true doT) | ")
 
     (require hyrule [case])
@@ -265,6 +268,9 @@
     #_ "checks directly via (> x 0)"
     (defn positiveQ [x] (> x 0))
 
+    #_ "checks directly if (= (len xs) 0)"
+    (defn emptyQ    [xs] (= (len xs) 0))
+
 ; _____________________________________________________________________________/ }}}1
 
 ; [GROUP] Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -315,7 +321,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-; FOR BENCHMARKING:
+    ; FOR BENCHMARKING:
 
 ; [GROUP] with_execution_time ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -358,5 +364,4 @@
     ;; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
 ; _____________________________________________________________________________/ }}}1
-
 

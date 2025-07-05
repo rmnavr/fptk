@@ -13,14 +13,15 @@
 
 > Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
 
-It is easier to see full list of imported entities directly inside
-[fpext.hy](https://github.com/rmnavr/fptk/blob/main/fptk/fpext.hy) file (it is nicely organized).
-
 Both purposes are achieved simply by calling:
 ```hy
 (import fptk *)
 (require fptk * :readers *)
 ```
+
+To see full list of things that are imported into main scope go to: 
+[doc_generator/output/README.md](https://github.com/rmnavr/fptk/blob/main/doc_generator/output/README.md)
+(it has short info on every imported entity)
 
 ---
 
@@ -45,7 +46,7 @@ As a FP-tuning lib, fptk aims to unite and bring into main scope:
 - Basic math (sqrt, sin/cos, exp, log, etc.)
 - Logic/Checks (xor, eq/neq, even/odd, etc.)
 - Basic strings manipulation (str_join, lowercase, strip, etc.)
-- Regexes (libs used:: re, [funcy](https://github.com/Suor/funcy))
+- Regexes (libs used: re, [funcy](https://github.com/Suor/funcy))
 - Random generators (choice, randint, etc.)
 - Utils for benchmarking and debug
 
