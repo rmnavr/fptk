@@ -14,33 +14,31 @@ class install(install):
             if path.endswith(".hy"):
                 py_compile.compile(
                     path,
-                    invalidation_mode=py_compile.PycInvalidationMode.CHECKED_HASH,
+                    invalidation_mode = py_compile.PycInvalidationMode.CHECKED_HASH,
                 )
 
-libs_required = [
-    'hy >= 1',
-    'funcy >= 2',
-    'returns >= 0.23',
-    'pydantic >= 1.10',
-    'lenses >= 1.2'
-]
+libs_required = [ 'hy >= 1',
+                  'funcy >= 2',
+                  'returns >= 0.23',
+                  'pydantic >= 1.10',
+                  'lenses >= 1.2'
+                ]
 
 setup(
-    name='fptk',
-    version='0.1.1-develop',
-    setup_requires=['wheel'] + libs_required,
-    install_requires=libs_required,
-    packages = setuptools.find_packages(exclude = ["private*"]),
-    package_data={'': ['*.hy']},
-    author='Roman Averyanov',
-    author_email='averrmn@gmail.com',
-    description='Curated list of functional-programming imports for hy lang',
-    long_description=open('README.md').read(),
-    long_description_content_type='text/markdown',
-    url='https://github.com/rmnavr/fptk',
-    classifiers=[
-        'Programming Language :: Hy',
-        'Operating System :: OS Independent',
-    ],
-    python_requires='>=3.9', 
+    name              = 'fptk',
+    version           = '0.1.1-develop',
+    setup_requires    = ['wheel'] + libs_required,
+    install_requires  = libs_required,
+    packages          = setuptools.find_packages(exclude = ["private*"]),
+    package_data      = {'': ['*.hy']},
+    author            = 'Roman Averyanov',
+    author_email      = 'averrmn@gmail.com',
+    description       = 'Curated list of functional-programming funcs and classes for hy lang',
+    url               = 'https://github.com/rmnavr/fptk',
+    python_requires   = '>=3.9',
+    classifiers       = [ 'Programming Language :: Hy',
+                          'Operating System :: OS Independent',
+                        ],
+    long_description  = open('README.md').read(),
+    long_description_content_type = 'text/markdown',
 )

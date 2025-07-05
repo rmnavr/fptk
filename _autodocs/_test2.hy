@@ -153,7 +153,12 @@
     (require hyrule [->>])
     (require hyrule [doto])
 
-    (import funcy   [ curry autocurry partial rpartial compose rcompose ])
+    (import funcy   [curry])
+    (import funcy   [autocurry])
+    (import funcy   [partial])
+    (import funcy   [rpartial])
+    (import funcy   [compose])
+    (import funcy   [rcompose]) ;;
 
     #_ "flip(f, a, b) = f(b, a) | example: (flip lmap [1 2 3] sqrt)"
     (defn flip [f a b] (f b a))
