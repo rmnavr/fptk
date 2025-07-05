@@ -4,3 +4,5 @@
     * issue: (help func) won't work lol?
     * add macros from macro.hy recognition?
 
+1. Remove requirement for `;;` comments to have double-semicolon
+2. Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`
