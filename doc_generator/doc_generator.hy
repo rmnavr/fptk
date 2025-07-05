@@ -398,7 +398,7 @@
     ; entity print (for overview)
     (defn eprint [ #^ FEntity fe ]
         (setv pad1 (fm (pad_string %1 15)))
-        (setv pad2 (fm (pad_string %1 20)))
+        (setv pad2 (fm (pad_string %1 21)))
         (case fe.kind
               FEntityKind.IMPORT_MODULE
               (print (sconcat "FULL MODULE           | " (pad2 fe.name) (build_prefix fe)))
@@ -430,7 +430,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    (setv _code   (file_to_code "tests/_test2.hy"))
+    (setv _code   (file_to_code "../fptk/fpext.hy"))
     (setv _groups (find_fgroups _code))
     (lmap gprint _groups)
 

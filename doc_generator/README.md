@@ -67,10 +67,10 @@ General rules:
 Entities that support optional description:
 ```hy
     ;; import whole module:
-    (import math) #_ "optional_description"
+    (import math) #_ "optional description"
 
     ;; define fptk variable:
-    #_ "optional_description"
+    #_ "optional description"
     (setv xsmth (+ 1 2))
 ```
 

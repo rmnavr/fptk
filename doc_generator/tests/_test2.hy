@@ -1,4 +1,7 @@
 
+    ; this is regarded just as a text file (although it is copy of fpext.hy)
+    ; it can be deleted any time, nothing depends on it
+
 ; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import sys)
