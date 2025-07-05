@@ -1,10 +1,4 @@
 
-    ; TODO: 1 BUG: setv inside functions lol
-    ;       * ;; comment please
-    ;       * prepare for Spadoc?
-    ;       * issue: (help func) won't work lol?
-    ;       * add macros from macro.hy recognition?
-
 ; Imports ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import pyparsing :as pp)
@@ -436,7 +430,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    (setv _code   (file_to_code "_test2.hy"))
+    (setv _code   (file_to_code "tests/_test2.hy"))
     (setv _groups (find_fgroups _code))
     (lmap gprint _groups)
 

@@ -19,7 +19,7 @@ It is easier to see full list of imported entities directly inside
 Both purposes are achieved simply by calling:
 ```hy
 (import fptk *)
-(require * :readers *)
+(require fptk * :readers *)
 ```
 
 ---
@@ -36,21 +36,23 @@ Table of Contents:
 <!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 As a FP-tuning lib, fptk aims to unite and bring into main scope:
-- [x] Import fp-relevant full modules (like math, operator, itertools, ...)
-- [x] Typing (import things like List, Any, Optional, ...)
-- [x] Buffed getters (first, second, last, rest, ...), 
+- Import fp-relevant full modules (like math, operator, itertools, ...)
+- Typing (import things like List, Any, Optional, ...)
+- Buffed getters (first, second, last, rest, ...), 
   including ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
-- [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
-- [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
-- [x] Basic math (sqrt, sin/cos, exp, log, etc.)
-- [x] Logic/Checks (xor, eq/neq, even/odd, etc.)
-- [x] Basic strings manipulation (str_join, lowercase, strip, etc.)
-- [x] Regexes (libs used:: re, [funcy](https://github.com/Suor/funcy))
-- [x] Random generators (choice, randint, etc.)
-- [ ] WIP: Utils for benchmarking and debug
-- [ ] WIP: Types checking during creating objects and calling functions (source libs: [pydantic](https://github.com/pydantic/pydantic))
-- [ ] WIP: Immutable structures (source libs: under consideration)
-- [ ] WIP: Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
+- APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
+- Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
+- Basic math (sqrt, sin/cos, exp, log, etc.)
+- Logic/Checks (xor, eq/neq, even/odd, etc.)
+- Basic strings manipulation (str_join, lowercase, strip, etc.)
+- Regexes (libs used:: re, [funcy](https://github.com/Suor/funcy))
+- Random generators (choice, randint, etc.)
+- Utils for benchmarking and debug
+
+Currently planned:
+- Types checking during creating objects and calling functions (source libs: [pydantic](https://github.com/pydantic/pydantic))
+- Immutable structures (source libs: under consideration)
+- Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
 

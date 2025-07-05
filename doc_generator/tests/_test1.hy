@@ -1,6 +1,4 @@
 
-    ; my_function(x, *, y=10.0, *args, **kwargs)
-    ; OCOMMENTS require ;; to destinguish them from VimCells
     (require hyrule [comment])
 
 ; [GROUP] Pupos riba ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -9,7 +7,6 @@
     (import funcy) #_ "riba"
 
 ; _____________________________________________________________________________/ }}}1
-
 ; [GROUP] Pups funcs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ;; import_module
