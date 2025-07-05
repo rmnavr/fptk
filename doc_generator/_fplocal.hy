@@ -1,5 +1,7 @@
 
     ; purpose of this file is to have stable fptk version
+    ; ( otherwise changing fpext.hy would require immediate update to doc_generator,
+    ;   which is somewhat self-referential and tedious )
     ; ===================================================
 
     ; Funcs:

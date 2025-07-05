@@ -1,0 +1,169 @@
+
+	// DOC GEN:
+
+// TODOs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    + add macros (from macro.hy) recognition
+    + print into output file
+    + issue: (help func) won't work will my approach? -> test it
+
+	+ Remove requirement for `;;` comments to have double-semicolon
+	+ Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`
+
+    * prepare code for Spadoc?
+
+// ____________________________________________________________________________/ }}}1
+
+	// FPTK:
+
+// INFO: Composition order, Arguments order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(rcompose f1 f2)
+	(-> data  f1 f2)
+	(l> data   1  2)
+	(p> data  f1 f2)
+
+	(f params vrbl) // good for p> and ->> macro
+	(f vrbl params) // good for -> macro
+
+// ____________________________________________________________________________/ }}}1
+// DESIGN GUIDELINES ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	Edge cases:
+	- fptk list funcs must work with empty lists ?
+
+	·······························
+
+	What if getter founds no elem?
+  	- None
+  	- Error
+
+  	variadic f(x1, x2, ...) vs f(xs)
+
+  	polymorphic?
+  	- yes
+  	- no
+
+  	arg order?
+  	- for p> ->>
+  	- for ->
+
+  	wrong type handling? oddQ("str")?
+  	- Error
+
+  	Full/short name?
+  	- fst
+  	- first
+
+  	use special symbols in names
+  	- funcs - no
+  	- macros - yes
+
+// ____________________________________________________________________________/ }}}1
+
+// FURTHER PLANS (Typing, Monads) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	Cur:
+	+ Typing (robust checks)
+	* Immutable DTypes
+	* Monads
+	 
+	Types:
+	 
+	is of type?
+	func validation
+	 
+	ADT: product/sum
+	dataclass
+	Synonims
+	Union
+	Optional
+	Enum
+	Generic Types <A>, GenericListExample[int]
+	List, Tuple, Nested
+	Type[Shape]
+	+ Inheritance?  
+	 
+	  type (exact)
+	  isinstance (exact + subclasses) <- Union
+	  Unions, Discr/Tagged Unions
+	 
+	 
+	 
+	Monads:
+	 
+	Maybe
+	Result
+	 
+	Possible libs:
+	- hy monad
+	- returns
+	- effects
+	 
+	Later:
+	- Transformers
+
+// ____________________________________________________________________________/ }}}1
+// MACROS ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	f::
+
+	#L
+	fm
+	f>
+
+	p>						
+
+	lns
+	&+
+	&+>
+	l>
+	l>=		// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
+
+	pluckm
+
+	// =============================
+
+	new:
+	=> =>>		// optional «it», .attr access
+
+// ____________________________________________________________________________/ }}}1
+
+// =========================================================
+
+	IO:
+		write_to_file (append/prepend)
+		read_from_file
+
+	0/1-based indexing:
+		0
+		  get
+		  fget = flip get = (get xs n) 
+		  slice 
+		  range 
+		1
+		  thru (from 1)
+		  nth (from 1)
+		  nthlise (from 1)
+
+	+ fm/f>: DOC: can accept non-() forms
+			 NEW: usage of _ as %1
+
+	+ make partial shorter name?
+	+ ncut equiv?
+	+ evenQ, oddQ
+	+ (lenQ eq xs 3)
+	+ (on len eq xs ys)
+	+ on_each(f, xs) -> None	// as map but with no result
+	+ apply_n is actually nest_n ?
+	+ juxt_apply(fs, *xi)
+	+ flatten -> work on levels
+
+	Filtering:
+		- itertools: take_while, drop_while
+		- funcy: group_by, partition_by, count_by
+		- split/partition/chunks/group
+		- by/with/via/at
+
+
+		
