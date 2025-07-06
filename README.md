@@ -31,20 +31,20 @@ Table of Contents:
 # Topics that fptk covers
 
 **fptk** aims to unite and bring into main scope:
-[x] full modules that are FP-relevant (operator, itertools, ...)
-[x] Buffed getters (first, second, last, rest, ...)
-[x] ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
-[x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
-[x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
-[x] Math, random generators, logic/checks
-[x] Strings manipulation and regexes 
-[x] Basic typing (Any, Optional, ...)
+- [x] full modules that are FP-relevant (operator, itertools, ...)
+- [x] Buffed getters (first, second, last, rest, ...)
+- [x] ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
+- [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
+- [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
+- [x] Math, random generators, logic/checks
+- [x] Strings manipulation and regexes 
+- [x] Basic typing (Any, Optional, ...)
 
 Currently under development:
-[ ] Utils for benchmarking and debug
-[ ] Type checking (source libs: [pydantic](https://github.com/pydantic/pydantic))
-[ ] Immutable structures (source libs: under consideration)
-[ ] Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
+- [ ] Utils for benchmarking and debug
+- [ ] Type checking (source libs: [pydantic](https://github.com/pydantic/pydantic))
+- [ ] Immutable structures (source libs: under consideration)
+- [ ] Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
