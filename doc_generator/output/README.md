@@ -7,13 +7,16 @@ List below has format:
 === Group name 1 ===
 TYPE source_lib | func_or_class_name :: signature ; description
 TYPE source_lib | func_or_class_name :: signature ; description
+
+=== Group name 2 ===
+...
 ```
 
-TYPE shows if things are simple imports/reimports: 
+Column `TYPE` shows if things are simple imports/reimports: ...
 ```hy
-FULL MODULE  | sys			; (import sys)
-FROM: math   | ln (<-log) 	; (import math [log :as ln]) 
-MACR: hyrule | of			; (import hyrule [of])
+FULL MODULE  | sys          ; (import sys)
+FROM: math   | ln (<-log)   ; (import math [log :as ln]) 
+MACR: hyrule | of           ; (import hyrule [of])
 INFO: hy     | cut /macro/  ; shows basic hy/py functions/macro; it is usually given just for overall context
 ```
 

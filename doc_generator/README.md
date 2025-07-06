@@ -4,7 +4,7 @@
 # FPTK Doc Generator
 
 Purpose of **FPTK Doc Generator** is to auto-generate short doc table of all
-fptk imports/funcs/classes with short description like so:
+fptk imports/funcs/classes with short description.
 
 ```hy
 === Group name 1 ===
