@@ -1,0 +1,6 @@
+    
+    where to update version (like 0.1.0 -> 0.2.0):
+    - setup.py
+    - README.md Installation code line
+    - git local
+    - github (via push)
