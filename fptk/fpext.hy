@@ -347,27 +347,25 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import random    [choice])    #_ "choice(xs) -> Elem | throws error for empty list"
-    (import random    [randint])   #_ "randint(a, b) -> int | returns random integer in range [a, b] including both end points" 
+    (import random    [choice])                 #_ "choice(xs) -> Elem | throws error for empty list"
+    (import random    [randint])                #_ "randint(a, b) -> int | returns random integer in range [a, b] including both end points" 
     (import random    [uniform :as randfloat])  #_ "randfloat(a, b) -> float | range is [a, b) or [a, b] depending on rounding"
-    (import random    [random :as rand01])  #_ "rand01() -> float in interval [0, 1)"
+    (import random    [random :as rand01])      #_ "rand01() -> float in interval [0, 1) | "
 
     ;; shuffle — is mutating
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; FOR BENCHMARKING:
+; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-; [GROUP] with_execution_time ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    #_ "w_e_t(f, n=1, tUnit='ns', msg='') -> time_of_1_exec_in_seconds, pretty_string, f_result | result is from 1st function execution"
+    #_ "w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result | f_result is from 1st function execution"
     (defn #^ (of Tuple float str Any)
         with_execution_time
         [ #^ Callable f
           *
           #^ int      [n     1]
           #^ str      [tUnit "ns"]      #_ "s/ms/us/ns"
-          #^ str      [msg   "..benchmark.."]
+          #^ str      [msg   ""]
         ]
         "returns tuple: 1) str of test result 2) function execution result"
         (setv _count hy.I.time.perf_counter)

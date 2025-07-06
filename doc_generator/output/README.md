@@ -16,7 +16,7 @@ Column `TYPE` shows if things are simple imports/reimports: ...
 ```hy
 FULL MODULE  | sys          ; (import sys)
 FROM: math   | ln (<-log)   ; (import math [log :as ln]) 
-MACR: hyrule | of           ; (import hyrule [of])
+MACR: hyrule | of           ; (require hyrule [of])
 INFO: hy     | cut /macro/  ; shows basic hy/py functions/macro; it is usually given just for overall context
 ```
 
@@ -26,7 +26,7 @@ SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
 DEFN: fptk   | third        ; entity defined internally via (defn ...)
 ```
 
-## List of imported entities
+## List of fptk entities
 
 ```hy
 === Import Full Modules ===

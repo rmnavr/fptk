@@ -22,13 +22,14 @@ Simply run `doc_generator.hy` file to generate this table.
 
 # Recognized entities
 
-For generator to work, two main fptk files (`fpext.hy` and `macro.hy`) need to use special syntax.
+For generator to work, main fptk file `fpext.hy` need to use special syntax.
 
-Below, "signature" and "description" are arbitrary texts. No special rules are enforced.
+Below, "signature" and "description" are arbitrary texts.
+The only rule they must follow is to use `|` symbol only as separator (see examples below). 
 
 ## Grouping
 
-Only code incide Vim Cells (of Lvl 1) marked with `[GROUP]` will be recognized:
+Only code inside Vim Cells (of Lvl 1) marked with `[GROUP]` will be recognized:
 ```hy
 ; [GROUP] Group name ‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {({1
 
@@ -41,7 +42,7 @@ Only code incide Vim Cells (of Lvl 1) marked with `[GROUP]` will be recognized:
 
 Inside groups, line-comments MUST use two semicolons:
 ```hy
-    ;  ✗ when inside Vim Cell, this comment will break code recognition
+    ;  ✗ when inside Vim Cell, this comment will break doc-info recognition
 
     ;; ✓ such a comment is OK
 ```
@@ -50,7 +51,12 @@ If entities defined via `(setv ...)` or `(defn ...)` follow entities defined via
 it is strongly recommended to separate them with `;;` comment.
 Reason for this is because parser might be confused with to what entity to attach `#_ ...` :
 ```hy
+    ;; may be problematic:
     (import math) #_ "description"
+    (defn some_func [x y] ...)
+
+    ;; good:
+    (import math) #_ "description" ;;
     (defn some_func [x y] ...)
 ```
 
@@ -95,7 +101,7 @@ Entities that support optional signature and description:
     #_ "signature | description"
 ```
 
-Dummy functions (intention for adding this to full list of funcs is for getting whole picture of all py+hy+fptk functions):
+Dummy functions (intention for adding this to full list of funcs is only for giving more context on relation between py/hy/fptk functions):
 ```hy
     (comment "source_lib | kind_str | name | signature | description ")
 
