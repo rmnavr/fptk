@@ -33,7 +33,7 @@ Table of Contents:
 **fptk** aims to unite and bring into main scope:
 - [x] full modules that are FP-relevant (operator, itertools, ...)
 - [x] Buffed getters (first, second, last, rest, ...)
-- [x] ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
+- [x] [lenses](https://github.com/ingolemo/python-lenses) for manipulating deeply nested immutable data
 - [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
 - [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
 - [x] Math, random generators, logic/checks
