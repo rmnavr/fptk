@@ -17,11 +17,11 @@ Column `TYPE` shows if things are simple imports/reimports: ...
 FULL MODULE  | sys          ; (import sys)
 FROM: math   | ln (<-log)   ; (import math [log :as ln]) 
 MACR: hyrule | of           ; (require hyrule [of])
-INFO: hy     | cut /macro/  ; shows basic hy/py functions/macro; it is usually given just for overall context
+INFO: hy     | cut /macro/  ; shows info on hy/py functions/macro (which are already always in main context); given just for big picture
 ```
 
 ... or fptk-defined entities:
-```
+```hy
 SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
 DEFN: fptk   | third        ; entity defined internally via (defn ...)
 ```
