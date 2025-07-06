@@ -1,61 +1,54 @@
 
-# **fptk** — functional toolkit for hy-lang
-
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-**fptk** is another alternative for libs like funcy and toolz but with an emphasis on math functions.
+# **fptk** — functional toolkit for hy-lang
 
-**fptk** serves 2 distinct purposes.
+**fptk** is a curated list of math and FP-related libs/classes/functions/macroses,
+that are supposed to be imported into main scope altogether to always have them at your fingertips.
+> Having high amount of functions available in main context is inspired by Wolfram Language,
+> in which all (yes, ALL) standard functions are always in the main context.
 
-1. First purpose is to provide several hy macros relevant for functional programming.
-2. Second purpose is to tune hy/py to my own programming preferences (most of my hy-github projs rely on this lib).
-   Intended usage of fptk is bringing curated list of math/FP-related libs/classes/functions/macroses into main scope.
-
-> Having high amount of functions available in main context is inspired by Wolfram Language, in which ALL standard functions are in the main context.
-
-Both purposes are achieved simply by calling:
+Intended usage of **fptk** is:
 ```hy
 (import fptk *)
 (require fptk * :readers *)
 ```
 
-To see full list of things that are imported into main scope go to: 
+Full list of things that are imported into main scope (except macros)
+can be seen in auto-generated table, which has short info on every imported entity:
 [doc_generator/output/README.md](https://github.com/rmnavr/fptk/blob/main/doc_generator/output/README.md)
-(it has short info on every imported entity)
 
 ---
 
 Table of Contents:
-- [topics that fptk covers](#Topics-that-fptk-covers)
+- [Topics that fptk covers](#Topics-that-fptk-covers)
 - [fptk macros](#fptk-macros)
 - [Installation](#Installation)
 
 <!-- __________________________________________________________________________/ }}}1 -->
+<!-- Topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # Topics that fptk covers
 
-<!-- topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+**fptk** aims to unite and bring into main scope:
+[x] full modules that are FP-relevant (operator, itertools, ...)
+[x] Buffed getters (first, second, last, rest, ...)
+[x] ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
+[x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
+[x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
+[x] Math, random generators, logic/checks
+[x] Strings manipulation and regexes 
+[x] Basic typing (Any, Optional, ...)
 
-As a FP-tuning lib, fptk aims to unite and bring into main scope:
-- Import fp-relevant full modules (like math, operator, itertools, ...)
-- Typing (import things like List, Any, Optional, ...)
-- Buffed getters (first, second, last, rest, ...), 
-  including ([lenses](https://github.com/ingolemo/python-lenses)) for manipulating deeply nested immutable data
-- APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
-- Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
-- Basic math (sqrt, sin/cos, exp, log, etc.)
-- Logic/Checks (xor, eq/neq, even/odd, etc.)
-- Basic strings manipulation (str_join, lowercase, strip, etc.)
-- Regexes (libs used: re, [funcy](https://github.com/Suor/funcy))
-- Random generators (choice, randint, etc.)
-- Utils for benchmarking and debug
-
-Currently planned:
-- Types checking during creating objects and calling functions (source libs: [pydantic](https://github.com/pydantic/pydantic))
-- Immutable structures (source libs: under consideration)
-- Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
+Currently under development:
+[ ] Utils for benchmarking and debug
+[ ] Type checking (source libs: [pydantic](https://github.com/pydantic/pydantic))
+[ ] Immutable structures (source libs: under consideration)
+[ ] Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
 
 <!-- __________________________________________________________________________/ }}}1 -->
+
+<!-- Macros intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # fptk macros
 
@@ -63,9 +56,10 @@ Full list of macros:
 * `f::` — macro for annotating callables
 * `#L`, `fm`, `f>` — anonymous functions
 * `p>` — pipe of partials
-* `pluckm` — getter
-* `lns`, `&+`, `&+>`, `l>`, `l>=` — macros for lens definition/composition/application
+* `pluckm` — getter for collection of collections
+* `lns`, `&+`, `&+>`, `l>`, `l>=` — macros for lenses definition/composition/application
 
+<!-- __________________________________________________________________________/ }}}1 -->
 <!-- f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `f::` — macros for annotating Callables
@@ -81,7 +75,7 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾differently‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `#L` — reader macro for writing lambdas
 
@@ -232,8 +226,13 @@ So, in general, symbols in fptk macros names (`l>`, `l>=`, `&+` and `&+>`) mean:
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
+<!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
 # Installation
 
 ```
 pip install git+https://github.com/rmnavr/fptk.git@0.1.0
 ```
+
+<!-- __________________________________________________________________________/ }}}1 -->
+

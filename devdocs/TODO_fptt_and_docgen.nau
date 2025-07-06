@@ -3,6 +3,8 @@
 
 // TODOs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+	+ Separator
+
     + add macros (from macro.hy) recognition
     + print into output file
     + issue: (help func) won't work will my approach? -> test it

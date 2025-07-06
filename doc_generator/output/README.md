@@ -1,21 +1,45 @@
-# Auto-generated full list of FPTK entities
+# Auto-generated full list of FPTK entities (except macros)
+
+## Legend
+
+List below has format:
+```hy
+=== Group name 1 ===
+TYPE source_lib | func_or_class_name :: signature ; description
+TYPE source_lib | func_or_class_name :: signature ; description
+```
+
+TYPE shows if things are simple imports/reimports: 
+```hy
+FULL MODULE  | sys			; (import sys)
+FROM: math   | ln (<-log) 	; (import math [log :as ln]) 
+MACR: hyrule | of			; (import hyrule [of])
+INFO: hy     | cut /macro/  ; shows basic hy/py functions/macro; it is usually given just for overall context
+```
+
+... or fptk-defined entities:
+```
+SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
+DEFN: fptk   | third        ; entity defined internally via (defn ...)
+```
+
+## List of imported entities
 
 ```hy
 === Import Full Modules ===
-FULL MODULE           | sys
-FULL MODULE           | math
-FULL MODULE           | operator
-FULL MODULE           | random
-FULL MODULE           | re
-FULL MODULE           | itertools
-FULL MODULE           | functools
+FULL MODULE           | sys                   ; py base module
+FULL MODULE           | math                  ; py base module
+FULL MODULE           | operator              ; py base module
+FULL MODULE           | random                ; py base module
+FULL MODULE           | re                    ; py base module
+FULL MODULE           | itertools             ; py base module
+FULL MODULE           | functools             ; py base module
 FROM: pprint          | pprint
-FULL MODULE           | hyrule
-FULL MODULE           | funcy
+FULL MODULE           | hyrule                ; hy base module
+FULL MODULE           | funcy                 ; 3rd party
 
 === Typing ===
 MACR: hyrule          | of
-MACR: hyrule          | comment
 FROM: dataclasses     | dataclass
 FROM: enum            | Enum
 FROM: abc             | ABC
@@ -45,53 +69,37 @@ FROM: funcy           | notnone
 
 === Getters ===
 FROM: lenses          | lens
-FROM: funcy           | first
-FROM: funcy           | second
-FROM: funcy           | last
-FROM: funcy           | nth                   :: nth(n, xs)  ; works also with dicts; zero-based index btw
-FROM: funcy           | lpluck                :: lpluck(key, xs)  ; works also with dicts
-FROM: funcy           | lpluck_attr
-INFO: hyrule          | get /macro/           :: get(xs,n)
-FROM: hyrule          | assoc
-MACR: hyrule          | ncut                  :: third(xs) -> Optional elem
-DEFN: fptk            | third
-DEFN: fptk            | fourth                :: third(xs) -> Optional elem
+INFO: hy              | . /macro/             :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
+INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
+INFO: hy              | cut /macro/           :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
+FROM: hyrule          | assoc                 :: (assoc xs k1 v1 k2 v2) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+MACR: hyrule          | ncut
+FROM: funcy           | nth                   :: nth(n, xs)  ; 0-based index; works also with dicts
+FROM: funcy           | first                 :: first(xs) -> Optional elem
+FROM: funcy           | second                :: second(xs) -> Optional elem
+DEFN: fptk            | third                 :: third(xs) -> Optional elem
+DEFN: fptk            | fourth                :: fourth(xs) -> Optional elem
 DEFN: fptk            | beforelast            :: beforelast(xs) -> Optional elem
-DEFN: fptk            | rest                  :: rest(xs) -> List  ; [xx 2 3 4 5]
-DEFN: fptk            | butlast               :: rest(xs) -> List  ; [1 2 3 4 xx]
+FROM: funcy           | last                  ; last(xs) -> Optional elem
+DEFN: fptk            | rest                  :: rest(xs) -> List  ; drops 1st elem of list
+DEFN: fptk            | butlast               :: rest(xs) -> List  ; drops last elem of list
 DEFN: fptk            | drop                  :: drop(n, xs) -> List  ; drops from start/end of the list
 DEFN: fptk            | take                  :: take(n, xs) -> List  ; takes from start/end of the list
 DEFN: fptk            | pick                  :: pick(ns, xs) -> List  ; throws error if idx doesn't exist; also works with dicts keys
+FROM: funcy           | lpluck                :: lpluck(key, xs)  ; works also with dicts
+FROM: funcy           | lpluck_attr           ; lpluck(attr_str, xs)
 
-=== APL ===
+=== Control flow ===
 INFO: hy              | if /base/             :: (if check true false)
 INFO: hy              | cond /base/           :: (cond check1 do1 ... true doT)
 MACR: hyrule          | case
 MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
-FROM: functools       | reduce                ; THEORY: reduce + monoid = 2-arg-function for free becomes n-arg-function
-FROM: itertools       | starmap
-FROM: funcy           | lmap
-DEFN: fptk            | lstarmap              :: lstarmap(f,xs) -> List
-INFO: py              | filter /base/         :: filter(f, xs) -> List
-FROM: funcy           | lfilter               :: fltr1st(f, xs) -> Optional elem  ; returns first found element
-DEFN: fptk            | fltr1st
-DEFN: fptk            | count_occurrences     :: count_occurrences(elem, xs) -> int
-FROM: itertools       | cycle
-FROM: hyrule          | thru
-FROM: hyrule          | flatten               ; flattens to the bottom
-DEFN: fptk            | lprint
-DEFN: fptk            | lzip                  :: lzip(*args) = list(zip(*args))
-DEFN: fptk            | lreversed             :: lreversed(*args) = list(reversed(*args))
 
 === Compositions ===
-FROM: hyrule          | constantly
-FROM: funcy           | identity
-MACR: hyrule          | do_n
-MACR: hyrule          | list_n
-DEFN: fptk            | apply_n               :: apply_n(f, n, arg)  ; f(f(f(...f(arg))
-FROM: funcy           | ljuxt
+FROM: hyrule          | constantly            ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
+FROM: funcy           | identity              ; identity(30) -> 30
 MACR: hyrule          | as->
 MACR: hyrule          | ->
 MACR: hyrule          | ->>
@@ -102,8 +110,37 @@ FROM: funcy           | partial
 FROM: funcy           | rpartial
 FROM: funcy           | compose
 FROM: funcy           | rcompose
-DEFN: fptk            | flip                  :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
+FROM: funcy           | ljuxt                 :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
+DEFN: fptk            | flip
 DEFN: fptk            | pflip                 :: pflip(f, a) = f(_, a) partial applicator  ; example: (lmap (pflip div 0.1) (thru 1 3))
+
+=== APL: n-applicators ===
+MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
+MACR: hyrule          | list_n                :: (list_n n #* body) -> List
+DEFN: fptk            | nest                  :: nest(n, f)  ; f(f(f(...f)))
+DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
+
+=== APL: Threading ===
+INFO: py              | map /base/            :: map(f, *xss) -> iterator
+FROM: funcy           | lmap                  ; lmap(f, *xss) -> List
+FROM: itertools       | starmap               ; starmap(f, xs)
+DEFN: fptk            | lstarmap              :: lstarmap(f,xs) -> List
+FROM: functools       | reduce                :: reduce(f, xs[, x0]) -> value  ; reduce + monoid = binary-function for free becomes n-arg-function
+INFO: py              | zip /base/            :: zip(*xss) -> iterator I guess
+DEFN: fptk            | lzip                  :: lzip(*xss) = list(zip(*xss))
+
+=== APL: Filtering ===
+INFO: py              | filter /base/         :: filter(f or None, xs) -> filter object  ; when f=None, checks if elems are True
+FROM: funcy           | lfilter               ; lfilter(f, xs) -> List
+DEFN: fptk            | fltr1st               :: fltr1st(f, xs) -> Optional elem  ; returns first found element (or None)
+DEFN: fptk            | count_occurrences     :: count_occurrences(elem, xs) -> int  ; rename of list.count method
+
+=== APL: Work on lists ===
+FROM: hyrule          | thru                  ; same as range, but with 1-based index
+FROM: hyrule          | flatten               ; flattens to the bottom
+DEFN: fptk            | lprint                :: lprint(lst) -> (lmap print lst)
+INFO: py              | reversed /base/       :: reversed(xs) -> iterator
+DEFN: fptk            | lreversed             :: lreversed(*args) = list(reversed(*args))
 
 === General Math ===
 FROM: hyrule          | inc
@@ -119,10 +156,10 @@ FROM: math            | hypot                 :: hypot(x, y, ...)  ; = √(x² +
 DEFN: fptk            | normalize             :: normalize(vector) -> vector  ; returns same vector if it's norm=0
 FROM: operator        | div (<-truediv)
 FROM: math            | product (<-prod)
-FROM: math            | log                   ; log(x, base=math.e)
 FROM: math            | exp
-FROM: math            | log10
+FROM: math            | log                   ; log(x, base=math.e)
 DEFN: fptk            | ln                    :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
+FROM: math            | log10
 
 === Trigonometry ===
 FROM: math            | pi
@@ -134,7 +171,7 @@ FROM: math            | radians
 FROM: math            | acos
 FROM: math            | asin
 FROM: math            | atan
-FROM: math            | atan2
+FROM: math            | atan2                 :: atan2(y,x) -> value  ; both signs are considered
 FROM: math            | sin
 
 === Funcs from base operators ===
@@ -150,12 +187,13 @@ DEFN: fptk            | lconcat               :: lconcat(*args) = arg1 + arg2 + 
 FROM: hyrule          | xor
 FROM: operator        | eq                    ; equal
 FROM: operator        | neq (<-ne)            ; non-equal
-FROM: funcy           | even
-FROM: funcy           | odd
-DEFN: fptk            | not_                  :: not_(f, *args, **kwargs) = not(f(*args, **kwargs))
+FROM: funcy           | evenQ (<-even)
+FROM: funcy           | oddQ (<-odd)
 DEFN: fptk            | zeroQ                 ; checks directly via (= x 0)
 DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
+DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
+DEFN: fptk            | not_                  :: not_(f, *args, **kwargs) = not(f(*args, **kwargs))
 
 === Strings ===
 DEFN: fptk            | str_join              :: str_join(seq, sep='')  ; rearrangement of funcy.str_join
@@ -180,5 +218,6 @@ FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; ran
 FROM: random          | rand01 (<-random)     ; rand01() -> float in interval [0, 1)
 
 === with_execution_time ===
-DEFN: fptk            | with_execution_time   :: wet(f, n=1, tUnit='ns', msg='') -> time_of_1_exec_in_seconds, pretty_string, f_result  ; result is from 1st function execution
+DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> time_of_1_exec_in_seconds, pretty_string, f_result  ; result is from 1st function execution
+
 ```
