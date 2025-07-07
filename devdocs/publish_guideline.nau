@@ -3,3 +3,7 @@
     - setup.py
     - README.md Installation code line
     - git (local) + push to github
+
+	Then:
+	- install 0.2.0 localy immediately
+	- change setup.py version to 0.2.1-develop
