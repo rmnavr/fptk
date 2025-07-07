@@ -32,7 +32,7 @@ Table of Contents:
 - [x] Buffed getters (first, second, last, rest, ...)
 - [x] 1-based index variants of basic getters (I can't stand slicing with 0-based index)
 - [x] [lenses](https://github.com/ingolemo/python-lenses) for manipulating deeply nested immutable data
-- [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
+- [x] APL-like functions for mapping, filtering, partitioning, etc. (source libs: funcy, itertools, etc.)
 - [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
 - [x] Math, random generators, logic/checks
 - [x] Strings manipulation and regexes 

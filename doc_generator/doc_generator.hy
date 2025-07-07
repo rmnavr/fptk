@@ -370,21 +370,45 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; IO:
+    ; PRINTER: 
 
-; file importer ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; md file header str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (defn #^ str
-        file_to_code
-        [#^ str file_name]
-        (with [file (open file_name
-                          "r"
-                          :encoding "utf-8")]
-              (setv outp (file.read)))
-        (return outp))
+    (setv $HEADER
+"# Auto-generated full list of FPTK entities (except macros)
+
+## Legend
+
+List below has format:
+```hy
+=== Group name 1 ===
+TYPE source_lib | func_or_class_name :: signature ; description
+TYPE source_lib | func_or_class_name :: signature ; description
+
+=== Group name 2 ===
+...
+```
+
+Column `TYPE` shows if things are simple imports/reimports: ...
+```hy
+FULL MODULE  | sys          ; (import sys)
+FROM: math   | ln (<-log)   ; (import math [log :as ln])
+MACR: hyrule | of           ; (require hyrule [of])
+INFO: hy     | cut /macro/  ; shows info on hy/py functions/macro (which are already always in main context); given just for big picture
+```
+
+... or fptk-defined entities:
+```hy
+SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
+DEFN: fptk   | third        ; entity defined internally via (defn ...)
+```
+
+## List of fptk entities
+")
+
 
 ; _____________________________________________________________________________/ }}}1
-; printer ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; entity/group to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str build_prefix [ #^ FEntity fe ]
         (setv signature (if (= fe.signature "")
@@ -395,42 +419,64 @@
                             (sconcat " ; " fe.descr) ))
         (return (sconcat signature descr)))
 
-    ; entity print (for overview)
-    (defn eprint [ #^ FEntity fe ]
+    (defn entity2str [ #^ FEntity fe ]
         (setv pad1 (fm (pad_string %1 15)))
         (setv pad2 (fm (pad_string %1 21)))
+        ;
         (case fe.kind
+              ;
               FEntityKind.IMPORT_MODULE
-              (print (sconcat "FULL MODULE           | " (pad2 fe.name) (build_prefix fe)))
+              (sconcat "FULL MODULE           | " (pad2 fe.name) (build_prefix fe))
               ;
               FEntityKind.IMPORT_FROM_MODULE
-              (print (sconcat "FROM: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe)))
+              (sconcat "FROM: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))
               ;
               FEntityKind.IMPORT_FROM_MODULE_AS
-              (print (sconcat "FROM: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " (<-" fe.org_name ")")) (build_prefix fe)))
+              (sconcat "FROM: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " (<-" fe.org_name ")")) (build_prefix fe))
               ;
               FEntityKind.REQUIRE_MACRO 
-              (print (sconcat "MACR: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe)))
+              (sconcat "MACR: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))
               ;
               FEntityKind.NON_IMPORT_INFO 
-              (print (sconcat "INFO: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " /" fe.kind_str "/")) (build_prefix fe)))
+              (sconcat "INFO: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " /" fe.kind_str "/")) (build_prefix fe))
               ;
               FEntityKind.DEFINED_SETV 
-              (print (sconcat "SETV: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe)))
+              (sconcat "SETV: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))
               FEntityKind.DEFINED_FUNC
-              (print (sconcat "DEFN: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe)))
-        ))
+              (sconcat "DEFN: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))))
 
-    ; group print
-    (defn gprint [ #^ FGroup fgroup ]
-        (print "===" fgroup.name "===")
-        (setv fentities (find_all fgroup))
-        (lmap eprint fentities)
-        (print ""))
+    (defn #^ (of List str)
+        group2str_list [ #^ FGroup fgroup ]
+        (flatten [ (sconcat "===" fgroup.name "===")
+                   (lmap (p> entity2str
+                             rstrip) ; rstrip removes possible spaces on the right (to not invoke «next line» in *.md)
+                         (find_all fgroup)) 
+                   "" ]))
+
+; _____________________________________________________________________________/ }}}1
+; printers ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (defn gprint
+        [ #^ FGroup fgroup ]
+        (lprint (group2str_list fgroup)))
+
+    (defn generate_doc
+        [ #^ str source_file
+          #^ str output_file
+          #^ str [printQ False]
+        ]
+        (setv _code     (read_file source_file))
+        (setv _groups   (find_fgroups _code))
+        (setv _outp_str (->> _groups (lmap group2str_list)
+                                     flatten
+                                     (str_join :sep "\n")
+                                     (sconcat $HEADER "\n")))
+        (write_file _outp_str output_file)
+        (print "File" output_file "written!")
+        (when printQ (print _outp_str)))
 
 ; _____________________________________________________________________________/ }}}1
 
-    (setv _code   (file_to_code "../fptk/fpext.hy"))
-    (setv _groups (find_fgroups _code))
-    (lmap gprint _groups)
-
+    (setv $SOURCE "../fptk/fpext.hy")
+    (setv $OUTPUT "output/README.md")
+    (generate_doc $SOURCE $OUTPUT :printQ True)

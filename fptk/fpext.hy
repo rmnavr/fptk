@@ -5,6 +5,7 @@
 ; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import sys)                #_ "py base module"
+    (import os)                 #_ "py base module"
 
     (sys.stdout.reconfigure :encoding "utf-8")
 
@@ -44,7 +45,7 @@
     (import pydantic    [StrictInt])
     (import pydantic    [StrictStr])
     (import pydantic    [StrictFloat])
-    (import pydantic    [validate_arguments :as validate_args]) ;;
+    (import pydantic    [validate_arguments :as validate_args]) #_ "decorator for type-checking function arguments (but not return type)"
 
     #_ "Int or Float"
     (setv StrictNumber (get Union #(StrictInt StrictFloat)))
@@ -105,21 +106,23 @@
         (defn pick       [ns xs] (lfor &n ns (get xs &n)))
 
         (import  funcy  [lpluck])       #_ "lpluck(key, xs) | works also with dicts"
-        (import  funcy  [lpluck_attr])  #_ "lpluck(attr_str, xs)" ;;
+        (import  funcy  [lpluck_attr])  #_ "lpluck(attr_str, xs) |" ;;
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
 
     #_ "get_(xs, n) -> elem | same as get, but with 1-based index (will throw error for n=0)"
     (defn get_ [xs n]
+        (when (dictQ xs) (return (get xs n)))
         (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (get xs (dec n))))
         (return (get xs n))) ;; this line covers both n<0 and n=dict_key
 
     #_ "nth_(n, xs) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
     (defn nth_ [n xs] 
+        (when (dictQ xs) (return (nth n xs)))
         (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (nth (dec n) xs)))
         (return (nth n xs))) ;; this line covers both n<0 and n=dict_key
@@ -288,7 +291,7 @@
     (import math [acos])
     (import math [asin])
     (import math [atan])
-    (import math [atan2]) #_ "atan2(y,x) -> value | both signs are considered"
+    (import math [atan2]) #_ "atan2(y, x) -> value | both signs are considered"
     (import math [sin])
 
 ; _____________________________________________________________________________/ }}}1
@@ -329,20 +332,30 @@
     (import funcy    [even :as evenQ])
     (import funcy    [odd  :as oddQ])   ;;
 
-    #_ "checks directly via (= x 0)"
+    #_ "| checks directly via (= x 0)"
     (defn zeroQ     [x] (= x 0))
 
-    #_ "checks directly via (< x 0)"
+    #_ "| checks directly via (< x 0)"
     (defn negativeQ [x] (< x 0))
 
-    #_ "checks directly via (> x 0)"
+    #_ "| checks directly via (> x 0)"
     (defn positiveQ [x] (> x 0))
 
-    #_ "checks literally if (= (len xs) 0)"
+    #_ "| checks literally if (= (len xs) 0)"
     (defn zerolenQ [xs] (= (len xs) 0))
 
-    #_ "not_(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
-    (defn not_ [f #* args #** kwargs] (not (f #* args #** kwargs)))
+    #_ "(istype tp x) -> (= (type x) tp) |"
+    (defn istype [tp x] (= (type x) tp))
+
+    (defn intQ   [x] (= (type x) int))
+    (defn floatQ [x] (= (type x) float))
+    (defn dictQ  [x] (= (type x) dict))
+
+    (import funcy [is_list  :as listQ ])  #_ "listQ(seq)  | checks if seq is list"
+    (import funcy [is_tuple :as tupleQ])  #_ "tupleQ(seq) | checks if seq is tuple"
+
+    #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
+    (defn fnot [f #* args #** kwargs] (not (f #* args #** kwargs)))
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -379,7 +392,7 @@
     (import re        [sub :as re_sub])         #_ "re_sub(rpattern, replacement, string, count=0, flags=0) |"
     (import re        [split :as re_split])     #_ "re_split(rpattern, string) |"
     (import funcy     [re_find])                #_ "re_find(rpattern, string, flags=0) -> str| returns first found"
-    (import funcy     [re_test])                #_ "re_test(rpattern, string, ...) -> bool | tests string has match (not neccessarily whole string)"
+    (import funcy     [re_test])                #_ "re_test(rpattern, string, ...) -> bool | tests if string has match (not neccessarily whole string)"
     (import funcy     [re_all])                 #_ "re_all(rpattern, string, ...) -> List |"
 
 ; _____________________________________________________________________________/ }}}1
@@ -394,6 +407,28 @@
 
 ; _____________________________________________________________________________/ }}}1
 
+; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
+
+    #_ "read_file(file_name, encoding='utf-8') -> str | reads whole file content "
+    (defn read_file
+        [ #^ str file_name
+          #^ str [encoding "utf-8"]
+        ]
+        (with [file (open file_name "r" :encoding encoding)] (setv outp (file.read)))
+        (return outp))
+
+    #_ "write_file(text, file_name, mode='w', encoding='utf-8') | modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation"
+    (defn write_file
+        [ #^ str text
+          #^ str file_name
+          #^ str [mode "w"]
+          #^ str [encoding "utf-8"]
+        ]
+        (with [file (open file_name mode :encoding encoding)] (file.write text)))
+
+; _____________________________________________________________________________/ }}}1
 ; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     #_ "w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result | f_result is from 1st function execution"

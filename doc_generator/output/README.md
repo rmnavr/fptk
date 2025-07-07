@@ -28,9 +28,9 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ## List of fptk entities
 
-```hy
-=== Import Full Modules ===
+===Import Full Modules===
 FULL MODULE           | sys                   ; py base module
+FULL MODULE           | os                    ; py base module
 FULL MODULE           | math                  ; py base module
 FULL MODULE           | operator              ; py base module
 FULL MODULE           | random                ; py base module
@@ -41,7 +41,7 @@ FROM: pprint          | pprint
 FULL MODULE           | hyrule                ; hy base module
 FULL MODULE           | funcy                 ; 3rd party
 
-=== Typing ===
+===Typing===
 MACR: hyrule          | of
 FROM: dataclasses     | dataclass
 FROM: enum            | Enum
@@ -62,7 +62,7 @@ FROM: pydantic        | BaseModel
 FROM: pydantic        | StrictInt
 FROM: pydantic        | StrictStr
 FROM: pydantic        | StrictFloat
-FROM: pydantic        | validate_args (<-validate_arguments)
+FROM: pydantic        | validate_args (<-validate_arguments) ; decorator for type-checking function arguments (but not return type)
 SETV: fptk            | StrictNumber          ; Int or Float
 FROM: returns.result  | Result
 FROM: returns.result  | Success
@@ -70,7 +70,7 @@ FROM: returns.result  | Failure
 FROM: funcy           | isnone
 FROM: funcy           | notnone
 
-=== Getters ===
+===Getters===
 FROM: lenses          | lens
 INFO: hy              | . /macro/             :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
 INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
@@ -91,16 +91,16 @@ DEFN: fptk            | drop                  :: drop(n, xs) -> List  ; drops fr
 DEFN: fptk            | take                  :: take(n, xs) -> List  ; takes from start/end of the list
 DEFN: fptk            | pick                  :: pick(ns, xs) -> List  ; throws error if idx doesn't exist; also works with dicts keys
 FROM: funcy           | lpluck                :: lpluck(key, xs)  ; works also with dicts
-FROM: funcy           | lpluck_attr           ; lpluck(attr_str, xs)
+FROM: funcy           | lpluck_attr           :: lpluck(attr_str, xs)
 
-=== index-1-based getters ===
+===index-1-based getters===
 FROM: hyrule          | range_ (<-thru)       :: range_(start, end, step) -> List  ; same as range, but with 1-based index
 DEFN: fptk            | get_                  :: get_(xs, n) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | nth_                  :: nth_(n, xs) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | slice_                :: slice_(start, end, step)  ; same as slice, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
 DEFN: fptk            | cut_                  :: cut_(xs, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
 
-=== Control flow ===
+===Control flow===
 INFO: hy              | if /base/             :: (if check true false)
 INFO: hy              | cond /base/           :: (cond check1 do1 ... true doT)
 MACR: hyrule          | case
@@ -108,7 +108,7 @@ MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
 
-=== Compositions ===
+===Compositions===
 FROM: hyrule          | constantly            ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
 FROM: funcy           | identity              ; identity(30) -> 30
 MACR: hyrule          | as->
@@ -125,13 +125,13 @@ FROM: funcy           | ljuxt                 :: flip(f, a, b) = f(b, a)  ; exam
 DEFN: fptk            | flip
 DEFN: fptk            | pflip                 :: pflip(f, a) = f(_, a) partial applicator  ; example: (lmap (pflip div 0.1) (thru 1 3))
 
-=== APL: n-applicators ===
+===APL: n-applicators===
 MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
 MACR: hyrule          | list_n                :: (list_n n #* body) -> List
 DEFN: fptk            | nest                  :: nest(n, f)  ; f(f(f(...f)))
 DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
-=== APL: Threading ===
+===APL: Threading===
 INFO: py              | map /base/            :: map(f, *xss) -> iterator
 FROM: funcy           | lmap                  ; lmap(f, *xss) -> List
 FROM: itertools       | starmap               ; starmap(f, xs)
@@ -140,19 +140,19 @@ FROM: functools       | reduce                :: reduce(f, xs[, x0]) -> value  ;
 INFO: py              | zip /base/            :: zip(*xss) -> iterator I guess
 DEFN: fptk            | lzip                  :: lzip(*xss) = list(zip(*xss))
 
-=== APL: Filtering ===
+===APL: Filtering===
 INFO: py              | filter /base/         :: filter(f or None, xs) -> filter object  ; when f=None, checks if elems are True
 FROM: funcy           | lfilter               ; lfilter(f, xs) -> List
 DEFN: fptk            | fltr1st               :: fltr1st(f, xs) -> Optional elem  ; returns first found element (or None)
 DEFN: fptk            | count_occurrences     :: count_occurrences(elem, xs) -> int  ; rename of list.count method
 
-=== APL: Work on lists ===
+===APL: Work on lists===
 FROM: hyrule          | flatten               ; flattens to the bottom
 DEFN: fptk            | lprint                :: lprint(lst) -> (lmap print lst)
 INFO: py              | reversed /base/       :: reversed(xs) -> iterator
 DEFN: fptk            | lreversed             :: lreversed(*args) = list(reversed(*args))
 
-=== General Math ===
+===General Math===
 FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
@@ -171,7 +171,7 @@ FROM: math            | log                   ; log(x, base=math.e)
 DEFN: fptk            | ln                    :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
 FROM: math            | log10
 
-=== Trigonometry ===
+===Trigonometry===
 FROM: math            | pi
 FROM: math            | sin
 FROM: math            | cos
@@ -181,10 +181,10 @@ FROM: math            | radians
 FROM: math            | acos
 FROM: math            | asin
 FROM: math            | atan
-FROM: math            | atan2                 :: atan2(y,x) -> value  ; both signs are considered
+FROM: math            | atan2                 :: atan2(y, x) -> value  ; both signs are considered
 FROM: math            | sin
 
-=== Funcs from base operators ===
+===Funcs from base operators===
 DEFN: fptk            | minus                 ; minus(x, y) = x - y
 DEFN: fptk            | mul                   :: mul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for numbers
 DEFN: fptk            | lmul                  :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for strings
@@ -193,7 +193,7 @@ DEFN: fptk            | plus                  :: plus(*args) = arg1 + arg2 + ...
 DEFN: fptk            | sconcat               :: sconcat(*args) = arg1 + arg2 + ...  ; rename of + operator, underlines usage for strings
 DEFN: fptk            | lconcat               :: lconcat(*args) = arg1 + arg2 + ...  ; rename of + operator, underlines usage for lists
 
-=== Logic and ChecksQ ===
+===Logic and ChecksQ===
 FROM: hyrule          | xor
 FROM: operator        | eq                    ; equal
 FROM: operator        | neq (<-ne)            ; non-equal
@@ -203,9 +203,15 @@ DEFN: fptk            | zeroQ                 ; checks directly via (= x 0)
 DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
 DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
-DEFN: fptk            | not_                  :: not_(f, *args, **kwargs) = not(f(*args, **kwargs))
+DEFN: fptk            | istype                :: (istype tp x) -> (= (type x) tp)
+DEFN: fptk            | intQ
+DEFN: fptk            | floatQ
+DEFN: fptk            | dictQ
+FROM: funcy           | listQ (<-is_list)     :: listQ(seq)  ; checks if seq is list
+FROM: funcy           | tupleQ (<-is_tuple)   :: tupleQ(seq)  ; checks if seq is tuple
+DEFN: fptk            | fnot                  :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
 
-=== Strings ===
+===Strings===
 DEFN: fptk            | str_join              :: str_join(seq, sep='')  ; rearrangement of funcy.str_join
 DEFN: fptk            | str_replace           ; str_replace(string, old, new, count=-1) ; rename of string.replace method
 DEFN: fptk            | lowercase
@@ -214,19 +220,23 @@ DEFN: fptk            | strip
 DEFN: fptk            | lstrip
 DEFN: fptk            | rstrip
 
-=== Regex ===
+===Regex===
 FROM: re              | re_sub (<-sub)        :: re_sub(rpattern, replacement, string, count=0, flags=0)
 FROM: re              | re_split (<-split)    :: re_split(rpattern, string)
 FROM: funcy           | re_find               :: re_find(rpattern, string, flags=0) -> str  ; returns first found
-FROM: funcy           | re_test               :: re_test(rpattern, string, ...) -> bool  ; tests string has match (not neccessarily whole string)
+FROM: funcy           | re_test               :: re_test(rpattern, string, ...) -> bool  ; tests if string has match (not neccessarily whole string)
 FROM: funcy           | re_all                :: re_all(rpattern, string, ...) -> List
 
-=== Random ===
+===Random===
 FROM: random          | choice                :: choice(xs) -> Elem  ; throws error for empty list
 FROM: random          | randint               :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
 FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
 FROM: random          | rand01 (<-random)     :: rand01() -> float in interval [0, 1)
 
-=== Benchmarking ===
+===IO===
+FROM: os.path         | file_existsQ (<-exists) :: file_existsQ(filename)  ; also works on folders
+DEFN: fptk            | read_file             :: read_file(file_name, encoding='utf-8') -> str  ; reads whole file content
+DEFN: fptk            | write_file            :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
+
+===Benchmarking===
 DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
-```
