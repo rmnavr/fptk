@@ -29,7 +29,7 @@ The only rule they must follow is to use `|` symbol only as separator (see examp
 
 ## Grouping
 
-Only code inside Vim Cells (of Lvl 1) marked with `[GROUP]` will be recognized:
+Only code inside specially defined comments (marked with `[GROUP]`) will be recognized:
 ```hy
 ; [GROUP] Group name ‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {({1
 

@@ -65,13 +65,14 @@
 
         (comment "hy     | macro | .     | (. xs [n1] [n2] ...) -> xs[n1][n2]... | throws error when not found")
         (comment "hy     | macro | get   | (get xs n #* keys) -> xs[n][key1]... | throws error when not found")
+        (import funcy [nth])        #_ "nth(n, xs) -> Optional elem | 0-based index; works also with dicts"
+        (comment "py     | base  | slice | (slice start end step) | ")
         (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | gives empty list when none found")
         (import  hyrule [ assoc ])  #_ "(assoc xs k1 v1 k2 v2) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
         (require hyrule [ ncut ])   
 
     ;; one elem getters:
 
-        (import funcy [nth])        #_ "nth(n, xs) | 0-based index; works also with dicts"
         (import funcy [first])      #_ "first(xs) -> Optional elem |"
         (import funcy [second])     #_ "second(xs) -> Optional elem |" ;;
 
@@ -105,6 +106,45 @@
 
         (import  funcy  [lpluck])       #_ "lpluck(key, xs) | works also with dicts"
         (import  funcy  [lpluck_attr])  #_ "lpluck(attr_str, xs)" ;;
+
+; _____________________________________________________________________________/ }}}1
+; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
+
+    #_ "get_(xs, n) -> elem | same as get, but with 1-based index (will throw error for n=0)"
+    (defn get_ [xs n]
+        (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+        (when (>= n 1) (return (get xs (dec n))))
+        (return (get xs n))) ;; this line covers both n<0 and n=dict_key
+
+    #_ "nth_(n, xs) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
+    (defn nth_ [n xs] 
+        (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+        (when (>= n 1) (return (nth (dec n) xs)))
+        (return (nth n xs))) ;; this line covers both n<0 and n=dict_key
+
+    #_ "slice_(start, end, step) | same as slice, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
+    (defn slice_
+        [ start
+          end
+          [step None]
+        ]
+        (cond (>= start 1) (setv _start (dec start))
+              (<  start 0) (setv _start start)
+              (=  start 0) (raise (Exception "start=0 can't be used with 1-based getter"))
+              True         (raise (Exception "start in 1-based getter is probably not an integer")))
+        ;;
+        (cond (=  end -1) (setv _end None)
+              (>= end  1) (setv _end end)
+              (<  end -1) (setv _end (inc end))
+              (=  end  0) (raise (Exception "end=0 can't be used with 1-based getter"))
+              True        (raise (Exception "end in 1-based getter is probably not an integer")))
+        (return (slice _start _end step)))
+
+    #_ "cut_(xs, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
+    (defn cut_ [xs start end [step None]] (get xs (slice_ start end step)))
+
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -189,8 +229,6 @@
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL: Work on lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (import hyrule     [thru])      #_ "same as range, but with 1-based index"
 
     (import hyrule     [flatten])   #_ "flattens to the bottom" ;;
 

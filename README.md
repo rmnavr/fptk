@@ -159,7 +159,7 @@ They simplify lens definition, composition and application.
 Basic syntax of `lns` macro:
 ```hy
 ; standalone numbers, strings and variables are recognized as index access:
-(lns 1 -2 (- 7) "key" idx)  ; (. lens [1] [-2] [- 7] ["key"])
+(lns 1 -2 (- 7) "key" idx)  ; (. lens [1] [-2] [- 7] ["key"] [idx])
 
 ; form below is seen as attribute access:
 (lns .attr)                 ; (. lens attr)
