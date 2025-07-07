@@ -28,6 +28,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ## List of fptk entities
 
+```
 === Import Full Modules ===
 FULL MODULE           | sys                   ; py base module
 FULL MODULE           | os                    ; py base module
@@ -231,7 +232,7 @@ FROM: funcy           | re_all                :: re_all(rpattern, string, ...) -
 FROM: random          | choice                :: choice(xs) -> Elem  ; throws error for empty list
 FROM: random          | randint               :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
 FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
-FROM: random          | rand01 (<-random)     :: rand01() -> float in interval [0, 1)
+FROM: random          | rand01 (<-random)     :: rand01() -> float  ; generates random number in interval [0, 1)
 
 === IO ===
 FROM: os.path         | file_existsQ (<-exists) :: file_existsQ(filename)  ; also works on folders
@@ -240,3 +241,4 @@ DEFN: fptk            | write_file            :: write_file(text, file_name, mod
 
 === Benchmarking ===
 DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
+```

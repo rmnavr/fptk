@@ -468,15 +468,17 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
           #^ str output_file
           #^ str [printQ False]
         ]
-        (setv _code     (read_file source_file))
-        (setv _groups   (find_fgroups _code))
-        (setv _outp_str (->> _groups (lmap group2str_list)
+        (setv _code       (read_file source_file))
+        (setv _groups     (find_fgroups _code))
+        (setv _outp_table (->> _groups (lmap group2str_list)
                                      flatten
                                      (str_join :sep "\n")
-                                     (sconcat $HEADER "\n")))
-        (write_file _outp_str output_file)
+                                     ))
+        (setv _outp_all   (sconcat $HEADER "\n```\n" _outp_table "```"))
+        (write_file _outp_all output_file)
+        ;
         (print "File" output_file "written!")
-        (when printQ (print _outp_str)))
+        (when printQ (print _outp_table)))
 
 ; _____________________________________________________________________________/ }}}1
 

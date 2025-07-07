@@ -401,7 +401,7 @@
     (import random    [choice])                 #_ "choice(xs) -> Elem | throws error for empty list"
     (import random    [randint])                #_ "randint(a, b) -> int | returns random integer in range [a, b] including both end points" 
     (import random    [uniform :as randfloat])  #_ "randfloat(a, b) -> float | range is [a, b) or [a, b] depending on rounding"
-    (import random    [random :as rand01])      #_ "rand01() -> float in interval [0, 1) | "
+    (import random    [random :as rand01])      #_ "rand01() -> float | generates random number in interval [0, 1) "
 
     ;; shuffle — is mutating
 
