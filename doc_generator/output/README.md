@@ -15,7 +15,7 @@ TYPE source_lib | func_or_class_name :: signature ; description
 Column `TYPE` shows if things are simple imports/reimports: ...
 ```hy
 FULL MODULE  | sys          ; (import sys)
-FROM: math   | ln (<-log)   ; (import math [log :as ln]) 
+FROM: math   | ln (<-log)   ; (import math [log :as ln])
 MACR: hyrule | of           ; (require hyrule [of])
 INFO: hy     | cut /macro/  ; shows info on hy/py functions/macro (which are already always in main context); given just for big picture
 ```
@@ -74,10 +74,11 @@ FROM: funcy           | notnone
 FROM: lenses          | lens
 INFO: hy              | . /macro/             :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
 INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
+FROM: funcy           | nth                   :: nth(n, xs) -> Optional elem  ; 0-based index; works also with dicts
+INFO: py              | slice /base/          :: (slice start end step)
 INFO: hy              | cut /macro/           :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
 FROM: hyrule          | assoc                 :: (assoc xs k1 v1 k2 v2) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
 MACR: hyrule          | ncut
-FROM: funcy           | nth                   :: nth(n, xs)  ; 0-based index; works also with dicts
 FROM: funcy           | first                 :: first(xs) -> Optional elem
 FROM: funcy           | second                :: second(xs) -> Optional elem
 DEFN: fptk            | third                 :: third(xs) -> Optional elem
@@ -91,6 +92,13 @@ DEFN: fptk            | take                  :: take(n, xs) -> List  ; takes fr
 DEFN: fptk            | pick                  :: pick(ns, xs) -> List  ; throws error if idx doesn't exist; also works with dicts keys
 FROM: funcy           | lpluck                :: lpluck(key, xs)  ; works also with dicts
 FROM: funcy           | lpluck_attr           ; lpluck(attr_str, xs)
+
+=== index-1-based getters ===
+FROM: hyrule          | range_ (<-thru)       :: range_(start, end, step) -> List  ; same as range, but with 1-based index
+DEFN: fptk            | get_                  :: get_(xs, n) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | nth_                  :: nth_(n, xs) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | slice_                :: slice_(start, end, step)  ; same as slice, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
+DEFN: fptk            | cut_                  :: cut_(xs, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
 
 === Control flow ===
 INFO: hy              | if /base/             :: (if check true false)
@@ -139,7 +147,6 @@ DEFN: fptk            | fltr1st               :: fltr1st(f, xs) -> Optional elem
 DEFN: fptk            | count_occurrences     :: count_occurrences(elem, xs) -> int  ; rename of list.count method
 
 === APL: Work on lists ===
-FROM: hyrule          | thru                  ; same as range, but with 1-based index
 FROM: hyrule          | flatten               ; flattens to the bottom
 DEFN: fptk            | lprint                :: lprint(lst) -> (lmap print lst)
 INFO: py              | reversed /base/       :: reversed(xs) -> iterator
@@ -218,9 +225,8 @@ FROM: funcy           | re_all                :: re_all(rpattern, string, ...) -
 FROM: random          | choice                :: choice(xs) -> Elem  ; throws error for empty list
 FROM: random          | randint               :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
 FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
-FROM: random          | rand01 (<-random)     ; rand01() -> float in interval [0, 1)
+FROM: random          | rand01 (<-random)     :: rand01() -> float in interval [0, 1)
 
-=== with_execution_time ===
-DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> time_of_1_exec_in_seconds, pretty_string, f_result  ; result is from 1st function execution
-
+=== Benchmarking ===
+DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
 ```

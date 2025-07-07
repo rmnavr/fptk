@@ -3,7 +3,7 @@
 
 # **fptk** — functional toolkit for hy-lang
 
-**fptk** is a curated list of math and FP-related libs/classes/functions/macroses,
+**fptk** is curated list of math and FP-related modules/classes/functions/macroses,
 that are supposed to be imported into main scope altogether to always have them at your fingertips.
 > Having high amount of functions available in main context is inspired by Wolfram Language,
 > in which all (yes, ALL) standard functions are always in the main context.
@@ -14,14 +14,11 @@ Intended usage of **fptk** is:
 (require fptk * :readers *)
 ```
 
-Full list of things that are imported into main scope (except macros)
-can be seen in auto-generated table, which has short info on every imported entity:
-[doc_generator/output/README.md](https://github.com/rmnavr/fptk/blob/main/doc_generator/output/README.md)
-
 ---
 
 Table of Contents:
 - [Topics that fptk covers](#Topics-that-fptk-covers)
+- [fptk imports](#fptk-imports)
 - [fptk macros](#fptk-macros)
 - [Installation](#Installation)
 
@@ -31,8 +28,9 @@ Table of Contents:
 # Topics that fptk covers
 
 **fptk** aims to unite and bring into main scope:
-- [x] full modules that are FP-relevant (operator, itertools, ...)
+- [x] full modules that are math and FP-relevant (math, operator, itertools, ...)
 - [x] Buffed getters (first, second, last, rest, ...)
+- [x] 1-based index variants of basic getters (I can't stand slicing with 0-based index)
 - [x] [lenses](https://github.com/ingolemo/python-lenses) for manipulating deeply nested immutable data
 - [x] APL-like functions for mapping, filtering, patritioning, etc. (source libs: funcy, itertools, etc.)
 - [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
@@ -48,11 +46,21 @@ Currently under development:
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
+<!-- Functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+# fptk imports
+
+**fptk** imports into main scope whole modules, functions and classes (and macroses, but they are described separately below).
+Whole list of these things is given in auto-generated table:
+[doc_generator/output/README.md](https://github.com/rmnavr/fptk/blob/main/doc_generator/output/README.md)
+
+<!-- __________________________________________________________________________/ }}}1 -->
+
 <!-- Macros intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # fptk macros
 
-Full list of macros:
+Full list of fptk macros:
 * `f::` — macro for annotating callables
 * `#L`, `fm`, `f>` — anonymous functions
 * `p>` — pipe of partials
@@ -75,7 +83,7 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾differently‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `#L` — reader macro for writing lambdas
 
@@ -151,6 +159,7 @@ Reason for adding such syntax is the following:
 
 These macros should be used together with [lenses](https://github.com/ingolemo/python-lenses) library.
 They simplify lens definition, composition and application.
+> Lenses is Haskell-inspired library for working with deeply nested immutable data.
 
 ### `lns` macro in details
 
