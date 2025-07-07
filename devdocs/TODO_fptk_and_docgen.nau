@@ -1,14 +1,7 @@
 
-	// DOC GEN:
+// DOC GEN =================================================
 
 // TODOs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	+ Separator
-
-    + add macros (from macro.hy) recognition
-    + print into output file
-    + issue: (help func) won't work will my approach? -> test it
-    + replace 2 lines of lens with proper code JFK
 
 	+ Remove requirement for `;;` comments to have double-semicolon
 	+ Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`
@@ -17,7 +10,8 @@
 
 // ____________________________________________________________________________/ }}}1
 
-	// FPTK:
+
+// FPTK ====================================================
 
 // INFO: Composition order, Arguments order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -132,9 +126,7 @@
 
 // ____________________________________________________________________________/ }}}1
 
-// =========================================================
-
-// curated todo list ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// curated todo list ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	• (lmapm (print %1 "pupos") xs) -> (lmap (fm ()) xs)
 	• p> not working with fn/fm

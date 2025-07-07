@@ -85,23 +85,16 @@ Also, `->` can be used instead of last `=>` (this is simply visual preference an
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `#L` — reader macro for writing lambdas
-
-`#L` is just synonim for hyrule's `#%` macro.
-```hy
-#L(* %1 2) ; equivalent to: (fn [%1] (* %1 2))
-```
-
-## `fm` and `f>` — macro for writing lambdas
+## `fm` and `f>` — macros for writing lambdas
 
 ```hy
 (fm (* %1 2))         ; expands to: (fn [%1] (* %1 2))
 (f> (* %1 %2 10) 3 4) ; immediately applicates — will give here: 3*4*10 = 120
 ```
 
-`fm` and `f>` have functionality similar to `#L`, but:
-- `fm` and `f>` are more REPL-friendly than `#L` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
-- `fm` and `f>` currently support only args of form `%1`..`%9` (while `#L` can also work with args and kwargs)
+`fm` and `f>` have functionality similar to hyrule's `#%` reader macro, but:
+- `fm` and `f>` are more REPL-friendly than `#%` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
+- `fm` and `f>` currently support only args of form `%1`..`%9` (while `#%` reader macro can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
