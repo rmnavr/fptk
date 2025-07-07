@@ -144,6 +144,9 @@
 	APL:
 		+ flatten -> work on levels?
 
+	Benchmarking:
+		• [³FIX⁺] logically should give result of last execution
+
 	Wy-related:
 		+ ncut equivalent (symbol «:» is taken)
 
