@@ -28,7 +28,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ## List of fptk entities
 
-```
+```hy
 === Import Full Modules ===
 FULL MODULE           | sys                   ; py base module
 FULL MODULE           | os                    ; py base module

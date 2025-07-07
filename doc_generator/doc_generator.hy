@@ -474,7 +474,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
                                      flatten
                                      (str_join :sep "\n")
                                      ))
-        (setv _outp_all   (sconcat $HEADER "\n```\n" _outp_table "```"))
+        (setv _outp_all   (sconcat $HEADER "\n```hy\n" _outp_table "```"))
         (write_file _outp_all output_file)
         ;
         (print "File" output_file "written!")
