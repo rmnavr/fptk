@@ -295,32 +295,32 @@
     (import math [sin])
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] Funcs from base operators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    #_ "minus(x, y) = x - y"
-    (defn minus   [x y] (- x y))
+        #_ "minus(x, y) = x - y"
+        (defn minus [x y] (- x y))
 
     ;; *
 
-        #_ "mul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for numbers"
-        (defn mul     [#* args] (* #* args))
+        #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
+        (defn mul [#* args] (reduce operator.mul args 1))
 
-        #_ "lmul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for strings"
-        (defn lmul    [#* args] (* #* args))
+        #_ "lmul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for list"
+        (defn lmul [#* args] (* #* args))
 
-        #_ "smul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for lists"
-        (defn smul    [#* args] (* #* args))
+        #_ "smul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for string"
+        (defn smul [#* args] (* #* args))
 
     ;; +
 
-        #_ "plus(*args) = arg1 + arg2 + ... | rename of + operator, underlines usage for numbers"
-        (defn plus    [#* args] (+ #* args))
+        #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
+        (defn plus [#* args] (reduce operator.add args 0))
 
-        #_ "sconcat(*args) = arg1 + arg2 + ... | rename of + operator, underlines usage for strings"
-        (defn sconcat [#* args] (+ #* args))
+        #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
+        (defn sconcat [#* args] (reduce (fn [%s1 %s2] (+ %s1 %s2)) args ""))
 
-        #_ "lconcat(*args) = arg1 + arg2 + ... | rename of + operator, underlines usage for lists"
-        (defn lconcat [#* args] (if (= (len args) 1) (first args) (+ #* args)))
+        #_ "lconcat(*args) | list concantenation as a monoid (will not give error when used with 0 or 1 args)"
+        (defn lconcat [#* args] (reduce (fn [%s1 %s2] (+ %s1 %s2)) args []))
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1

@@ -408,7 +408,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 
 ; _____________________________________________________________________________/ }}}1
-; entity/group to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; entity to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str build_prefix [ #^ FEntity fe ]
         (setv signature (if (= fe.signature "")
@@ -445,9 +445,12 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
               FEntityKind.DEFINED_FUNC
               (sconcat "DEFN: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))))
 
+; _____________________________________________________________________________/ }}}1
+; group to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (defn #^ (of List str)
         group2str_list [ #^ FGroup fgroup ]
-        (flatten [ (sconcat "===" fgroup.name "===")
+        (flatten [ (sconcat "=== " fgroup.name " ===")
                    (lmap (p> entity2str
                              rstrip) ; rstrip removes possible spaces on the right (to not invoke «next line» in *.md)
                          (find_all fgroup)) 
@@ -479,4 +482,4 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
     (setv $SOURCE "../fptk/fpext.hy")
     (setv $OUTPUT "output/README.md")
-    (generate_doc $SOURCE $OUTPUT :printQ True)
+    (generate_doc $SOURCE $OUTPUT :printQ False)
