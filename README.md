@@ -10,8 +10,8 @@ that are supposed to be imported into main scope altogether to always have them 
 
 Intended usage of **fptk** is:
 ```hy
-(import fptk *)
-(require fptk * :readers *)
+(import fptk *)		; import of modules, functions and classes
+(require fptk *)	; import of macros
 ```
 
 ---

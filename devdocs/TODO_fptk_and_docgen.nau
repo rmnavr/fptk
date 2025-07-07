@@ -11,6 +11,7 @@
 // ____________________________________________________________________________/ }}}1
 
 
+
 // FPTK ====================================================
 
 // INFO: Composition order, Arguments order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -57,7 +58,6 @@
   	- macros - yes
 
 // ____________________________________________________________________________/ }}}1
-
 // FURTHER PLANS (Typing, Monads) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	Cur:
@@ -101,67 +101,53 @@
 	- Transformers
 
 // ____________________________________________________________________________/ }}}1
-// MACROS ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// MACROS LIST ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	f::
-
-	#L
-	fm
-	f>
-
-	p>						
-
-	lns
-	&+
-	&+>
-	l>
-	l>=		// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
-
-	pluckm
+	• f::
+	• fm
+	• f>
+	• p>						
+	• pluckm
+	• lns
+	• &+
+	• &+>
+	• l>
+	• l>=		// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
 
 	// =============================
 
 	new:
-	=> =>>		// optional «it», .attr access
+	• => =>>		// optional «it», .attr access
+
+	deprecated:
+	• #L 
+	• <-
 
 // ____________________________________________________________________________/ }}}1
 
 // curated todo list ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	• (lmapm (print %1 "pupos") xs) -> (lmap (fm ()) xs)
-	• p> not working with fn/fm
-	• emptyListQ
-	• emptyStringQ
-	• ntn from 0, nth from 1
-	• apply_n -> nest_n?
+	Checks:
+		• funcy: all_fn, isa
+		• (of_len xs 3)
+		+ (on len eq xs ys)
 
-	IO:
-		write_to_file (append/prepend)
-		read_from_file
+	Lambdas and composition:
+		• (lmapm (print %1 "pupos") xs) -> (lmap (fm ()) xs)
+		• [³NEW⁺] p> not working with fn/fm
+		• fm/f>: - [⁴DOC⁺] can accept non-() forms
+				 - [³NEW⁺] usage of _ as %1
+		+ on_each(f, xs) -> None	// as map but with no result
+		+ juxt_apply(fs, *xi)
+		? shorter name for partial?
 
-	0/1-based indexing:
-		0
-		  get
-		  fget = flip get = (get xs n) 
-		  slice 
-		  range 
-		1
-		  thru (from 1)
-		  nth (from 1)
-		  nthlise (from 1)
+	APL:
+		+ flatten -> work on levels?
 
-	+ fm/f>: DOC: can accept non-() forms
-			 NEW: usage of _ as %1
+	Wy-related:
+		+ ncut equivalent (symbol «:» is taken)
 
-	+ make partial shorter name?
-	+ ncut equiv?
-	+ evenQ, oddQ
-	+ (lenQ eq xs 3)
-	+ (on len eq xs ys)
-	+ on_each(f, xs) -> None	// as map but with no result
-	+ apply_n is actually nest_n ?
-	+ juxt_apply(fs, *xi)
-	+ flatten -> work on levels
+	·······························
 
 	Filtering:
 		- itertools: take_while, drop_while
@@ -172,3 +158,14 @@
 // ____________________________________________________________________________/ }}}1
 
 
+	Publishing:
+	- naming of variables = docnames
+	- proper doc-strings
+	- detailed md-doc? (¹ one-liner table + ² short table with links)
+	- tests
+	- throw meaningfull errors
+	! move _macros_test.hy elsewhere
+
+
+	Pip auto installation dir:
+	D:\Soft_categories\Engn_Programming\miniconda3\Lib\site-packages\fptk
