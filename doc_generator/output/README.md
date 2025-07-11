@@ -186,7 +186,7 @@ FROM: math            | atan2                 :: atan2(y, x) -> value  ; both si
 FROM: math            | sin
 
 === Base operators to functions ===
-DEFN: fptk            | minus                 ; minus(x, y) = x - y
+DEFN: fptk            | minus                 :: minus(x, y) = x - y
 DEFN: fptk            | mul                   :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | lmul                  :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
 DEFN: fptk            | smul                  :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
@@ -241,4 +241,5 @@ DEFN: fptk            | write_file            :: write_file(text, file_name, mod
 
 === Benchmarking ===
 DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
+DEFN: fptk            | dt_printer            ; (setv print_with_time (dt_printer :show_initialization_message True)) (print_with_time 1)
 ```

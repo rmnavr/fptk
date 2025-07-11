@@ -148,7 +148,6 @@
     #_ "cut_(xs, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
     (defn cut_ [xs start end [step None]] (get xs (slice_ start end step)))
 
-
 ; _____________________________________________________________________________/ }}}1
 
 ; [GROUP] Control flow ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -466,37 +465,34 @@
         (setv _prompt (sconcat line_01 "\n"
                                line_02_time1 " as " line_02_n " // " line_02_timeN))
         (return [_time_1_s _prompt _outp]))
-
+    ;;
     ;; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
-; _____________________________________________________________________________/ }}}1
-
-    #_ "| usage: 1) printer = dt_printer() -> initialized, 2) printer(*args) -> print with delta time"
-    (defn dt_printer []
+    #_ "| (setv print_with_time (dt_printer :show_initialization_message True)) (print_with_time 1)"
+    (defn dt_printer [[show_initialization_message True]]
         (setv time_getter hy.I.time.perf_counter)
-        ;
+        ;;
         (setv first_run True)
         (setv time_of_last_call (time_getter))
-        ;
+        ;;
         (defn printer [#* args]
             (nonlocal time_of_last_call)
+            (nonlocal show_initialization_message)
             (nonlocal first_run)
-            (when first_run (print "[Timer initialized]")
+            (when first_run (when show_initialization_message (print "[Timer initialized]"))
                             (setv first_run False)
                             (return None))
-            ;
+            ;;
             (setv prev_time time_of_last_call)
             (setv time_of_last_call (time_getter))
             (setv dt (- time_of_last_call prev_time))
-            ;
-            (print f"[since last call: dT = {dt :.9f} s]")
-            (print #* args)
+            ;;
+            (print f"[dT = {dt :.9f} s]" #* args)
             (return None))
-        ;
-        (printer "First run")
+        ;;
+        (printer "first run (this line will not be printed)")
         (return printer))
 
-    ; ; usage:
-    ; (setv print_with_time (dt_printer))
-    ; (print_with_time 2)
+; _____________________________________________________________________________/ }}}1
+
 
