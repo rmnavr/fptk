@@ -471,3 +471,32 @@
 
 ; _____________________________________________________________________________/ }}}1
 
+    #_ "| usage: 1) printer = dt_printer() -> initialized, 2) printer(*args) -> print with delta time"
+    (defn dt_printer []
+        (setv time_getter hy.I.time.perf_counter)
+        ;
+        (setv first_run True)
+        (setv time_of_last_call (time_getter))
+        ;
+        (defn printer [#* args]
+            (nonlocal time_of_last_call)
+            (nonlocal first_run)
+            (when first_run (print "[Timer initialized]")
+                            (setv first_run False)
+                            (return None))
+            ;
+            (setv prev_time time_of_last_call)
+            (setv time_of_last_call (time_getter))
+            (setv dt (- time_of_last_call prev_time))
+            ;
+            (print f"[since last call: dT = {dt :.9f} s]")
+            (print #* args)
+            (return None))
+        ;
+        (printer "First run")
+        (return printer))
+
+    ; ; usage:
+    ; (setv print_with_time (dt_printer))
+    ; (print_with_time 2)
+
