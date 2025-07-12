@@ -241,5 +241,5 @@ DEFN: fptk            | write_file            :: write_file(text, file_name, mod
 
 === Benchmarking ===
 DEFN: fptk            | with_execution_time   :: w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
-DEFN: fptk            | dt_printer            ; (setv print_with_time (dt_printer :show_initialization_message True)) (print_with_time 1)
+DEFN: fptk            | dt_print              ; use dt_printer('msg1', 'msg2', ...) normally, use dt_printer(fresh_run=True, 'msg1', ...) to reset timer
 ```

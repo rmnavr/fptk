@@ -440,13 +440,13 @@
           #^ str      [msg   ""]
         ]
         "returns tuple: 1) str of test result 2) function execution result"
-        (setv _count hy.I.time.perf_counter)
+        (setv _time_getter hy.I.time.perf_counter)
         (setv n (int n))
         ;;
-        (setv t0 (_count))
+        (setv t0 (_time_getter))
         (setv _outp (f))
         (do_n (dec n) (f))
-        (setv t1 (_count))
+        (setv t1 (_time_getter))
         (setv seconds (- t1 t0))
         (setv _time_1_s (/ seconds n))
         ;;
@@ -468,31 +468,22 @@
     ;;
     ;; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
-    #_ "| (setv print_with_time (dt_printer :show_initialization_message True)) (print_with_time 1)"
-    (defn dt_printer [[show_initialization_message True]]
-        (setv time_getter hy.I.time.perf_counter)
+    #_ "use dt_printer('msg1', 'msg2', ...) normally, use dt_printer(fresh_run=True, 'msg1', ...) to reset timer"
+    (defn dt_print
+        [ #* args
+          [fresh_run False]
+          [last_T    [None]]
+        ]
+        (when fresh_run (assoc last_T 0 None))
+        (setv _time_getter hy.I.time.perf_counter)
+        (setv curT (_time_getter))
         ;;
-        (setv first_run True)
-        (setv time_of_last_call (time_getter))
-        ;;
-        (defn printer [#* args]
-            (nonlocal time_of_last_call)
-            (nonlocal show_initialization_message)
-            (nonlocal first_run)
-            (when first_run (when show_initialization_message (print "[Timer initialized]"))
-                            (setv first_run False)
-                            (return None))
-            ;;
-            (setv prev_time time_of_last_call)
-            (setv time_of_last_call (time_getter))
-            (setv dt (- time_of_last_call prev_time))
-            ;;
-            (print f"[dT = {dt :.9f} s]" #* args)
-            (return None))
-        ;;
-        (printer "first run (this line will not be printed)")
-        (return printer))
+        (if (=  (get last_T 0) None)
+            (do (assoc last_T 0 curT)
+                (print "[Timer started]" #* args))
+            (do (setv dT (- curT (get last_T 0)))
+                (assoc last_T 0 curT)
+                (print f"[dT = {dT :.6f} s]" #* args))))
 
 ; _____________________________________________________________________________/ }}}1
-
-
+    
