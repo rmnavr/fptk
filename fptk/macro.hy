@@ -151,6 +151,7 @@
 
 	; === Macroses ===
 
+
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro f:: [#* macro_args]
@@ -161,7 +162,7 @@
 		`(of Callable ~fInputs ~fOutput))
 
 ; _____________________________________________________________________________/ }}}1
-; p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 ; ■ comment on (.mth 3 4) deconstruction ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
@@ -187,7 +188,7 @@
 
     (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
 
-	(defmacro p> [#* args]
+	(defmacro p: [#* args]
 		;
 		(setv pargs [])
 		(for [&arg args]
@@ -197,7 +198,7 @@
 					; operator.neg
 					(_isDottedAccess &arg)
 					(pargs.append `(partial ~&arg))
-					; (. mth 2 3) -> essentially (. obj mth 2 3)
+					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
 					(_isDottedMth &arg)
 					(do (pargs.append `(partial flip getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
@@ -206,14 +207,20 @@
 					; abs -> (partial abs)
 					(= (type &arg) hy.models.Symbol)
 					(pargs.append `(partial ~&arg))
+	                ; (fn/fm ...) -> no change
+                    (or (_isExprWithHeadSymbol &arg "fn")
+                        (_isExprWithHeadSymbol &arg "fm")
+                        (_isExprWithHeadSymbol &arg "f>"))
+                    (pargs.append &arg)
 					; (func 1 2) -> (partial func 1 2)
 					; (operator.add 3) -> (partial operator.add 3)
 					(= (type &arg) hy.models.Expression)
 					(pargs.append `(partial ~@(cut &arg 0 None)))
-					; etc -> no change
+					; (etc ...) -> (partial etc ...)
 					True
 					(pargs.append `(partial ~&arg))))
 	   `(rcompose ~@pargs))
+
 
 ; _____________________________________________________________________________/ }}}1
 ; pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -246,7 +253,7 @@
 		(setv args (sorted args))
 		(if (= (len args) 0)
 			(setv maxN 0)
-			(setv maxN (int (get args (- 1) (- 1)))))
+			(setv maxN (int (get args -1 -1))))
 		;
 		(setv inputs (lfor n (thru 1 maxN) (hy.models.Symbol f"%{n}")))
 		; (print (hy.repr `(fn [~@inputs] ~expr)))

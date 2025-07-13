@@ -480,7 +480,7 @@
         ;;
         (if (=  (get last_T 0) None)
             (do (assoc last_T 0 curT)
-                (print "[Timer started]" #* args))
+                (print "[ Timer started ]" #* args))
             (do (setv dT (- curT (get last_T 0)))
                 (assoc last_T 0 curT)
                 (print f"[dT = {dT :.6f} s]" #* args))))

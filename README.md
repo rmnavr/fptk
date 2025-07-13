@@ -63,7 +63,7 @@ Whole list of these things is given in auto-generated table:
 Full list of fptk macros:
 * `f::` — macro for annotating callables
 * `#L`, `fm`, `f>` — anonymous functions
-* `p>` — pipe of partials
+* `p:` — pipe of partials
 * `pluckm` — getter for collection of collections
 * `lns`, `&+`, `&+>`, `l>`, `l>=` — macros for lenses definition/composition/application
 
@@ -97,9 +97,9 @@ Also, `->` can be used instead of last `=>` (this is simply visual preference an
 - `fm` and `f>` currently support only args of form `%1`..`%9` (while `#%` reader macro can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- p> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `p>` — pipe of partials
+## `p:` — pipe of partials
 
 Works similar to hyrule `->` macro, but accepts only callables and does not need to be called immediately.
 Internally piping is implemented via partial application with [funcy.partial](https://funcy.readthedocs.io/en/stable/funcs.html#partial).
@@ -108,12 +108,13 @@ Example:
 ```hy
 (setv x 4)
                                      ; after application to x will produce at each step:
-(setv pipe (p> operator.neg          ; -4
+(setv pipe (p: operator.neg          ; -4
+			   (fn [x] x)			 ; -4    // fn and fm-macro can be used with p:
                (abs)                 ; 4
                (operator.add 4)      ; 8
                str                   ; '8'
-               (.__contains__ "8")   ; True  // this line demonstrates method call
-               .__class__            ; 'str' // this line demonstrates attribute access
+               (.__contains__ "8")   ; True  // demonstration of method call
+               .__class__            ; 'str' // demonstration of attribute access
                ))
 
 (print (pipe x))                     ; returns <class 'str'>
