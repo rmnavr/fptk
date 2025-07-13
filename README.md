@@ -83,18 +83,28 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- #L, fm, f> ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `fm` and `f>` — macros for writing lambdas
+## `fm`, `f>`, `lmapm` — macros for writing lambdas
+
+Following macros all have same similar `%i` arguments recognition:
+- `fm` defines lambda
+- `f>` defines and immediately applicates lambda
+- `lmapm` is "list map" that takes lambda for func of map
 
 ```hy
-(fm (* %1 2))         ; expands to: (fn [%1] (* %1 2))
-(f> (* %1 %2 10) 3 4) ; immediately applicates — will give here: 3*4*10 = 120
+(fm (* %1 2))				; -> (fn [%1] (* %1 2))
+(f> (* %1 %2 10) 3 4)     	; -> ((fn [%1 %2] (* %1 %2 10) 3 4)
+(lmapm (pow %1 2) [1 2 3] 	; -> (list (map (fn [%1] (pow %1 2)) [1 2 3]))
+
+; Just as original fn, fm will also work correctly with non-() forms:
+(fm abs)					; -> (fn [] abs) 
+(fm [%1 (str %2)])			; -> (fn [%1 %2] [%1 (str %2)])
 ```
 
-`fm` and `f>` have functionality similar to hyrule's `#%` reader macro, but:
-- `fm` and `f>` are more REPL-friendly than `#%` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
-- `fm` and `f>` currently support only args of form `%1`..`%9` (while `#%` reader macro can also work with args and kwargs)
+`fm` (and friends) has functionality similar to hyrule's `#%` reader macro, but:
+- `fm` is more REPL-friendly than `#%` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
+- `fm` currently support only args of form `%1`..`%9` (while `#%` reader macro can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
