@@ -69,7 +69,7 @@
         (import funcy [nth])        #_ "nth(n, xs) -> Optional elem | 0-based index; works also with dicts"
         (comment "py     | base  | slice | (slice start end step) | ")
         (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | gives empty list when none found")
-        (import  hyrule [ assoc ])  #_ "(assoc xs k1 v1 k2 v2) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
+        (import  hyrule [ assoc ])  #_ "(assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
         (require hyrule [ ncut ])   
 
     ;; one elem getters:
@@ -113,12 +113,15 @@
 
     (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
 
-    #_ "get_(xs, n) -> elem | same as get, but with 1-based index (will throw error for n=0)"
-    (defn get_ [xs n]
-        (when (dictQ xs) (return (get xs n)))
-        (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
-        (when (>= n 1) (return (get xs (dec n))))
-        (return (get xs n))) ;; this line covers both n<0 and n=dict_key
+    #_ "get_(xs, n1, n2, ...) -> elem | same as get, but with 1-based index (will throw error for n=0)"
+    (defn get_ [xs #* ns]
+        (setv ns_plus1 
+            (lfor &n ns
+                (do (when (= &n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+                    (if (and (intQ &n) (>= &n 1))
+                        (dec &n)
+                        &n)))) ;; this line covers both &n<0 and &n=dict_key        
+        (return (get xs #* ns_plus1)))
 
     #_ "nth_(n, xs) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
     (defn nth_ [n xs] 
@@ -251,8 +254,14 @@
     (import hyrule    [sign])
     (import operator  [neg])
 
+    #_ "(half x) = (/ x 2)"
     (defn half       [x] (/ x 2))
+
+    #_ "(double x) = (* x 2)"
     (defn double     [x] (* x 2))
+
+    #_ "(squared x) = (pow x 2)"
+    (defn squared    [x] (pow x 2))
 
     #_ "reciprocal(x) = 1/x literally |"
     (defn reciprocal [x] (/ 1 x))
@@ -327,7 +336,7 @@
     (import hyrule   [xor])
 
     (import operator [eq])              #_ "equal"
-    (import operator [ne :as neq])      #_ "non-equal"
+    (import operator [ne   :as neq])    #_ "non-equal"
     (import funcy    [even :as evenQ])
     (import funcy    [odd  :as oddQ])   ;;
 
@@ -345,6 +354,9 @@
 
     #_ "(istype tp x) -> (= (type x) tp) |"
     (defn istype [tp x] (= (type x) tp))
+
+    #_ "(oflenQ xs n) -> (= (len xs) n) |"
+    (defn oflenQ [xs n] (= (len xs) 3))
 
     (defn intQ   [x] (= (type x) int))
     (defn floatQ [x] (= (type x) float))

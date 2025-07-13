@@ -223,15 +223,33 @@
 
 
 ; _____________________________________________________________________________/ }}}1
-; pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro pluckm [indx iterable]
-		(cond ; .attr -> attr
+		(cond ; .attr -> "attr"
 			  (_isDottedAttr indx)
 			  (return `(lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
 			  ;
 			  True
 			  (return `(lpluck ~indx ~iterable))))
+
+	(defmacro getattrm [iterable #* args] ; first arg is «indx», second - is «default» (may be absent)
+        (setv indx (get args 0))
+        (cond (= (len args) 1)
+              (setv default_not_given True)
+              (= (len args) 2)
+              (do (setv default (get args 1))
+                  (setv default_not_given False)))
+		(cond ; .attr -> "attr"
+			  (_isDottedAttr indx)
+              (if default_not_given
+                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx))))
+                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx)) ~default)))
+			  ;
+			  True
+			  (if default_not_given
+                  (return `(getattr ~iterable ~indx))
+                  (return `(getattr ~iterable ~indx ~default)))))
 
 ; _____________________________________________________________________________/ }}}1
 ; fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -343,8 +361,4 @@
 	   `(&= ~variable (lns ~@lenses_args)))
 
 ; _____________________________________________________________________________/ }}}1
-
-
-    (help map)
-    
 

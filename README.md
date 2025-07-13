@@ -65,6 +65,7 @@ Full list of fptk macros:
 * `#L`, `fm`, `f>` — anonymous functions
 * `p:` — pipe of partials
 * `pluckm` — getter for collection of collections
+* `getattrm` — same as getattr, but with small syntax tweak
 * `lns`, `&+`, `&+>`, `l>`, `l>=` — macros for lenses definition/composition/application
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -83,7 +84,7 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `fm`, `f>`, `lmapm` — macros for writing lambdas
 
@@ -134,7 +135,7 @@ Notice that unlike in `->` macro, `.attr` is seen as attribute access rather tha
 This is also in accordance with `.attr` usage inside another fptk macros.
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `pluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
 
@@ -154,6 +155,20 @@ Reason for adding such syntax is the following:
 ; everything else is expanded to lpluck:
 (pluckm (+ i 3) xs) ; (lpluck (+ i 3) xs)
 (pluckm "key" xs)   ; (lpluck "key" xs)
+```
+
+
+<!-- __________________________________________________________________________/ }}}1 -->
+<!-- getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+## `getattrm`
+
+The only thing this macros does is allows `.attr` syntax for getattr
+(to be more consistent with fptk syntax):
+
+```hy
+(getatrm Point "x")		; -> (getattr Point "x")
+(getatrm Point .x)		; -> (getattr Point "x")
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
