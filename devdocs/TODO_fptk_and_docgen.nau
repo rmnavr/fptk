@@ -158,7 +158,6 @@
 
 // ____________________________________________________________________________/ }}}1
 
-
 	Publishing:
 	- naming of variables = docnames
 	- proper doc-strings

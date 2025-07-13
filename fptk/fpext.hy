@@ -180,10 +180,9 @@
     (import funcy   [partial])
     (import funcy   [rpartial])
     (import funcy   [compose])
-    (import funcy   [rcompose]) ;;
+    (import funcy   [rcompose]) 
 
-    #_ "ljuxt(f,g,...) = [f, g] applicator |"
-    (import funcy [ljuxt])
+    (import funcy   [ljuxt]) #_ "ljuxt(f,g,...) = [f, g] applicator |" ;;
 
     #_ "flip(f, a, b) = f(b, a) | example: (flip lmap [1 2 3] sqrt)"
     (defn flip [f a b] (f b a))

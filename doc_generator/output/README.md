@@ -78,7 +78,7 @@ INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key
 FROM: funcy           | nth                   :: nth(n, xs) -> Optional elem  ; 0-based index; works also with dicts
 INFO: py              | slice /base/          :: (slice start end step)
 INFO: hy              | cut /macro/           :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
-FROM: hyrule          | assoc                 :: (assoc xs k1 v1 k2 v2) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+FROM: hyrule          | assoc                 :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
 MACR: hyrule          | ncut
 FROM: funcy           | first                 :: first(xs) -> Optional elem
 FROM: funcy           | second                :: second(xs) -> Optional elem
@@ -96,7 +96,7 @@ FROM: funcy           | lpluck_attr           :: lpluck(attr_str, xs)
 
 === index-1-based getters ===
 FROM: hyrule          | range_ (<-thru)       :: range_(start, end, step) -> List  ; same as range, but with 1-based index
-DEFN: fptk            | get_                  :: get_(xs, n) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | get_                  :: get_(xs, n1, n2, ...) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | nth_                  :: nth_(n, xs) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | slice_                :: slice_(start, end, step)  ; same as slice, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
 DEFN: fptk            | cut_                  :: cut_(xs, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
@@ -122,8 +122,8 @@ FROM: funcy           | partial
 FROM: funcy           | rpartial
 FROM: funcy           | compose
 FROM: funcy           | rcompose
-FROM: funcy           | ljuxt                 :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
-DEFN: fptk            | flip
+FROM: funcy           | ljuxt                 :: ljuxt(f,g,...) = [f, g] applicator
+DEFN: fptk            | flip                  :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
 DEFN: fptk            | pflip                 :: pflip(f, a) = f(_, a) partial applicator  ; example: (lmap (pflip div 0.1) (thru 1 3))
 
 === APL: n-applicators ===
@@ -157,9 +157,10 @@ DEFN: fptk            | lreversed             :: lreversed(*args) = list(reverse
 FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
-FROM: operator        | neg
+FROM: operator        | neg                   ; (half x) = (/ x 2)
 DEFN: fptk            | half
-DEFN: fptk            | double
+DEFN: fptk            | double                ; (double x) = (* x 2)
+DEFN: fptk            | squared               ; (squared x) = (pow x 2)
 DEFN: fptk            | reciprocal            :: reciprocal(x) = 1/x literally
 FROM: math            | sqrt
 FROM: math            | dist                  :: dist(v1, v2) -> float  ; ≈ √((v1x-v2x)² + (v1y-v2y)² ...)
@@ -205,6 +206,7 @@ DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
 DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
 DEFN: fptk            | istype                :: (istype tp x) -> (= (type x) tp)
+DEFN: fptk            | oflenQ                :: (oflenQ xs n) -> (= (len xs) n)
 DEFN: fptk            | intQ
 DEFN: fptk            | floatQ
 DEFN: fptk            | dictQ
