@@ -63,7 +63,8 @@ FROM: pydantic        | BaseModel
 FROM: pydantic        | StrictInt
 FROM: pydantic        | StrictStr
 FROM: pydantic        | StrictFloat
-FROM: pydantic        | validate_args (<-validate_arguments) ; decorator for type-checking function arguments (but not return type)
+FROM: pydantic        | validate_call         ; decorator for type-checking func args
+SETV: fptk            | validateF             ; same as validate_call but with option validate_return=True set (so, it validates args + return type)
 SETV: fptk            | StrictNumber          ; Int or Float
 FROM: returns.result  | Result
 FROM: returns.result  | Success
@@ -205,8 +206,9 @@ DEFN: fptk            | zeroQ                 ; checks directly via (= x 0)
 DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
 DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
-DEFN: fptk            | istype                :: (istype tp x) -> (= (type x) tp)
+DEFN: fptk            | oftypeQ               :: (oftypeQ tp x) -> (= (type x) tp)
 DEFN: fptk            | oflenQ                :: (oflenQ xs n) -> (= (len xs) n)
+DEFN: fptk            | on                    :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
 DEFN: fptk            | intQ
 DEFN: fptk            | floatQ
 DEFN: fptk            | dictQ
@@ -215,6 +217,7 @@ FROM: funcy           | tupleQ (<-is_tuple)   :: tupleQ(seq)  ; checks if seq is
 DEFN: fptk            | fnot                  :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
 
 === Strings ===
+DEFN: fptk            | strlen                :: strlen(text)  ; rename of len, underlines usage on strings
 DEFN: fptk            | str_join              :: str_join(seq, sep='')  ; rearrangement of funcy.str_join
 DEFN: fptk            | str_replace           ; str_replace(string, old, new, count=-1) ; rename of string.replace method
 DEFN: fptk            | lowercase

@@ -45,7 +45,10 @@
     (import pydantic    [StrictInt])
     (import pydantic    [StrictStr])
     (import pydantic    [StrictFloat])
-    (import pydantic    [validate_arguments :as validate_args]) #_ "decorator for type-checking function arguments (but not return type)"
+    (import pydantic    [validate_call]) #_ "decorator for type-checking func args"
+
+    #_ "same as validate_call but with option validate_return=True set (so, it validates args + return type)"
+    (setv validateF (validate_call :validate_return True))
 
     #_ "Int or Float"
     (setv StrictNumber (get Union #(StrictInt StrictFloat)))
@@ -361,7 +364,8 @@
     (defn on [f check x y #* args]
         (reduce check (lmap f [x y #* args])))
 
-    (print (on len eq [1 2] [5 3] [1 2 3]))
+
+
 
     (defn intQ   [x] (= (type x) int))
     (defn floatQ [x] (= (type x) float))
@@ -507,3 +511,4 @@
 
 ; _____________________________________________________________________________/ }}}1
     
+
