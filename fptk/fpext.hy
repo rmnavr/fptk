@@ -377,6 +377,9 @@
 
 ; [GROUP] Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+    #_ "strlen(text) | rename of len, underlines usage on strings"
+    (defn strlen [text] (len text))
+
     #_ "str_join(seq, sep='') | rearrangement of funcy.str_join"
     (defn str_join [seq [sep ""]]
         (if (bool sep)
