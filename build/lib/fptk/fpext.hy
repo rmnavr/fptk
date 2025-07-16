@@ -351,17 +351,11 @@
     #_ "| checks literally if (= (len xs) 0)"
     (defn zerolenQ [xs] (= (len xs) 0))
 
-    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
-    (defn oftypeQ [tp x] (= (type x) tp))
+    #_ "(istype tp x) -> (= (type x) tp) |"
+    (defn istype [tp x] (= (type x) tp))
 
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
     (defn oflenQ [xs n] (= (len xs) 3))
-
-    #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
-    (defn on [f check x y #* args]
-        (reduce check (lmap f [x y #* args])))
-
-    (print (on len eq [1 2] [5 3] [1 2 3]))
 
     (defn intQ   [x] (= (type x) int))
     (defn floatQ [x] (= (type x) float))
