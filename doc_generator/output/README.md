@@ -60,12 +60,12 @@ FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
 FROM: pydantic        | BaseModel
-FROM: pydantic        | StrictInt
-FROM: pydantic        | StrictStr
-FROM: pydantic        | StrictFloat
+FROM: pydantic        | Int (<-StrictInt)
+FROM: pydantic        | Str (<-StrictStr)
+FROM: pydantic        | Float (<-StrictFloat)
+SETV: fptk            | Number                ; Int or Float
 FROM: pydantic        | validate_call         ; decorator for type-checking func args
 SETV: fptk            | validateF             ; same as validate_call but with option validate_return=True set (so, it validates args + return type)
-SETV: fptk            | StrictNumber          ; Int or Float
 FROM: returns.result  | Result
 FROM: returns.result  | Success
 FROM: returns.result  | Failure
@@ -225,6 +225,7 @@ DEFN: fptk            | endswith              ; endswith(string, ending) -> bool
 DEFN: fptk            | strip
 DEFN: fptk            | lstrip
 DEFN: fptk            | rstrip
+DEFN: fptk            | pad_string            :: pad_string(string, required_len, fill_char=' ', pad_right=False  ; by default adds new symbols to the right
 
 === Regex ===
 FROM: re              | re_sub (<-sub)        :: re_sub(rpattern, replacement, string, count=0, flags=0)

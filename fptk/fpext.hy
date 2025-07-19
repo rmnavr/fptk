@@ -44,11 +44,10 @@
     (import pydantic    [BaseModel])
     (import pydantic    [StrictInt   :as Int])
     (import pydantic    [StrictStr   :as Str])
-    (import pydantic    [StrictFloat :as Float])
+    (import pydantic    [StrictFloat :as Float]) ;;
 
     #_ "Int or Float"
-    int str float 
-    (setv Number (get Union #(Int Float)))
+    (setv Number (get Union #(Int Float))) ;;
 
     (import pydantic    [validate_call]) #_ "decorator for type-checking func args" ;;
 
