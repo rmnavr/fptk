@@ -10,8 +10,8 @@ that are supposed to be imported into main scope altogether to always have them 
 
 Intended usage of **fptk** is:
 ```hy
-(import fptk *)		; import of modules, functions and classes
-(require fptk *)	; import of macros
+(import fptk *)     ; import of modules, functions and classes
+(require fptk *)    ; import of macros
 ```
 
 ---
@@ -94,13 +94,13 @@ Following macros all have same similar `%i` arguments recognition:
 - `lmapm` is "list map" that takes lambda for func of map
 
 ```hy
-(fm (* %1 2))				; -> (fn [%1] (* %1 2))
-(f> (* %1 %2 10) 3 4)     	; -> ((fn [%1 %2] (* %1 %2 10) 3 4)
-(lmapm (pow %1 2) [1 2 3] 	; -> (list (map (fn [%1] (pow %1 2)) [1 2 3]))
+(fm (* %1 2))               ; -> (fn [%1] (* %1 2))
+(f> (* %1 %2 10) 3 4)       ; -> ((fn [%1 %2] (* %1 %2 10) 3 4)
+(lmapm (pow %1 2) [1 2 3]   ; -> (list (map (fn [%1] (pow %1 2)) [1 2 3]))
 
 ; Just as original fn, fm will also work correctly with non-() forms:
-(fm abs)					; -> (fn [] abs) 
-(fm [%1 (str %2)])			; -> (fn [%1 %2] [%1 (str %2)])
+(fm abs)                    ; -> (fn [] abs) 
+(fm [%1 (str %2)])          ; -> (fn [%1 %2] [%1 (str %2)])
 ```
 
 `fm` (and friends) has functionality similar to hyrule's `#%` reader macro, but:
@@ -120,7 +120,7 @@ Example:
 (setv x 4)
                                      ; after application to x will produce at each step:
 (setv pipe (p: operator.neg          ; -4
-			   (fn [x] x)			 ; -4    // fn and fm-macro can be used with p:
+               (fn [x] x)            ; -4    // fn and fm-macro can be used with p:
                (abs)                 ; 4
                (operator.add 4)      ; 8
                str                   ; '8'
@@ -167,8 +167,8 @@ The only thing this macros does is allows `.attr` syntax for getattr
 (to be more consistent with fptk syntax):
 
 ```hy
-(getatrm Point "x")		; -> (getattr Point "x")
-(getatrm Point .x)		; -> (getattr Point "x")
+(getatrm Point "x")     ; -> (getattr Point "x")
+(getatrm Point .x)      ; -> (getattr Point "x")
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
