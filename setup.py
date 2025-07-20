@@ -20,20 +20,20 @@ class install(install):
 libs_required = [ 'hy >= 1',
                   'funcy >= 2',
                   'returns >= 0.23',
-                  'pydantic >= 1.10',
+                  'pydantic >= 2.0',
                   'lenses >= 1.2'
                 ]
 
 setup(
     name              = 'fptk',
-    version           = '0.2.2.dev3', 
+    version           = '0.2.2.dev4', 
     setup_requires    = ['wheel'] + libs_required,
     install_requires  = libs_required,
     packages          = setuptools.find_packages(exclude = ["private*"]),
     package_data      = {'': ['*.hy']},
     author            = 'Roman Averyanov',
     author_email      = 'averrmn@gmail.com',
-    description       = 'Curated list of functional-programming funcs and classes for hy lang',
+    description       = 'Curated list of functional-programming funcs/classes/modules/macros for hy lang',
     url               = 'https://github.com/rmnavr/fptk',
     python_requires   = '>=3.9',
     classifiers       = [ 'Programming Language :: Hy',

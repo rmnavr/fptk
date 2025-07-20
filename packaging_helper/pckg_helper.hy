@@ -1,6 +1,7 @@
     
     (import os)
     (import subprocess)
+    (import _fptk_local *) (require _fptk_local *)
     
 ; [F] run shell command ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -19,7 +20,80 @@
             (print result.stderr)))
 
 ; _____________________________________________________________________________/ }}}1
+; [F] vim cells ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    ; 1) Run doc_generator.hy
-    (run_shell_command "hy doc_generator.hy")
+    ; this is required because VimCells messes with {({ and such
+    (setv $OP3 (smul "{" 3))
+    (setv $CL3 (smul "}" 3))
+
+    (defn #^ str
+        increase_all_vimcells_depth
+        [ #^ str code
+        ]
+        (sconcat "changes all (((N and )))N to (((N+1 and )))N+1, also making cells headers shorter")
+        (re_sub (sconcat r"(‾‾‾‾‾\\ " $OP3 r"|_____/ " $CL3 r")(\d)")
+                (fm (sconcat (drop 5 (%1.group 1)) (str (inc (int (%1.group 2))))))
+                code))
+
+    (defn #^ str
+        wrap_in_new_vimcell
+        [ #^ str cell_header
+          #^ str code
+        ]
+        "adds vimcell opener and closer around string"
+        (setv opener 
+              (sconcat "; " cell_header " "
+                       (smul "‾" (- 76 (strlen cell_header)))
+                       "\\ "
+                       (smul "{" 3)
+                       "1"))
+        (setv closer (sconcat "; _____________________________________________________________________________/ " $CL3 "1"))
+        (sconcat opener "\n"
+                 (increase_all_vimcells_depth code)
+                 "\n" closer))
+
+; _____________________________________________________________________________/ }}}1
+; [F] get version in setup.py ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (defn #^ str
+        extract_version_from_setup_py 
+        [ #^ str setup_py_content
+        ]
+        (re_find r"setup\(.*version\s*=\s*'(.*?)'"
+                 setup_py_content
+                 re.DOTALL))
+
+; _____________________________________________________________________________/ }}}1
+
+    ; 1) Run doc_generator.hy :
+
+        ; && chains cmd commands (2nd is run only if 1st was successful)
+        (run_shell_command "cd doc_generator && hy doc_generator.hy")
+
+    ; 2) Generate _fptk_local.hy :
+
+        (setv fptk_funcs_code     (->> "../fptk/fpext.hy"
+                                       read_file
+                                       (wrap_in_new_vimcell "functions and modules")))
+
+        (setv fptk_macros_code    (->> "../fptk/macro.hy"
+                                       read_file
+                                       (wrap_in_new_vimcell "macros")))
+
+        (setv version_in_setup_py (extract_version_from_setup_py (read_file "../setup.py")))
+
+        (write_file (sconcat "\n"
+                             "; This is local version of github.com/rmnavr/fptk lib.\n"
+                             "; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.\n"
+                             "; This file was generated from local git version: " version_in_setup_py 
+                             "\n\n"
+                             fptk_funcs_code "\n"
+                             fptk_macros_code
+                             "\n\n")
+                    "generated_fptk_local/_fptk_local.hy")
+
+        ; ---------------------------
+
+        (print "File generated_fptk_local/_fptk_local.hy written!")
+        (print (sconcat "(version in setup.py: " version_in_setup_py ")")) 
 
