@@ -375,7 +375,15 @@
 ; md file header str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv $HEADER
-"# Auto-generated full list of FPTK entities (except macros)
+"
+---
+fptk functions, macroses and imported modules:
+1. You are here -> [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
+2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
+3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
+---
+
+# Auto-generated full list of FPTK entities (except macros)
 
 ## Legend
 
@@ -463,10 +471,10 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
         [ #^ FGroup fgroup ]
         (lprint (group2str_list fgroup)))
 
-    (defn generate_doc
+    (defn generate_and_write_doc
         [ #^ str source_file
           #^ str output_file
-          #^ str [printQ False]
+          #^ str [printQ False] #_ "will also print table of functions (without header) into stdout"
         ]
         (setv _code       (read_file source_file))
         (setv _groups     (find_fgroups _code))
@@ -483,5 +491,5 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 ; _____________________________________________________________________________/ }}}1
 
     (setv $SOURCE "../fptk/fpext.hy")
-    (setv $OUTPUT "output/README.md")
-    (generate_doc $SOURCE $OUTPUT :printQ True)
+    (setv $OUTPUT "../docs/functions.md")
+    (generate_and_write_doc $SOURCE $OUTPUT :printQ True)

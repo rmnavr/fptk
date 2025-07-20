@@ -5,5 +5,5 @@
     - git (local) + push to github
 
 	Then:
-	- install 0.2.0 localy immediately
-	- change setup.py version to 0.2.1-develop
+	- install 0.2.0 locally immediately
+	- change setup.py version to 0.2.1devN

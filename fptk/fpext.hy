@@ -91,27 +91,27 @@
         #_ "beforelast(xs) -> Optional elem |"
         (defn beforelast [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
 
-        (import funcy [last])       #_ "last(xs) -> Optional elem" 
+        (import funcy [last])       #_ "last(xs) -> Optional elem |" 
 
     ;; list getters:
 
         #_ "rest(xs) -> List | drops 1st elem of list"
         (defn rest       [xs] (get xs (slice 1 None)))
 
-        #_ "rest(xs) -> List | drops last elem of list"
+        #_ "butlast(xs) -> List | drops last elem of list"
         (defn butlast    [xs] (get xs (slice None -1)))
 
-        #_ "drop(n, xs) -> List | drops from start/end of the list"
+        #_ "drop(n, xs) -> List | drops n elems from start of the list; when n<0, drops from end of the list"
         (defn drop       [n xs] (if (>= n 0) (cut xs n None) (cut xs None n)))
 
-        #_ "take(n, xs) -> List | takes from start/end of the list"
+        #_ "take(n, xs) -> List | takes n elems from start; when n<0, takes from end of the list"
         (defn take       [n xs] (if (>= n 0) (cut xs None n) (cut xs (+ (len xs) n) None)))
 
         #_ "pick(ns, xs) -> List | throws error if idx doesn't exist; also works with dicts keys"
         (defn pick       [ns xs] (lfor &n ns (get xs &n)))
 
         (import  funcy  [lpluck])       #_ "lpluck(key, xs) | works also with dicts"
-        (import  funcy  [lpluck_attr])  #_ "lpluck(attr_str, xs) |" ;;
+        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr_str, xs) |" ;;
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
