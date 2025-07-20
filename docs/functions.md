@@ -139,16 +139,16 @@ DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs) 
 
 === APL: Threading ===
 INFO: py              | map /base/            ; usage: map(func, *iterables) -> map object
-FROM: funcy           | lmap                  ; lmap(f, *seqs) -> List
+FROM: funcy           | lmap                  :: lmap(f, *seqs) -> List
 FROM: itertools       | starmap               ; starmap from itertools; usage: starmap(f, seq)
 DEFN: fptk            | lstarmap              :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
 FROM: functools       | reduce                :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
-INFO: py              | zip /base/            ; zip(*iterables) -> zip object
-DEFN: fptk            | lzip                  ; lzip(*iterables) -> List | literally just list(zip(*iterables)) |
+INFO: py              | zip /base/            :: zip(*iterables) -> zip object
+DEFN: fptk            | lzip                  :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
 
 === APL: Filtering ===
 INFO: py              | filter /base/         :: filter(f or None, xs) -> filter object  ; when f=None, checks if elems are True
-FROM: funcy           | lfilter               ; lfilter(pred, seq) -> List
+FROM: funcy           | lfilter               :: lfilter(pred, seq) -> List
 DEFN: fptk            | fltr1st               :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
 DEFN: fptk            | count_occurrences     :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 

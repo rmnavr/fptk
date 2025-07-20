@@ -245,7 +245,7 @@
 ; [GROUP] APL: Threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | map || usage: map(func, *iterables) -> map object")
-    (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List"
+    (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
     (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
 
     #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
@@ -255,9 +255,9 @@
 
     (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
 
-    (comment "py | base | zip || zip(*iterables) -> zip object")
+    (comment "py | base | zip | zip(*iterables) -> zip object |")
     
-    #_ "lzip(*iterables) -> List | literally just list(zip(*iterables)) |"
+    #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
     (defn lzip [#* iterables] (list (zip #* iterables)))
 
 ; ________________________________________________________________________/ }}}2
@@ -265,7 +265,7 @@
 ; [GROUP] APL: Filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | filter | filter(f or None, xs) -> filter object | when f=None, checks if elems are True")
-    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List"
+    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List |"
 
     #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
     (defn fltr1st [f seq] (next (gfor &x seq :if (f &x) &x) None))
@@ -647,7 +647,6 @@
 
 ; ________________________________________________________________________/ }}}2
     
-
 
 ; _____________________________________________________________________________/ }}}1
 ; macros ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
