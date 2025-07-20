@@ -84,7 +84,7 @@ For context, original lenses library offers `&` and `&=` functions that are used
 ```
 
 fptk lens macros (`l>`, `l>=`, `&+` and `&+>`) do not aim to replace original `&` and `&=` functions.
-They aim to extend number of ways in which lenses can be composed sintactically.
+They aim to extend number of ways in which lenses can be composed syntactically.
 ```hy
 ; l> is used to apply SF, l>= also updates value:
 (l>  xs 1 (Each) (modify sqrt))     ; ((. lens [1] (Each) (modify sqrt)) xs)

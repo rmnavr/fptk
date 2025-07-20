@@ -492,4 +492,4 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
     (setv $SOURCE "../fptk/fpext.hy")
     (setv $OUTPUT "../docs/functions.md")
-    (generate_and_write_doc $SOURCE $OUTPUT :printQ True)
+    (generate_and_write_doc $SOURCE $OUTPUT :printQ False)
