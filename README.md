@@ -10,16 +10,9 @@ that are supposed to be imported into main scope altogether to always have them 
 
 Intended usage of **fptk** is:
 ```hy
-(import fptk *)     ; import of modules, functions and classes
-(require fptk *)    ; import of macros
+(import fptk *)     ; import modules, functions and classes
+(require fptk *)    ; import macros
 ```
-
----
-
-Table of Contents:
-- [Topics that fptk covers](#Topics-that-fptk-covers)
-- [Documentation](#Documentation)
-- [Installation](#Installation)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
@@ -30,7 +23,7 @@ Table of Contents:
 **fptk** aims to unite and bring into main scope:
 - [x] Full modules that are math and FP-relevant (math, operator, itertools, ...)
 - [x] Buffed getters (first, second, last, rest, ...)
-- [x] 1-based index variants of basic getters (I can't stand slicing with 0-based index)
+- [x] 1-based index variants of basic getters (don't worry, fptk does not enforce using them)
 - [x] [lenses](https://github.com/ingolemo/python-lenses) for manipulating deeply nested immutable data
 - [x] APL-like functions for mapping, filtering, partitioning, etc. (source libs: funcy, itertools, etc.)
 - [x] Functional composition/piping/currying (source libs: hyrule, funcy, itertools, etc.)
@@ -41,7 +34,7 @@ Table of Contents:
 
 Currently under development:
 - [ ] mini-DSL for SQL-style queries into collections
-- [ ] Strict type checking (source lib: pydantic)
+- [ ] Optional strict type checking (source lib: pydantic)
 - [ ] Immutable structures (source lib: under consideration)
 - [ ] Monadic machinery (source libs: [returns](https://github.com/dry-python/returns))
 
@@ -60,7 +53,7 @@ Currently under development:
 # Installation
 
 ```
-pip install git+https://github.com/rmnavr/fptk.git@0.2.0
+pip install git+https://github.com/rmnavr/fptk.git@0.2.1
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->

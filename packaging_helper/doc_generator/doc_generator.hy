@@ -459,7 +459,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
     (defn #^ (of List str)
         group2str_list [ #^ FGroup fgroup ]
         (flatten [ (sconcat "=== " fgroup.name " ===")
-                   (lmap (p> entity2str
+                   (lmap (p: entity2str
                              rstrip) ; rstrip removes possible spaces on the right (to not invoke «next line» in *.md)
                          (find_all fgroup)) 
                    "" ]))
@@ -493,3 +493,4 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
     (setv $SOURCE "../../fptk/fpext.hy")
     (setv $OUTPUT "../../docs/functions.md")
     (generate_and_write_doc $SOURCE $OUTPUT :printQ False)
+

@@ -1,7 +1,7 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.2.dev3
+; This file was generated from local git version: 0.2.2.dev4
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -24,17 +24,16 @@
     (import pprint [pprint])    
 
     (import hyrule)             #_ "hy base module"
-    (import funcy)              #_ "3rd party"
+    (import funcy)              #_ "3rd party module (FP related)"
+    (import lenses [lens])      #_ "3rd party module (for working with immutable structures)"
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (require hyrule [of])
+    (require hyrule [of])  #_ "| (of List int) -> List[int]"
 
     (import dataclasses [dataclass])
     (import enum        [Enum])
-    (import abc         [ABC])
-    (import abc         [abstractmethod])
     (import typing      [List])
     (import typing      [Tuple])
     (import typing      [TypedDict])
@@ -48,84 +47,91 @@
     (import typing      [Type])
 
     (import pydantic    [BaseModel])
-    (import pydantic    [StrictInt   :as Int])
-    (import pydantic    [StrictStr   :as Str])
-    (import pydantic    [StrictFloat :as Float]) ;;
+    (import pydantic    [StrictInt   :as Int])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictStr   :as Str])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictFloat :as Float])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
 
-    #_ "Int or Float"
-    (setv Number (get Union #(Int Float))) ;;
+    #_ "Union of Int and Float"
+    (setv Number (of Union #(Int Float))) ;;
 
     (import pydantic    [validate_call]) #_ "decorator for type-checking func args" ;;
 
-    #_ "same as validate_call but with option validate_return=True set (so, it validates args + return type)"
+    #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))
 
-
-    (import returns.result  [Result])
-    (import returns.result  [Success])
-    (import returns.result  [Failure])
-
-    (import funcy [isnone])
-    (import funcy [notnone])
+    (import returns.result  [Result])   #_ "Result monad"
+    (import returns.result  [Success])  #_ "One of Result monad constructor"
+    (import returns.result  [Failure])  #_ "One of Result monad constructor"
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
-
-    (import  lenses [lens])
 
     ;; dub basics:
 
         (comment "hy     | macro | .     | (. xs [n1] [n2] ...) -> xs[n1][n2]... | throws error when not found")
         (comment "hy     | macro | get   | (get xs n #* keys) -> xs[n][key1]... | throws error when not found")
-        (import funcy [nth])        #_ "nth(n, xs) -> Optional elem | 0-based index; works also with dicts"
+        (import funcy [nth])        #_ "nth(n, seq) -> Optional elem | 0-based index; works also with dicts"
         (comment "py     | base  | slice | (slice start end step) | ")
         (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | gives empty list when none found")
-        (import  hyrule [ assoc ])  #_ "(assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
-        (require hyrule [ ncut ])   
+
+        (import  hyrule [assoc])  #_ "(assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
+        (require hyrule [ncut])   
 
     ;; one elem getters:
 
-        (import funcy [first])      #_ "first(xs) -> Optional elem |"
-        (import funcy [second])     #_ "second(xs) -> Optional elem |" ;;
+        (import funcy [first])      #_ "first(seq) -> Optional elem |"
+        (import funcy [second])     #_ "second(seq) -> Optional elem |" ;;
 
-        #_ "third(xs) -> Optional elem |"
-        (defn third      [xs] (if (<= (len xs) 2) (return None) (return (get xs 2))))
+        #_ "third(seq) -> Optional elem |"
+        (defn third [seq] (if (<= (len seq) 2) (return None) (return (get seq 2))))
 
-        #_ "fourth(xs) -> Optional elem |"
-        (defn fourth     [xs] (if (<= (len xs) 3) (return None) (return (get xs 3))))
+        #_ "fourth(seq) -> Optional elem |"
+        (defn fourth [seq] (if (<= (len seq) 3) (return None) (return (get seq 3))))
 
-        #_ "beforelast(xs) -> Optional elem |"
-        (defn beforelast [xs] (if (<= (len xs) 1) (return None) (return (get xs -2))))
+        #_ "beforelast(seq) -> Optional elem |"
+        (defn beforelast [seq] (if (<= (len seq) 1) (return None) (return (get seq -2))))
 
-        (import funcy [last])       #_ "last(xs) -> Optional elem |" 
+        (import funcy [last])       #_ "last(seq) -> Optional elem |" 
 
     ;; list getters:
 
-        #_ "rest(xs) -> List | drops 1st elem of list"
-        (defn rest       [xs] (get xs (slice 1 None)))
+        #_ "rest(seq) -> List | drops 1st elem of list"
+        (defn rest [seq] "drops 1st elem of list" (get seq (slice 1 None)))
 
-        #_ "butlast(xs) -> List | drops last elem of list"
-        (defn butlast    [xs] (get xs (slice None -1)))
+        #_ "butlast(seq) -> List | drops last elem of list"
+        (defn butlast [seq] "drops last elem of list" (get seq (slice None -1)))
 
-        #_ "drop(n, xs) -> List | drops n elems from start of the list; when n<0, drops from end of the list"
-        (defn drop       [n xs] (if (>= n 0) (cut xs n None) (cut xs None n)))
+        #_ "drop(n, seq) -> List | drops n>=0 elems from start of the list; when n<0, drops from end of the list"
+        (defn drop [n seq]
+            "drops n>=0 elems from start of seq; when n<0, drops from end of the seq"
+            (if (>= n 0) (cut seq n None) (cut seq None n)))
 
-        #_ "take(n, xs) -> List | takes n elems from start; when n<0, takes from end of the list"
-        (defn take       [n xs] (if (>= n 0) (cut xs None n) (cut xs (+ (len xs) n) None)))
+        #_ "take(n, seq) -> List | takes n elems from start; when n<0, takes from end of the list"
+        (defn take [n seq]
+            "takes n>=0 elems from start of seq; when n<0, takes from end of the seq"
+            (if (>= n 0) (cut seq None n) (cut seq (+ (len seq) n) None)))
 
-        #_ "pick(ns, xs) -> List | throws error if idx doesn't exist; also works with dicts keys"
-        (defn pick       [ns xs] (lfor &n ns (get xs &n)))
+        #_ "pick(ns, seq) -> List | throws error if some of ns doesn't exist; ns can be list of ints or dict keys"
+        (defn pick [ns seq]
+            " pics elems ns from seq,
+              throws error if some of ns doesn't exist,
+              ns can be list of dicts keys"
+            (lfor &n ns (get seq &n)))
 
-        (import  funcy  [lpluck])       #_ "lpluck(key, xs) | works also with dicts"
-        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr_str, xs) |" ;;
+        (import  funcy  [lpluck])       #_ "lpluck(key, mappings) | gets same key from every mapping, mappings can be list of lists, list of dicts, etc."
+        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr, objects) | " ;;
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
 
-    #_ "get_(xs, n1, n2, ...) -> elem | same as get, but with 1-based index (will throw error for n=0)"
+    #_ "get_(xs, *ns) -> elem | same as get, but with 1-based index (will throw error for n=0)"
     (defn get_ [xs #* ns]
+        " same as hy get macro, but with 1-based index,
+          can also work with dict keys,
+          will throw error for n=0,
+          will throw error if elem not found (just like hy get macro)"
         (setv ns_plus1 
             (lfor &n ns
                 (do (when (= &n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
@@ -134,19 +140,25 @@
                         &n)))) ;; this line covers both &n<0 and &n=dict_key        
         (return (get xs #* ns_plus1)))
 
-    #_ "nth_(n, xs) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
-    (defn nth_ [n xs] 
+    #_ "nth_(n, seq) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
+    (defn nth_ [n seq] 
+        " same as nth, but with 1-based index,
+          will throw error for n=0,
+          will return None if elem not found (just like nth)"
         (when (dictQ xs) (return (nth n xs)))
         (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (nth (dec n) xs)))
         (return (nth n xs))) ;; this line covers both n<0 and n=dict_key
 
-    #_ "slice_(start, end, step) | same as slice, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
+    #_ "slice_(start, end, step) | similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)"
     (defn slice_
         [ start
           end
           [step None]
         ]
+        " similar to py slice, but:
+          - has 1-based index
+          - won't take None for start and end arguments "
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
               (=  start 0) (raise (Exception "start=0 can't be used with 1-based getter"))
@@ -159,8 +171,11 @@
               True        (raise (Exception "end in 1-based getter is probably not an integer")))
         (return (slice _start _end step)))
 
-    #_ "cut_(xs, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
-    (defn cut_ [xs start end [step None]] (get xs (slice_ start end step)))
+    #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
+    (defn cut_ [seq start end [step None]]
+        " same as hy cut macro, but with 1-based index,
+          and won't take None or 0 for start and end arguments"
+        (get xs (slice_ start end step)))
 
 ; ________________________________________________________________________/ }}}2
 
@@ -190,16 +205,20 @@
     (import funcy   [autocurry])
     (import funcy   [partial])
     (import funcy   [rpartial])
-    (import funcy   [compose])
+    (import funcy   [compose])  
     (import funcy   [rcompose]) 
 
-    (import funcy   [ljuxt]) #_ "ljuxt(f,g,...) = [f, g] applicator |" ;;
+    (import funcy   [ljuxt]) #_ "ljuxt(*fs) = [f1, f2, ...] applicator |" ;;
 
     #_ "flip(f, a, b) = f(b, a) | example: (flip lmap [1 2 3] sqrt)"
-    (defn flip [f a b] (f b a))
+    (defn flip [f a b] "flip(f, a, b) = f(b, a)" (f b a))
 
-    #_ "pflip(f, a) = f(_, a) partial applicator | example: (lmap (pflip div 0.1) (thru 1 3))"
-    (defn pflip [f a] (fn [%x] (f %x a)))
+    #_ "pflip(f, a)| partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))"
+    (defn pflip
+        [f a]
+        " flips arguments and partially applies,
+          example: pflip(f, a)(b) = f(b, a)"
+        (fn [%x] (f %x a)))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -207,53 +226,65 @@
     (require hyrule [do_n])     #_ "(do_n   n #* body) -> None |"
     (require hyrule [list_n])   #_ "(list_n n #* body) -> List |"
 
-    #_ "nest(n, f) | f(f(f(...f)))"
-    (defn nest [n f] (compose #* (list_n n f)))
+    #_ "nest(n, f) | f(f(f(...f))), returns function"
+    (defn nest [n f]
+        " f(f(f(...f))), where nesting is n times deep,
+          returns function"
+        (compose #* (list_n n f)))
 
     #_ "apply_n(n, f, *args, **kwargs) | f(f(f(...f(*args, **kwargs))"
-    (defn apply_n [n f #* args #** kwargs] ((compose #* (list_n n f)) #* args #** kwargs))
+    (defn apply_n [n f #* args #** kwargs]
+        " applies f to args and kwargs,
+          than applies f to result of prev application,
+          and this is repeated in total for n times
+
+          n=1 is simply f(args, kwargs)"
+        ((compose #* (list_n n f)) #* args #** kwargs))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: Threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (comment "py | base | map | map(f, *xss) -> iterator | ")
-    (import funcy     [lmap])       #_ "lmap(f, *xss) -> List"
-    (import itertools [starmap])    #_ "starmap(f, xs)" ;;
+    (comment "py | base | map || usage: map(func, *iterables) -> map object")
+    (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List"
+    (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
 
-    #_ "lstarmap(f,xs) -> List |"
-    (defn lstarmap [f xs] (list (starmap f xs)))
+    #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
+    (defn lstarmap [f #* seqs]
+        "literally just list(starmap(f, *seqs))"
+        (list (starmap f #* seqs)))
 
-    (import functools [reduce])  #_ "reduce(f, xs[, x0]) -> value | reduce + monoid = binary-function for free becomes n-arg-function"
+    (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
 
-    (comment "py | base | zip | zip(*xss) -> iterator I guess | ")
+    (comment "py | base | zip || zip(*iterables) -> zip object")
     
-    #_ "lzip(*xss) = list(zip(*xss)) |"
-    (defn lzip [#* args] (list (zip #* args)))
+    #_ "lzip(*iterables) -> List | literally just list(zip(*iterables)) |"
+    (defn lzip [#* iterables] (list (zip #* iterables)))
 
 ; ________________________________________________________________________/ }}}2
+
 ; [GROUP] APL: Filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | filter | filter(f or None, xs) -> filter object | when f=None, checks if elems are True")
-    (import funcy [lfilter]) #_ "lfilter(f, xs) -> List"
+    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List"
 
-    #_ "fltr1st(f, xs) -> Optional elem | returns first found element (or None)"
-    (defn fltr1st [f xs] (next (gfor &x xs :if (f &x) &x) None))
+    #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
+    (defn fltr1st [f seq] (next (gfor &x seq :if (f &x) &x) None))
 
-    #_ "count_occurrences(elem, xs) -> int | rename of list.count method"
-    (defn count_occurrences [elem container] (container.count elem))
+    #_ "count_occurrences(elem, seq) -> int | rename of list.count method"
+    (defn count_occurrences [elem seq] (container.count elem))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: Work on lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (import hyrule     [flatten])   #_ "flattens to the bottom" ;;
+    (import hyrule [flatten])   #_ "flattens to the bottom" ;;
 
-    #_ "lprint(lst) -> (lmap print lst) |"
-    (defn lprint [lst] (lmap print lst) (return None))
+    #_ "lprint(seq) | literally just list(map(print,seq))"
+    (defn lprint [seq] "literally just list(map(print,seq))" (lmap print seq) (return None))
 
-    (comment "py | base | reversed | reversed(xs) -> iterator |") 
+    (comment "py | base | reversed | reversed(sequence) -> iterator |") 
 
-    #_ "lreversed(*args) = list(reversed(*args)) |"
-    (defn lreversed [xs] (list (reversed xs)))
+    #_ "lreversed(seq) = list(reversed(seq)) |"
+    (defn lreversed [seq] (list (reversed xs)))
 
 ; ________________________________________________________________________/ }}}2
 
@@ -265,80 +296,99 @@
     (import operator  [neg])
 
     #_ "(half x) = (/ x 2)"
-    (defn half       [x] (/ x 2))
+    (defn half       [x] "half(x) = x / 2" (/ x 2))
 
     #_ "(double x) = (* x 2)"
-    (defn double     [x] (* x 2))
+    (defn double     [x] "double(x) = x * 2" (* x 2))
 
     #_ "(squared x) = (pow x 2)"
-    (defn squared    [x] (pow x 2))
+    (defn squared    [x] "squared(x) = pow(x, 2)" (pow x 2))
 
     #_ "reciprocal(x) = 1/x literally |"
-    (defn reciprocal [x] (/ 1 x))
+    (defn reciprocal [x] "reciprocal(x) = 1 / x" (/ 1 x))
 
     (import math [sqrt])
-    (import math [dist])    #_ "dist(v1, v2) -> float | ≈ √((v1x-v2x)² + (v1y-v2y)² ...)"
-    (import math [hypot])   #_ "hypot(x, y, ...) | = √(x² + y² + ...)" ;;
+    (import math [dist])    #_ "dist(p, q) -> float | ≈ √((px-qx)² + (py-qy)² ...)"
+    (import math [hypot])   #_ "hypot(*coordinates) | = √(x² + y² + ...)" ;;
 
-    #_ "normalize(vector) -> vector | returns same vector if it's norm=0"
-    (defn normalize [v0]
-        (setv norm (hypot #* v0))
-        (if (!= norm 0) (return (lmap (pflip div norm) v0)) (return v0)))
+    #_ "normalize(xs) -> xs | returns same vector xs if it's norm=0"
+    (defn normalize [xs]
+        " devides each coord of vector to vectors norm,
+          example: norm of [1, 2, 3] = sqrt(1 + 4 + 9) = sqrt(14) ~= 3.74,
+          so will return [1/3.74, 2/3.74, 3/3.74]
+          ---
+          will return same vector when norm == 0"
+        (setv norm (hypot #* v))
+        (if (!= norm 0) (return (lmap (pflip div norm) v)) (return v)))
 
-    (import operator [truediv :as div])
-    (import math     [prod :as product])
-
-    (import math     [exp])
+    (import operator [truediv :as div]) #_ "div(a, b) |"
+    (import math     [prod :as product]) #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
+    (import math     [exp]) #_ "exp(x) |"
 
     (import math     [log]) #_ "log(x, base=math.e)" ;;
 
     #_ "ln(x) = math.log(x, math.e) | coexists with log for clarity"
     (defn ln [x] (log x))
 
-    (import math     [log10])
+    (import math [log10])  #_ "log10(x) |"
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Trigonometry ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (import math [pi])
-    (import math [sin])
-    (import math [cos])
-    (import math [tan])
-    (import math [degrees])
-    (import math [radians])
-    (import math [acos])
-    (import math [asin])
-    (import math [atan])
-    (import math [atan2]) #_ "atan2(y, x) -> value | both signs are considered"
-    (import math [sin])
+    (import math [pi])      #_ "| literally just float pi=3.14..."
+    (import math [sin])     #_ "sin(x) | x is in radians"
+    (import math [cos])     #_ "cos(x) | x is in radians"
+    (import math [tan])     #_ "tan(x) | x is in radians, will give smth like 1.6E+16 for x = pi"
+    (import math [degrees]) #_ "degrees(x) | x in radians is converted to degrees"
+    (import math [radians]) #_ "radians(x) | x in degrees is converted to radians"
+    (import math [acos])    #_ "acos(x) | x is in radians, result is between 0 and pi"
+    (import math [asin])    #_ "asin(x) | x is in radians, result is between -pi/2 and pi/2"
+    (import math [atan])    #_ "asin(x) | x is in radians, result is between -pi/2 and pi/2"
+    (import math [atan2])   #_ "atan2(y, x) | both signs are considered"
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-        #_ "minus(x, y) = x - y |"
-        (defn minus [x y] (- x y))
+    #_ "minus(x, y) = x - y |"
+    (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
-    ;; *
+    ;; operator *
 
         #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
-        (defn mul [#* args] (reduce operator.mul args 1))
+        (defn mul [#* args]
+            " multiplication as a monoid with identity = 1,
+              can be used with 0 or 1 arg"
+            (reduce operator.mul args 1))
 
         #_ "lmul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for list"
-        (defn lmul [#* args] (* #* args))
+        (defn lmul [#* args]
+            "rename of * operator, can be used to underline usage on list"
+            (* #* args))
 
         #_ "smul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for string"
-        (defn smul [#* args] (* #* args))
+        (defn smul [#* args]
+            "rename of * operator, can be used to underline usage on string"
+            (* #* args))
 
-    ;; +
+    ;; operator +
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
-        (defn plus [#* args] (reduce operator.add args 0))
+        (defn plus [#* args]
+            " plus as a monoid with identity = 0,
+              can be used with 0 or 1 arg"
+            (reduce operator.add args 0))
 
         #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
-        (defn sconcat [#* args] (reduce (fn [%s1 %s2] (+ %s1 %s2)) args ""))
+        (defn sconcat [#* args]
+            " string concantenation as a monoid with identity = '',
+              can be used with 0 or 1 args"
+            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args ""))
 
         #_ "lconcat(*args) | list concantenation as a monoid (will not give error when used with 0 or 1 args)"
-        (defn lconcat [#* args] (reduce (fn [%s1 %s2] (+ %s1 %s2)) args []))
+        (defn lconcat [#* args]
+            " lists concantenation as a monoid with identity = [],
+              can be used with 0 or 1 args"
+            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args []))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -348,81 +398,126 @@
     (import operator [eq])              #_ "equal"
     (import operator [ne   :as neq])    #_ "non-equal"
     (import funcy    [even :as evenQ])
-    (import funcy    [odd  :as oddQ])   ;;
+    (import funcy    [odd  :as oddQ])   
+
+    (import funcy [isnone  :as noneQ])
+    (import funcy [notnone :as notnoneQ]) ;;
 
     #_ "| checks directly via (= x 0)"
-    (defn zeroQ     [x] (= x 0))
+    (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
 
     #_ "| checks directly via (< x 0)"
-    (defn negativeQ [x] (< x 0))
+    (defn negativeQ [x] "checks literally if x < 0" (< x 0))
 
     #_ "| checks directly via (> x 0)"
-    (defn positiveQ [x] (> x 0))
+    (defn positiveQ [x] "checks literally if x > 0" (> x 0))
 
     #_ "| checks literally if (= (len xs) 0)"
-    (defn zerolenQ [xs] (= (len xs) 0))
+    (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
     #_ "(oftypeQ tp x) -> (= (type x) tp) |"
-    (defn oftypeQ [tp x] (= (type x) tp))
+    (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
 
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
-    (defn oflenQ [xs n] (= (len xs) 3))
+    (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) 3))
 
     #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
     (defn on [f check x y #* args]
+        " inpired by Haskell's 'on' function,
+          applies f to x, y, and other args (if provided),
+          then applies reduce to them with check"
         (reduce check (lmap f [x y #* args])))
 
+    #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
+    (defn intQ [x]
+        "checks literally if type(x) == int"
+        (= (type x) int))    
 
+    #_ "floatQ(x) | checks literally if type(x) == float, will also work with StrictFloat from pydantic"
+    (defn floatQ [x]
+        "checks literally if type(x) == float"
+        (= (type x) float))
 
+    #_ "numberQ(x) | checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic"
+    (defn numberQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
 
-    (defn intQ   [x] (= (type x) int))
-    (defn floatQ [x] (= (type x) float))
-    (defn dictQ  [x] (= (type x) dict))
+    #_ "dictQ(x) | checks literally if type(x) == dict"
+    (defn dictQ [x]
+        "checks literally if type(x) == dict"
+        (= (type x) dict))
 
     (import funcy [is_list  :as listQ ])  #_ "listQ(seq)  | checks if seq is list"
     (import funcy [is_tuple :as tupleQ])  #_ "tupleQ(seq) | checks if seq is tuple"
 
     #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
-    (defn fnot [f #* args #** kwargs] (not (f #* args #** kwargs)))
+    (defn fnot [f #* args #** kwargs]
+        "literally just not(f(*args, **kwrgs))"
+        (not (f #* args #** kwargs)))
 
 ; ________________________________________________________________________/ }}}2
 
 ; [GROUP] Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     #_ "strlen(text) | rename of len, underlines usage on strings"
-    (defn strlen [text] (len text))
+    (defn strlen [text]
+        "rename of len, underlines usage on strings"
+        (len text))
 
-    #_ "str_join(seq, sep='') | rearrangement of funcy.str_join"
-    (defn str_join [seq [sep ""]]
+    #_ "str_join(ss, sep='') | rearrangement of funcy.str_join, ss is seq of strings"
+    (defn str_join [ss [sep ""]]
+        "str_join(['1', '2', '3'], '-') = '1-2-3'"
         (if (bool sep)
             (funcy.str_join sep seq)
             (funcy.str_join seq)))
 
-    #_ "str_replace(string, old, new, count=-1) ; rename of string.replace method"
-    (defn str_replace [string old new [count -1]] (string.replace old new count))
+    #_ "str_replace(string, old, new, count=-1) | str.replace method as a function"
+    (defn str_replace [string old new [count -1]]
+        "str.replace method as a function"
+        (string.replace old new count))
 
-    (defn #^ str  lowercase [#^ str string] (string.lower))
+    #_ "lowercase(string) | str.lower method as a function"
+    (defn #^ str lowercase [#^ str string]
+        "str.lower method as a function"
+        (string.lower))
 
-    #_ "endswith(string, ending) -> bool ; rename of string.endswith method"
-    (defn #^ bool endswith  [#^ str string #^ str ending] (string.endswith ending))
+    #_ "endswith(string, suffix) -> bool | str.endswith method as a function (but can't take start/end params)"
+    (defn #^ bool endswith [#^ str string #^ str suffix]
+        "str.endswith method as a function (but can't take start/end params)"
+        (string.endswith suffix))
 
-    (defn #^ str  strip     [#^ str string] (string.strip))
-    (defn #^ str  lstrip    [#^ str string] (string.lstrip))
-    (defn #^ str  rstrip    [#^ str string] (string.rstrip))
+    #_ "strip(string, chars=None) | str.strip method as a function"
+    (defn #^ str strip [#^ str string [chars None]]
+        " str.strip method as a function, 
+          removes leading and trailing whitespaces (or chars when given)"
+        (string.strip))
 
-    #_ "pad_string(string, required_len, fill_char=' ', pad_right=False | by default adds new symbols to the right"
+    #_ "lstrip(string, chars=None) | str.lstrip method as a function"
+    (defn #^ str lstrip [#^ str string]
+        "str.lstrip method as a function"
+        (string.lstrip))
+
+    #_ "rstrip(string, chars=None) | str.rstrip method as a function"
+    (defn #^ str rstrip [#^ str string]
+        "str.rstrip method as a function"
+        (string.rstrip))
+
+    #_ "enlengthen(string, target_len, char=' ', fill_tail=True) | adds char to string until target_len reached"
     (defn #^ str
-        pad_string
+        enlengthen
         [ #^ str  string
-          #^ int  required_len
-          #^ str  [fill_char " "]
-          #^ bool [pad_right False]
+          #^ int  target_len
+          #^ str  [char " "]
+          #^ bool [fill_tail True]
         ]
-        "returns string with len >= required_len"
-        (setv n_required (max 0 (- required_len (len string))))
-		(if (= pad_right False)
-			(setv outp (sconcat string (* fill_char n_required)))
-			(setv outp (sconcat (* fill_char n_required) string)))
+        " adds char to string until target_len reached,
+          if len(string) > target_len, will return string with no change,
+          with fill_tail=False will prepend chars rather than append"
+        (setv n_required (max 0 (- target_len (len string))))
+		(if (= fill_tail True)
+			(setv outp (sconcat string (* char n_required)))
+			(setv outp (sconcat (* char n_required) string)))
 		(return outp))
 
 ; ________________________________________________________________________/ }}}2
@@ -457,11 +552,12 @@
 
     (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
 
-    #_ "read_file(file_name, encoding='utf-8') -> str | reads whole file content "
+    #_ "read_file(file_name, encoding='utf-8') -> str | returns whole file content"
     (defn read_file
         [ #^ str file_name
           #^ str [encoding "utf-8"]
         ]
+        "returns whole file content"
         (with [file (open file_name "r" :encoding encoding)] (setv outp (file.read)))
         (return outp))
 
@@ -472,12 +568,17 @@
           #^ str [mode "w"]
           #^ str [encoding "utf-8"]
         ]
+        " writes text to file_name;
+          modes:
+          - 'w' - (over)write
+          - 'a' - append
+          - 'x' - exclusive creation"
         (with [file (open file_name mode :encoding encoding)] (file.write text)))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    #_ "w_e_t(f, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result | f_result is from 1st function execution"
+    #_ "w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result | f_result is from 1st function execution"
     (defn #^ (of Tuple float str Any)
         with_execution_time
         [ #^ Callable f
@@ -486,7 +587,12 @@
           #^ str      [tUnit "ns"]      #_ "s/ms/us/ns"
           #^ str      [msg   ""]
         ]
-        "returns tuple: 1) str of test result 2) function execution result"
+        " returns tuple:
+          - average time of 1 execution in seconds
+          - pretty string of execution time in tUnit units
+          - function return value from 1st execution
+
+          tUnit can be: s, ms, us, ns"
         (setv _time_getter hy.I.time.perf_counter)
         (setv n (int n))
         ;;
@@ -515,12 +621,19 @@
     ;;
     ;; (print (execution_time :n 100 (fn [] (get [1 2 3] 1))))
 
-    #_ "use dt_printer('msg1', 'msg2', ...) normally, use dt_printer(fresh_run=True, 'msg1', ...) to reset timer"
+    #_ "dt_printer(* args, fresh_run=False) | starts timer on fresh run, prints time passed since previous call"
     (defn dt_print
         [ #* args
           [fresh_run False]
           [last_T    [None]]
         ]
+        " on first run, starts the timer (and print message that it started)
+          on subsequent runs prints how many time (in seconds) have passed since previous call
+
+          call with fresh_run = True to reset timer
+
+          last_T should not be touched by user!
+          it is used for storing time of previous run between runs"
         (when fresh_run (assoc last_T 0 None))
         (setv _time_getter hy.I.time.perf_counter)
         (setv curT (_time_getter))
