@@ -7,3 +7,12 @@
 	Then:
 	- install 0.2.0 locally immediately
 	- change setup.py version to 0.2.1devN
+
+	====================================================================================================
+
+	git tag -n										// list all tags, -n gives also their description
+	git tag -a 0.1.0 -m "main functionality done"	// create tag 0.1.0
+	git tag -d 0.1.0								// delete tag 0.1.0
+	git push origin 0.1.0							// push to github
+
+	git fetch --tags  // pulls tags from github (if tag was created via github webpage) to local
