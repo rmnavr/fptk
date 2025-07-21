@@ -3,12 +3,15 @@
 
 # **fptk** — functional toolkit for hy-lang
 
-**fptk** is curated list of math and FP-related modules/classes/functions/macroses,
+fptk is curated list of math and FP-related modules/classes/functions/macroses,
 that are supposed to be imported into main scope altogether to always have them at your fingertips.
 > Having high amount of functions available in main context is inspired by Wolfram Language,
 > in which all (yes, ALL) standard functions are always in the main context.
 
-Intended usage of **fptk** in hy is:
+Approach that fptk takes is providing user with set of convenience functions like `read_file(file_name, encoding='utf-8')`, that
+are streightforwart to use and compose.
+
+Intended usage of fptk in hy is:
 ```hy
 (import fptk *)     ; import modules, functions and classes
 (require fptk *)    ; import macros
@@ -26,7 +29,7 @@ import fptk *
 
 # Topics that fptk covers
 
-**fptk** aims to unite and bring into main scope:
+fptk aims to unite and bring into main scope:
 - [x] Full modules that are math and FP-relevant (math, operator, itertools, ...)
 - [x] Buffed getters (first, second, last, rest, ...)
 - [x] 1-based index variants of basic getters (don't worry, fptk does not enforce using them)
