@@ -1,6 +1,8 @@
 
 # Packaging helper
 
+This script is supposed to be executed before every commit (or at least large commit, or push to github).
+
 What this utility script does:
 1. Runs `doc_generator/doc_generator.hy` (that generates table of fptk funcs/imports/modules)
 2. Creates `_fptk_local.hy` by uniting `fptk/fpext.hy` and `fptk/macros.hy`. It also attaches version info.

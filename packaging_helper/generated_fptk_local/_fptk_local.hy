@@ -269,11 +269,6 @@
 
 ; ________________________________________________________________________/ }}}2
 
-    ;; juxt/ljuxt, compose/lcompose
-    ;; with_prev, with_next
-	;; mapcat lmapcat cat
-	;; count_by, count_reps
-
 ; [GROUP] APL: filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
@@ -368,8 +363,6 @@
     (defn count_occurrences [elem seq] (container.count elem))
 
 ; ________________________________________________________________________/ }}}2
-
-
 
 ; [GROUP] General Math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
