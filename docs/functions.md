@@ -77,7 +77,7 @@ FROM: returns.result  | Result                ; Result monad
 FROM: returns.result  | Success               ; One of Result monad constructor
 FROM: returns.result  | Failure               ; One of Result monad constructor
 
-=== Getters ===
+=== Buffed getters ===
 INFO: hy              | . /macro/             :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
 INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
 FROM: funcy           | nth                   :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
@@ -96,12 +96,14 @@ DEFN: fptk            | butlast               :: butlast(seq) -> List  ; drops l
 DEFN: fptk            | drop                  :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
 DEFN: fptk            | take                  :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
 DEFN: fptk            | pick                  :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
-FROM: funcy           | lpluck                :: lpluck(key, mappings)  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
-FROM: funcy           | lpluck_attr           :: lpluck_attr(attr, objects)
+FROM: funcy           | pluck                 :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
+FROM: funcy           | lpluck                :: lpluck(key, mappings) -> list
+FROM: funcy           | pluck_attr            :: pluck_attr(attr, objects) -> generator
+FROM: funcy           | lpluck_attr           :: lpluck_attr(attr, objects) -> list
 
 === index-1-based getters ===
 FROM: hyrule          | range_ (<-thru)       :: range_(start, end, step) -> List  ; same as range, but with 1-based index
-DEFN: fptk            | get_                  :: get_(xs, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | get_                  :: get_(seq, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | nth_                  :: nth_(n, seq) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
 DEFN: fptk            | slice_                :: slice_(start, end, step)  ; similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)
 DEFN: fptk            | cut_                  :: cut_(seq, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
@@ -114,7 +116,7 @@ MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
 
-=== Compositions ===
+=== FP: composition ===
 FROM: hyrule          | constantly            ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
 FROM: funcy           | identity              ; identity(30) -> 30
 MACR: hyrule          | as->
@@ -131,32 +133,54 @@ FROM: funcy           | ljuxt                 :: ljuxt(*fs) = [f1, f2, ...] appl
 DEFN: fptk            | flip                  :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
 DEFN: fptk            | pflip                 :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
 
-=== APL: n-applicators ===
-MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
-MACR: hyrule          | list_n                :: (list_n n #* body) -> List
-DEFN: fptk            | nest                  :: nest(n, f)  ; f(f(f(...f))), returns function
-DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
-
-=== APL: Threading ===
+=== FP: threading ===
 INFO: py              | map /base/            ; usage: map(func, *iterables) -> map object
 FROM: funcy           | lmap                  :: lmap(f, *seqs) -> List
 FROM: itertools       | starmap               ; starmap from itertools; usage: starmap(f, seq)
 DEFN: fptk            | lstarmap              :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
 FROM: functools       | reduce                :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
+FROM: funcy           | reductions            :: reduction(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | lreductions           :: lreduction(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | sums                  :: sums(seq [, acc]) -> generator  ; reductions with addition function
+FROM: funcy           | lsums                 :: lsums(seq [, acc]) -> List
 INFO: py              | zip /base/            :: zip(*iterables) -> zip object
 DEFN: fptk            | lzip                  :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
 
-=== APL: Filtering ===
-INFO: py              | filter /base/         :: filter(f or None, xs) -> filter object  ; when f=None, checks if elems are True
-FROM: funcy           | lfilter               :: lfilter(pred, seq) -> List
-DEFN: fptk            | fltr1st               :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
-DEFN: fptk            | count_occurrences     :: count_occurrences(elem, seq) -> int  ; rename of list.count method
+=== FP: n-applicators ===
+MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
+MACR: hyrule          | list_n                :: (list_n n #* body) -> List
+DEFN: fptk            | nest                  :: nest(n, f)  ; f(f(f(...f))), returns function
+DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
-=== APL: Work on lists ===
+=== APL: filtering ===
+INFO: py              | filter /base/         :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
+FROM: funcy           | lfilter               :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
+DEFN: fptk            | fltr1st               :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
+FROM: funcy           | reject (<-remove)     :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
+FROM: funcy           | lreject (<-lremove)   :: lreject(pred, seq) -> List  ; list(reject(...))
+DEFN: fptk            | without               :: without(items, seq) -> generator  ; returns seq without each item in items
+DEFN: fptk            | lwithout              :: lwithout(items, seq) -> list  ; list(without(...))
+FROM: funcy           | takewhile             :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
+FROM: funcy           | dropwhile             :: dropwhile([pred, ] seq)  ; mirror of dropwhile
+FROM: funcy           | filter_split (<-split) :: filter_split(pred, seq) -> passed, rejected
+FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list(filter_split(...))
+FROM: funcy           | bisect_at (<-split_at) :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
+DEFN: fptk            | lbisect_at            :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
+FROM: funcy           | bisect_by (<-split_by) :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
+FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
+
+=== APL: working with lists ===
 FROM: hyrule          | flatten               ; flattens to the bottom
 DEFN: fptk            | lprint                :: lprint(seq)  ; literally just list(map(print,seq))
 INFO: py              | reversed /base/       :: reversed(sequence) -> iterator
-DEFN: fptk            | lreversed             :: lreversed(seq) = list(reversed(seq))
+DEFN: fptk            | lreversed             :: lreversed(sequence) = list(reversed(seq))
+DEFN: fptk            | partition             :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
+DEFN: fptk            | lpartition            :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
+FROM: funcy           | partition_by          :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
+FROM: funcy           | lpartition_by         :: lpartition_by(f,seq) -> list of lists  ; list(partition_by(...))
+
+=== APL: counting ===
+DEFN: fptk            | count_occurrences     :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 
 === General Math ===
 FROM: hyrule          | inc
@@ -241,7 +265,7 @@ FROM: funcy           | re_test               :: re_test(rpattern, string, ...) 
 FROM: funcy           | re_all                :: re_all(rpattern, string, ...) -> List
 
 === Random ===
-FROM: random          | choice                :: choice(xs) -> Elem  ; throws error for empty list
+FROM: random          | choice                :: choice(seq) -> Elem  ; throws error for empty list
 FROM: random          | randint               :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
 FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
 FROM: random          | rand01 (<-random)     :: rand01() -> float  ; generates random number in interval [0, 1)

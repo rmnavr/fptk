@@ -58,7 +58,7 @@
     (import returns.result  [Failure])  #_ "One of Result monad constructor"
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Buffed getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ;; dub basics:
 
@@ -112,37 +112,39 @@
               ns can be list of dicts keys"
             (lfor &n ns (get seq &n)))
 
-        (import  funcy  [lpluck])       #_ "lpluck(key, mappings) | gets same key from every mapping, mappings can be list of lists, list of dicts, etc."
-        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr, objects) | " ;;
+        (import  funcy  [pluck])        #_ " pluck(key, mappings) -> generator | gets same key from every mapping, mappings can be list of lists, list of dicts, etc."
+        (import  funcy  [lpluck])       #_ "lpluck(key, mappings) -> list | "
+        (import  funcy  [pluck_attr])   #_ " pluck_attr(attr, objects) -> generator | " ;;
+        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr, objects) -> list | " ;;
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
 
-    #_ "get_(xs, *ns) -> elem | same as get, but with 1-based index (will throw error for n=0)"
-    (defn get_ [xs #* ns]
+    #_ "get_(seq, *ns) -> elem | same as get, but with 1-based index (will throw error for n=0)"
+    (defn get_ [seq #* ns]
         " same as hy get macro, but with 1-based index,
           can also work with dict keys,
           will throw error for n=0,
           will throw error if elem not found (just like hy get macro)"
-        (setv ns_plus1 
+        (setv _ns_plus1 
             (lfor &n ns
                 (do (when (= &n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
                     (if (and (intQ &n) (>= &n 1))
                         (dec &n)
                         &n)))) ;; this line covers both &n<0 and &n=dict_key        
-        (return (get xs #* ns_plus1)))
+        (return (get seq #* _ns_plus1)))
 
     #_ "nth_(n, seq) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
     (defn nth_ [n seq] 
         " same as nth, but with 1-based index,
           will throw error for n=0,
           will return None if elem not found (just like nth)"
-        (when (dictQ xs) (return (nth n xs)))
+        (when (dictQ seq) (return (nth n seq)))
         (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
-        (when (>= n 1) (return (nth (dec n) xs)))
-        (return (nth n xs))) ;; this line covers both n<0 and n=dict_key
+        (when (>= n 1) (return (nth (dec n) seq)))
+        (return (nth n seq))) ;; this line covers both n<0 and n=dict_key
 
     #_ "slice_(start, end, step) | similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)"
     (defn slice_
@@ -169,7 +171,7 @@
     (defn cut_ [seq start end [step None]]
         " same as hy cut macro, but with 1-based index,
           and won't take None or 0 for start and end arguments"
-        (get xs (slice_ start end step)))
+        (get seq (slice_ start end step)))
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -185,7 +187,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-; [GROUP] Compositions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] FP: composition ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [constantly])    #_ "(setv answer (constantly 42)) (answer 1 :x 2) -> 42"
     (import funcy  [identity])      #_ "identity(30) -> 30"
@@ -215,7 +217,31 @@
         (fn [%x] (f %x a)))
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] FP: threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (comment "py | base | map || usage: map(func, *iterables) -> map object")
+    (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
+    (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
+
+    #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
+    (defn lstarmap [f #* seqs]
+        "literally just list(starmap(f, *seqs))"
+        (list (starmap f #* seqs)))
+
+    (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
+    (import funcy [reductions])   #_ " reduction(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy [lreductions])  #_ "lreduction(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy [sums])   #_ " sums(seq [, acc]) -> generator | reductions with addition function"
+    (import funcy [lsums])  #_ "lsums(seq [, acc]) -> List |"
+    ;;
+
+    (comment "py | base | zip | zip(*iterables) -> zip object |")
+    
+    #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
+    (defn lzip [#* iterables] (list (zip #* iterables)))
+
+; _____________________________________________________________________________/ }}}1
+; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [do_n])     #_ "(do_n   n #* body) -> None |"
     (require hyrule [list_n])   #_ "(list_n n #* body) -> List |"
@@ -236,39 +262,55 @@
         ((compose #* (list_n n f)) #* args #** kwargs))
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: Threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (comment "py | base | map || usage: map(func, *iterables) -> map object")
-    (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
-    (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
+; [GROUP] APL: filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
-    (defn lstarmap [f #* seqs]
-        "literally just list(starmap(f, *seqs))"
-        (list (starmap f #* seqs)))
-
-    (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
-
-    (comment "py | base | zip | zip(*iterables) -> zip object |")
-    
-    #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
-    (defn lzip [#* iterables] (list (zip #* iterables)))
-
-; _____________________________________________________________________________/ }}}1
-
-; [GROUP] APL: Filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (comment "py | base | filter | filter(f or None, xs) -> filter object | when f=None, checks if elems are True")
-    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List |"
+    (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
+    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | list(filter(...)) from funcy"
+    ;;
 
     #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
-    (defn fltr1st [f seq] (next (gfor &x seq :if (f &x) &x) None))
+    (defn fltr1st [function iterable]
+        "returns first found element (via function criteria), returns None if not found"
+        (next (gfor &x seq :if (f &x) &x) None))
 
-    #_ "count_occurrences(elem, seq) -> int | rename of list.count method"
-    (defn count_occurrences [elem seq] (container.count elem))
+    (import funcy [remove :as reject])   #_ "reject(pred, seq)-> iterator | same as filter, but checks for False"
+    (import funcy [lremove :as lreject]) #_ "lreject(pred, seq) -> List | list(reject(...))"
+    ;;
+
+    #_ "without(items, seq) -> generator | returns seq without each item in items"
+    (defn without [items seq]
+        "returns generator for seq with each item in items removed (does not mutate seq)"
+        (funcy.without seq #* items))
+
+    #_ "lwithout(items, seq) -> list | list(without(...))"
+    (defn lwithout [items seq]
+        "returns seq with each item in items removed (does not mutate seq)"
+        (funcy.lwithout seq #* items))
+
+    (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
+    (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
+
+    (import funcy [split      :as filter_split])  #_ "filter_split(pred, seq) -> passed, rejected |"
+    (import funcy [lsplit     :as lfilter_split]) #_ "lfilter_split(pred,seq) -> passed, rejected | list(filter_split(...))"
+    (import funcy [split_at   :as bisect_at])     #_ "bisect_at(n, seq) -> start, tail | len of start will = n, works only with n>=0"
+    ;;
+
+    #_ "lbisect_at(n, seq) -> start, tail | list version of bisect_at, but also for n<0, abs(n) will be len of tail"
+    (defn lbisect_at [n seq]
+        " splits seq to start and tail lists,
+          when n>=0, len of start will be = n (or less, when len(seq) < n),
+          when n<0, len of tail will be = n (or less, when len(seq) < abs(n))"
+        (if (>= n 0)
+            (funcy.lsplit_at n seq)
+            (funcy.lsplit_at (max 0 (+ (len seq) n)) seq)))
+
+    (import funcy [split_by   :as bisect_by])     #_ " bisect_by(pred, seq) -> taken, dropped | similar to (takewhile, dropwhile)"
+    (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
+    ;;
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: Work on lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [flatten])   #_ "flattens to the bottom" ;;
 
@@ -277,8 +319,42 @@
 
     (comment "py | base | reversed | reversed(sequence) -> iterator |") 
 
-    #_ "lreversed(seq) = list(reversed(seq)) |"
-    (defn lreversed [seq] (list (reversed xs)))
+    #_ "lreversed(sequence) = list(reversed(seq)) |"
+    (defn lreversed [sequence] (list (reversed sequence)))
+
+    #_ "partition(n, seq, *, step=None, tail=False) -> generator | splits seq to lists of len n, tail=True will allow including fewer than n items"
+    (defn partition [n seq * [step None] [tail False]]
+        " splits seq to lists of len n,
+          at step offsets apart (step=None defaults to n when not given),
+          tail=False will allow fewer than n items at the end;
+          returns generator"
+        (cond (and (not tail) (is step None))
+              (funcy.partition n seq)
+              (and (not tail) (not (is step None)))
+              (funcy.partition n step seq)
+              (and tail (is step None))
+              (funcy.chunks n seq)
+              (and tail (not (is step None)))
+              (funcy.chunks n step seq)))
+
+    #_ "lpartition(n, seq, *, step=None, tail=False) -> List | simply list(partition(...))"
+    (defn lpartition [n seq * [step None] [tail False]]
+        " splits seq to lists of len n,
+          at step offsets apart (step=None defaults to n when not given),
+          tail=False will allow fewer than n items at the end;
+          returns list of lists"
+        (list (partition n seq step tail)))
+
+    (import funcy [partition_by])   #_ "partition_by(f, seq) -> iterator of iterators | splits when f(item) change" ;;
+    (import funcy [lpartition_by])  #_ "lpartition_by(f,seq) -> list of lists | list(partition_by(...))" ;;
+
+    (import funcy [group_by] #_ "group_by(f, seq) -> defaultdict(list) | groups elems of seq keyed by the result of f")
+
+; _____________________________________________________________________________/ }}}1
+; [GROUP] APL: counting ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    #_ "count_occurrences(elem, seq) -> int | rename of list.count method"
+    (defn count_occurrences [elem seq] (container.count elem))
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -312,8 +388,8 @@
           so will return [1/3.74, 2/3.74, 3/3.74]
           ---
           will return same vector when norm == 0"
-        (setv norm (hypot #* v))
-        (if (!= norm 0) (return (lmap (pflip div norm) v)) (return v)))
+        (setv norm (hypot #* xs))
+        (if (!= norm 0) (return (lmap (pflip div norm) xs)) (return xs)))
 
     (import operator [truediv :as div]) #_ "div(a, b) |"
     (import math     [prod :as product]) #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
@@ -533,7 +609,7 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import random    [choice])                 #_ "choice(xs) -> Elem | throws error for empty list"
+    (import random    [choice])                 #_ "choice(seq) -> Elem | throws error for empty list"
     (import random    [randint])                #_ "randint(a, b) -> int | returns random integer in range [a, b] including both end points" 
     (import random    [uniform :as randfloat])  #_ "randfloat(a, b) -> float | range is [a, b) or [a, b] depending on rounding"
     (import random    [random :as rand01])      #_ "rand01() -> float | generates random number in interval [0, 1) "

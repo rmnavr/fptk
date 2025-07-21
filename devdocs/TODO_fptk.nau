@@ -1,0 +1,110 @@
+
+// MACROS LIST ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	new:
+	• l>=			// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
+	• => =>>		// optional «it», .attr access
+
+	sleeping:
+	• #L (deprecated)
+	• <-
+
+// ____________________________________________________________________________/ }}}1
+// ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	ADT machinery: product/sum
+			
+		defunion
+
+		- dataclass
+		- Synonims
+		- Union
+		- Optional
+		- Enum
+		- Generic Types <A>, GenericListExample[int]
+		- List, Tuple, Nested
+		- Type[Shape]
+		+ Inheritance?  
+		 
+		type (exact)
+		isinstance (exact + subclasses) <- Union
+		Unions, Discr/Tagged Unions
+	 
+	Monads:
+	 
+		Maybe
+		Result
+		 
+		Possible libs:
+		- hy monad
+		- returns
+		- effects
+		 
+		Later:
+		- Transformers
+
+// ____________________________________________________________________________/ }}}1
+// things to do for polishing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	- correctly pass through extra args/kwargs (in partial and such)
+	- map vs lmap, iterator/generator/list (do not falsly consume iterators and such)
+	- consistent namings of args
+
+	·······························
+
+	git branch
+	docs 
+	tests 
+	proper error messages, forbid working with incorrect types/data
+	license
+
+// ____________________________________________________________________________/ }}}1
+
+	Filtering:
+		- itertools: take_while, drop_while
+		- funcy: group_by, partition_by, count_by
+		- split/partition/chunks/group
+		- by/with/via/at
+
+	Consider adding:
+		• juxt/ljuxt, compose/lcompose, what does l-version do? is it really required?
+		• isa (partial checker)
+		• all_fn
+		• with_prev, with_next
+    	• mapcat lmapcat cat
+    	• count_by, count_reps
+    	• some, any, anyfn
+		• itertools: accumulate, batched, drop/take_while + option to include value where drop happened
+		• itertools: count, cycle, repeat
+		• functools: total_ordering for Tokens?
+		• rename partition_by to split_by? (split_with?)
+		• add/substract lists/dictionaries
+		+ ncut_ ?
+		+ flat on 1 level?
+		+ on_each(f, xs) -> None	// as map but with no result
+		+ juxt_apply(fs, *xi)
+
+	Fix/Upd:
+		• rstrip should also pass kwargs and such
+		• rename partial in "pt" ?
+		• partition: filler elem option
+		• get_ works bad with dicts keys when they are numbers
+		• logically with_execution_time should give result of LAST execution ?
+
+	New:
+		• assoc -> assoc_
+		• [³macro⁺] is p: working with fn/fm and such/
+		• [³macro⁺] lfilterm with lambda syntax
+		• [³macro⁺] "it" in my lambdas
+		• [³macro⁺] df:: str -> #* str -> str
+
+	Packaging:
+		! move _macros_test.hy elsewhere
+		? include funcy lol? (but will have troubles with _fptk_local.hy)
+
+	info: SQL-alike:
+		- pipe (select, where, chain, traverse=flat1, traverse=flatInf, groupby, dedup, as_list)
+		- pyfunctional
+		- hy 1.0.0 google article
+ 
+ 

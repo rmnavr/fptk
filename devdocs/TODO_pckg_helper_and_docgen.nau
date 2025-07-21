@@ -1,0 +1,10 @@
+
+	doc_gen:
+		+ Remove requirement for `;;` comments to have double-semicolon
+		+ Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`
+		+ BUG: docgen should not find values in ;; (setv ...) JFK
+		+ autodocgen for: my macros
+
+	pckg_helper:
+		+ tabs to spaces on every doc
+		+ print last git tag

@@ -8,9 +8,6 @@ that are supposed to be imported into main scope altogether to always have them 
 > Having high amount of functions available in main context is inspired by Wolfram Language,
 > in which all (yes, ALL) standard functions are always in the main context.
 
-Approach that fptk takes is providing user with set of convenience functions like `read_file(file_name, encoding='utf-8')`, that
-are streightforwart to use and compose.
-
 Intended usage of fptk in hy is:
 ```hy
 (import fptk *)     ; import modules, functions and classes
@@ -18,7 +15,7 @@ Intended usage of fptk in hy is:
 ```
 
 You can also use fptk in python, but you won't be able to access macros,
-since macros are hy-only feature (even without macros fptk has many things to offer):
+since macros are hy-only feature (even without macros, fptk functions can be of interest):
 ```python
 import fptk *
 ```
@@ -29,22 +26,41 @@ import fptk *
 
 # Topics that fptk covers
 
-fptk aims to unite and bring into main scope:
-- [x] Full modules that are math and FP-relevant (math, operator, itertools, ...)
+fptk promotes approaches:
+* provide user with set of convenience functions
+  like `read_file(file_name, encoding='utf-8')`, that are streightforward to use and compose
+* no data mutation
+* taking high inspiration from  lib, fptk
+  tries to make even clear namings (like `split` -> `filter_split`, `split_by` -> `bisect_by`, etc.)
+* most checks have Q postfix, like `intQ`, `zerolenQ`, etc.
+
+fptk aims to unite and bring following things into main scope.
+
+Basics:
+- [x] Full basic modules that are math and FP-relevant (`math`, `operator`, `itertools`, etc.)
+- [x] Math, logic and checks (most checks in fptk end with "Q": like `intQ`, `zerolenQ`, etc.)
+- [x] Strings manipulation and regexes
+- [x] Convenience functions for basic IO (functions like `read_file` and `file_existsQ`)
+- [ ] Basic benchmarking and debug
+
+Typing:
+- [x] Basic types like `Any`, `Optional`, etc.
+- [x] Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
+      (for example decorator `validateF` will validate arguments and return value of function)
+
+APL-like functionality (heavily based on [funcy](https://github.com/Suor/funcy/) lib):
+> fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`)
 - [x] Buffed getters (first, second, last, rest, ...)
-- [x] 1-based index variants of basic getters (don't worry, fptk does not enforce using them)
-- [x] macros for lenses (lenses is Haskell-ish approach for manipulating deeply nested immutable data)
-- [x] APL-like functions for mapping, filtering, partitioning, etc.
-- [x] Functional composition/piping/currying 
-- [x] Math, random generators, logic/checks
-- [x] Strings manipulation and regexes 
-- [x] Basic types like Any, Optional, etc.
+- [x] Functional composition, piping, partial application and currying
+- [x] Mapping, filtering and partitioning of sequences
+
+Other quirky things:
+- [x] 1-based index variants of basic getters (don't worry, fptk does not force using them)
+- [x] macros for lenses ([lenses](https://github.com/ingolemo/python-lenses) is Haskell-ish approach for manipulating deeply nested immutable data)
 
 Currently under development:
-- [ ] Utils for benchmarking and debug
-- [ ] Optional strict type checking (via pydantic)
 - [ ] Immutable structures (source lib is under consideration)
-- [ ] Monadic machinery (via returns)
+- [ ] Monadic machinery (considering using [returns](https://github.com/dry-python/returns) lib)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Dependencies ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -53,10 +69,10 @@ Currently under development:
 
 Tested with:
 * [hy](https://github.com/hylang/hy) 1.0.0
-* [funcy](https://github.com/Suor/funcy/) 2.0 *(fptk reimports many FP functions from this lib)*
-* [pydantic](https://github.com/pydantic/pydantic) 2.0 *(fptk uses this lib for typechecking)*
-* [lenses](https://github.com/ingolemo/python-lenses) 1.2 *(fptk uses this lib, well, for lenses)*
-* [returns](https://github.com/dry-python/returns) 0.23 *(fptk will probably use this lib in the future for monadic machinery)*
+* [funcy](https://github.com/Suor/funcy/) 2.0
+* [pydantic](https://github.com/pydantic/pydantic) 2.0
+* [lenses](https://github.com/ingolemo/python-lenses) 1.2 
+* [returns](https://github.com/dry-python/returns) 0.23 
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Documentation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

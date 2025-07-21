@@ -1,0 +1,51 @@
+
+// DESIGN GUIDELINES ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	Edge cases:
+	- fptk list funcs must work with empty lists ?
+
+	·······························
+
+	What if getter founds no elem?
+  	- None
+  	- Error
+
+  	variadic f(x1, x2, ...) vs f(xs)
+
+  	polymorphic?
+  	- yes
+  	- no
+
+  	arg order?
+  	- for: p> ->>
+  	- for: ->
+
+	base on partial funcs, or on full func?
+	- isa(str, xs)
+	- isa(str)
+	- consider simultaneous isa and p_isa ?
+
+  	wrong type handling? oddQ("str")?
+  	- Error
+
+  	Full/short name?
+  	- fst
+  	- first
+
+  	use special symbols in names
+  	- funcs - no
+  	- macros - yes
+
+// ____________________________________________________________________________/ }}}1
+// Composition order, Arguments order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(rcompose f1 f2)
+	(-> data  f1 f2)
+	(l> data   1  2)
+	(p> data  f1 f2)
+
+	(f params vrbl) // good for p> and ->> macro
+	(f vrbl params) // good for -> macro
+
+// ____________________________________________________________________________/ }}}1
+
