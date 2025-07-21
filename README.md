@@ -16,7 +16,7 @@ Intended usage of **fptk** in hy is:
 
 You can also use fptk in python, but you won't be able to access macros,
 since macros are hy-only feature (even without macros fptk has many things to offer):
-```hy
+```python
 import fptk *
 ```
 
@@ -49,11 +49,11 @@ Currently under development:
 # Dependencies
 
 Tested with:
-* hy 1.0.0
-* [funcy](https://github.com/Suor/funcy/) 2.0 (lib is used for FP functions)
-* [pydantic](https://github.com/pydantic/pydantic) 2.0 (lib is used for type checking)
-* [lenses](https://github.com/ingolemo/python-lenses) 1.2 (lib is used for, well, lenses)
-* [returns](https://github.com/dry-python/returns) 0.23 (lib will probably be used for monadic machinery)
+* [hy](https://github.com/hylang/hy) 1.0.0
+* [funcy](https://github.com/Suor/funcy/) 2.0 *(fptk reimports many FP functions from this lib)*
+* [pydantic](https://github.com/pydantic/pydantic) 2.0 *(fptk uses this lib for typechecking)*
+* [lenses](https://github.com/ingolemo/python-lenses) 1.2 *(fptk uses this lib, well, for lenses)*
+* [returns](https://github.com/dry-python/returns) 0.23 *(fptk will probably use this lib in the future for monadic machinery)*
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Documentation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -69,7 +69,7 @@ Tested with:
 
 # Installation
 
-You can install fptk via command:
+The easiest way to install fptk is via command:
 ```
 pip install git+https://github.com/rmnavr/fptk.git@0.2.1
 ```
@@ -80,7 +80,7 @@ file and place it into your project folder.
 
 Then just add to your code:
 ```hy
-(import  _fptk_local *)     ; import modules, functions and classes
+(import  _fptk_local *)    ; import modules, functions and classes
 (require _fptk_local *)    ; import macros
 ```
 
