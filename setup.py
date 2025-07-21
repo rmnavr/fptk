@@ -26,7 +26,7 @@ libs_required = [ 'hy >= 1',
 
 setup(
     name              = 'fptk',
-    version           = '0.2.2.dev5', 
+    version           = '0.2.2.dev6', 
     setup_requires    = ['wheel'] + libs_required,
     install_requires  = libs_required,
     packages          = setuptools.find_packages(exclude = ["private*"]),

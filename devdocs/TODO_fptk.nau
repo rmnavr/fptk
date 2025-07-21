@@ -61,13 +61,7 @@
 
 // ____________________________________________________________________________/ }}}1
 
-	Filtering:
-		- itertools: take_while, drop_while
-		- funcy: group_by, partition_by, count_by
-		- split/partition/chunks/group
-		- by/with/via/at
-
-	Consider adding:
+	Consider study/adding:
 		• juxt/ljuxt, compose/lcompose, what does l-version do? is it really required?
 		• isa (partial checker)
 		• all_fn
@@ -81,6 +75,7 @@
 		• rename partition_by to split_by? (split_with?)
 		• add/substract lists/dictionaries
 		+ ncut_ ?
+		+ partial testers: isa, re_tester (extented funcy semantics? wut?)
 		+ flat on 1 level?
 		+ on_each(f, xs) -> None	// as map but with no result
 		+ juxt_apply(fs, *xi)

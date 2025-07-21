@@ -32,13 +32,12 @@ Basics:
 - [x] Full basic modules that are math and FP-relevant (`math`, `operator`, `itertools`, etc.)
 - [x] Math, logic and checks (most checks in fptk end with "Q": like `intQ`, `zerolenQ`, etc.)
 - [x] Strings manipulation and regexes
-- [x] Convenience functions for basic IO (functions like `read_file` and `file_existsQ`)
-- [ ] Basic benchmarking and debug
+- [x] Convenience functions for basic IO (like `read_file` and `file_existsQ`)
+- [ ] Basic benchmarking and debugging
 
 Typing:
 - [x] Basic types like `Any`, `Optional`, etc.
-- [x] Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
-      (for example decorator `validateF` will validate arguments and return value of function)
+- [ ] Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
 
 APL-like functionality (heavily based on [funcy](https://github.com/Suor/funcy/) lib):
 > fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`).
@@ -97,7 +96,7 @@ Then just add to your code:
 (require _fptk_local *)    ; import macros
 ```
 
-This way you will be protected from API breaking changes in future fptk versions.
+This way you will be protected from possibly API breaking changes in future fptk versions.
 
 <!-- __________________________________________________________________________/ }}}1 -->
 
