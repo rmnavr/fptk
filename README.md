@@ -26,14 +26,6 @@ import fptk *
 
 # Topics that fptk covers
 
-fptk promotes approaches:
-* provide user with set of convenience functions
-  like `read_file(file_name, encoding='utf-8')`, that are streightforward to use and compose
-* no data mutation
-* taking high inspiration from  lib, fptk
-  tries to make even clear namings (like `split` -> `filter_split`, `split_by` -> `bisect_by`, etc.)
-* most checks have Q postfix, like `intQ`, `zerolenQ`, etc.
-
 fptk aims to unite and bring following things into main scope.
 
 Basics:
@@ -49,7 +41,8 @@ Typing:
       (for example decorator `validateF` will validate arguments and return value of function)
 
 APL-like functionality (heavily based on [funcy](https://github.com/Suor/funcy/) lib):
-> fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`)
+> fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`).
+> Also, most functions do not mutate data.
 - [x] Buffed getters (first, second, last, rest, ...)
 - [x] Functional composition, piping, partial application and currying
 - [x] Mapping, filtering and partitioning of sequences
@@ -61,6 +54,7 @@ Other quirky things:
 Currently under development:
 - [ ] Immutable structures (source lib is under consideration)
 - [ ] Monadic machinery (considering using [returns](https://github.com/dry-python/returns) lib)
+
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Dependencies ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

@@ -49,6 +49,7 @@
 	- correctly pass through extra args/kwargs (in partial and such)
 	- map vs lmap, iterator/generator/list (do not falsly consume iterators and such)
 	- consistent namings of args
+	- is every func indeed immutable?
 
 	·······························
 
