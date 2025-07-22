@@ -1,6 +1,10 @@
 
-    ; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
+; Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (require hyrule [comment])
+    ; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
+
+; _____________________________________________________________________________/ }}}1
 
 ; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -154,7 +158,8 @@
         ]
         " similar to py slice, but:
           - has 1-based index
-          - won't take None for start and end arguments "
+          - won't take None for start and end arguments
+          - won't take 0 for start and end"
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
               (=  start 0) (raise (Exception "start=0 can't be used with 1-based getter"))
@@ -170,7 +175,7 @@
     #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
     (defn cut_ [seq start end [step None]]
         " same as hy cut macro, but with 1-based index,
-          and won't take None or 0 for start and end arguments"
+          - won't take None or 0 for start and end arguments"
         (get seq (slice_ start end step)))
 
 ; _____________________________________________________________________________/ }}}1
@@ -240,14 +245,21 @@
     #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
     (defn lzip [#* iterables] (list (zip #* iterables)))
 
+    #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
+    (defn on [f check x y #* args]
+        " inpired by Haskell's 'on' function,
+          applies f to x, y, and other args (if provided),
+          then applies reduce to them with check"
+        (reduce check (lmap f [x y #* args])))
+
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [do_n])     #_ "(do_n   n #* body) -> None |"
     (require hyrule [list_n])   #_ "(list_n n #* body) -> List |"
 
-    #_ "nest(n, f) | f(f(f(...f))), returns function"
-    (defn nest [n f]
+    #_ "nested(n, f) | f(f(f(...f))), returns function"
+    (defn nested [n f]
         " f(f(f(...f))), where nesting is n times deep,
           returns function"
         (compose #* (list_n n f)))
@@ -256,8 +268,7 @@
     (defn apply_n [n f #* args #** kwargs]
         " applies f to args and kwargs,
           than applies f to result of prev application,
-          and this is repeated in total for n times
-
+          and this is repeated in total for n times,
           n=1 is simply f(args, kwargs)"
         ((compose #* (list_n n f)) #* args #** kwargs))
 
@@ -272,7 +283,7 @@
     #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
     (defn fltr1st [function iterable]
         "returns first found element (via function criteria), returns None if not found"
-        (next (gfor &x seq :if (f &x) &x) None))
+        (next (gfor &x iterable :if (function &x) &x) None))
 
     (import funcy [remove :as reject])   #_ "reject(pred, seq)-> iterator | same as filter, but checks for False"
     (import funcy [lremove :as lreject]) #_ "lreject(pred, seq) -> List | list(reject(...))"
@@ -298,7 +309,7 @@
 
     #_ "lbisect_at(n, seq) -> start, tail | list version of bisect_at, but also for n<0, abs(n) will be len of tail"
     (defn lbisect_at [n seq]
-        " splits seq to start and tail lists,
+        " splits seq to start and tail lists (returns tuple of lists),
           when n>=0, len of start will be = n (or less, when len(seq) < n),
           when n<0, len of tail will be = n (or less, when len(seq) < abs(n))"
         (if (>= n 0)
@@ -343,7 +354,7 @@
           at step offsets apart (step=None defaults to n when not given),
           tail=False will allow fewer than n items at the end;
           returns list of lists"
-        (list (partition n seq step tail)))
+        (list (partition n seq :step step :tail tail)))
 
     (import funcy [partition_by])   #_ "partition_by(f, seq) -> iterator of iterators | splits when f(item) change" ;;
     (import funcy [lpartition_by])  #_ "lpartition_by(f,seq) -> list of lists | list(partition_by(...))" ;;
@@ -354,7 +365,7 @@
 ; [GROUP] APL: counting ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     #_ "count_occurrences(elem, seq) -> int | rename of list.count method"
-    (defn count_occurrences [elem seq] (container.count elem))
+    (defn count_occurrences [elem seq] (seq.count elem))
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -489,14 +500,7 @@
     (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
 
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
-    (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) 3))
-
-    #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
-    (defn on [f check x y #* args]
-        " inpired by Haskell's 'on' function,
-          applies f to x, y, and other args (if provided),
-          then applies reduce to them with check"
-        (reduce check (lmap f [x y #* args])))
+    (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
 
     #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
     (defn intQ [x]
@@ -539,8 +543,8 @@
     (defn str_join [ss [sep ""]]
         "str_join(['1', '2', '3'], '-') = '1-2-3'"
         (if (bool sep)
-            (funcy.str_join sep seq)
-            (funcy.str_join seq)))
+            (funcy.str_join sep ss)
+            (funcy.str_join ss)))
 
     #_ "str_replace(string, old, new, count=-1) | str.replace method as a function"
     (defn str_replace [string old new [count -1]]
@@ -561,23 +565,23 @@
     (defn #^ str strip [#^ str string [chars None]]
         " str.strip method as a function, 
           removes leading and trailing whitespaces (or chars when given)"
-        (string.strip))
+        (string.strip chars))
 
     #_ "lstrip(string, chars=None) | str.lstrip method as a function"
-    (defn #^ str lstrip [#^ str string]
+    (defn #^ str lstrip [#^ str string [chars None]]
         "str.lstrip method as a function"
-        (string.lstrip))
+        (string.lstrip chars))
 
     #_ "rstrip(string, chars=None) | str.rstrip method as a function"
-    (defn #^ str rstrip [#^ str string]
+    (defn #^ str rstrip [#^ str string [chars None]]
         "str.rstrip method as a function"
-        (string.rstrip))
+        (string.rstrip chars))
 
     #_ "enlengthen(string, target_len, char=' ', fill_tail=True) | adds char to string until target_len reached"
     (defn #^ str
         enlengthen
-        [ #^ str  string
-          #^ int  target_len
+        [ #^ int  target_len
+          #^ str  string
           #^ str  [char " "]
           #^ bool [fill_tail True]
         ]

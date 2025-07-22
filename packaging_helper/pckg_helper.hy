@@ -2,7 +2,7 @@
     (import os)
     (import subprocess)
     (import _fptk_local *) (require _fptk_local *)
-    
+
 ; [F] run shell command ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn run_shell_command
@@ -65,35 +65,30 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; 1) Run doc_generator.hy :
+    (print "[Step 1/4] Tests for functions:")
 
+        (run_shell_command "cd ../fptk && hy _test_fpext.hy")
         ; && chains cmd commands (2nd is run only if 1st was successful)
+
+    (print "[Step 2/4] Doc generation for functions:")
+
         (run_shell_command "cd doc_generator && hy doc_generator.hy")
 
-    ; 2) Generate _fptk_local.hy :
+    (print "[Step 3/4] Generating _fptk_local.hy:")
 
-        (setv fptk_funcs_code     (->> "../fptk/fpext.hy"
-                                       read_file
-                                       (wrap_in_new_vimcell "functions and modules")))
-
-        (setv fptk_macros_code    (->> "../fptk/macro.hy"
-                                       read_file
-                                       (wrap_in_new_vimcell "macros")))
-
+        (setv fptk_funcs_code     (->> (read_file "../fptk/fpext.hy") (wrap_in_new_vimcell "functions and modules")))
+        (setv fptk_macros_code    (->> (read_file "../fptk/macro.hy") (wrap_in_new_vimcell "macros")))
         (setv version_in_setup_py (extract_version_from_setup_py (read_file "../setup.py")))
 
-        (write_file (sconcat "\n"
-                             "; This is local version of github.com/rmnavr/fptk lib.\n"
+        (write_file (sconcat "\n" "; This is local version of github.com/rmnavr/fptk lib.\n"
                              "; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.\n"
                              "; This file was generated from local git version: " version_in_setup_py 
-                             "\n\n"
-                             fptk_funcs_code "\n"
-                             fptk_macros_code
-                             "\n\n")
+                             "\n\n" fptk_funcs_code "\n" fptk_macros_code "\n\n")
                     "generated_fptk_local/_fptk_local.hy")
 
-        ; ---------------------------
-
         (print "File generated_fptk_local/_fptk_local.hy written!")
-        (print (sconcat "(version in setup.py: " version_in_setup_py ")")) 
+
+    (print "\n\n[Step 4/4] Check versions:")
+
+        (print (sconcat "Version in setup.py: " version_in_setup_py "")) 
 

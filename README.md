@@ -94,7 +94,7 @@ As of today (July 2025) fptk is:
 
 The easiest way to install fptk is via command:
 ```
-pip install git+https://github.com/rmnavr/fptk.git@0.2.1
+pip install git+https://github.com/rmnavr/fptk.git@0.2.0
 ```
 
 Although until fptk reaches stable release recommended approach is to eather:
@@ -105,7 +105,7 @@ Although until fptk reaches stable release recommended approach is to eather:
    (import  _fptk_local *)    ; import modules, functions and classes
    (require _fptk_local *)    ; import macros
    ```
-2. Or use it in separate environment with fixed fptk version (like `==0.2.1`).
+2. Or use it in separate environment with fixed fptk version (like `==0.2.0`)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 

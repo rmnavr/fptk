@@ -145,11 +145,12 @@ FROM: funcy           | sums                  :: sums(seq [, acc]) -> generator 
 FROM: funcy           | lsums                 :: lsums(seq [, acc]) -> List
 INFO: py              | zip /base/            :: zip(*iterables) -> zip object
 DEFN: fptk            | lzip                  :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
+DEFN: fptk            | on                    :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
 
 === FP: n-applicators ===
 MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
 MACR: hyrule          | list_n                :: (list_n n #* body) -> List
-DEFN: fptk            | nest                  :: nest(n, f)  ; f(f(f(...f))), returns function
+DEFN: fptk            | nested                :: nested(n, f)  ; f(f(f(...f))), returns function
 DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
 === APL: filtering ===
@@ -237,7 +238,6 @@ DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
 DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
 DEFN: fptk            | oftypeQ               :: (oftypeQ tp x) -> (= (type x) tp)
 DEFN: fptk            | oflenQ                :: (oflenQ xs n) -> (= (len xs) n)
-DEFN: fptk            | on                    :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
 DEFN: fptk            | intQ                  :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
 DEFN: fptk            | floatQ                :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
 DEFN: fptk            | numberQ               :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic

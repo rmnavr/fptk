@@ -10,7 +10,7 @@
 	• <-
 
 // ____________________________________________________________________________/ }}}1
-// ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	ADT machinery: product/sum
 			
@@ -50,6 +50,7 @@
 	- map vs lmap, iterator/generator/list (do not falsly consume iterators and such)
 	- consistent namings of args
 	- is every func indeed immutable?
+	- macro: hygensims?
 
 	·······························
 
@@ -60,6 +61,8 @@
 	license
 
 // ____________________________________________________________________________/ }}}1
+
+// sorted ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	Consider study/adding:
 		• juxt/ljuxt, compose/lcompose, what does l-version do? is it really required?
@@ -104,3 +107,20 @@
 		- hy 1.0.0 google article
  
  
+
+// ____________________________________________________________________________/ }}}1
+
+	assertm:
+	- print what 1st expr returns
+	- behaviour: try onliner
+	- option: always oneliners (shorten strings and remove \n)
+	- option: always full output
+	- option: return result (True/False/Error)
+	- tests when returns error is correct test?
+
+	+ pick_
+	+ slice_/cut_ with 1 arg
+	+ test: errors for getters, 1-based index with dicts
+	? test only fptk funcs? or also funcy?
+	+ count_occurrences is bad
+	+ endswith is bad

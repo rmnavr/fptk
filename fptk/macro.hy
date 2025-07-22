@@ -5,6 +5,13 @@
 
 	; === Helpers ===
 
+	(defmacro test [op arg1 arg2]
+        (setv _expr (hy.repr (hy.eval ['op 'arg1 'arg2])))
+		(try
+            (assert (hy.eval `(~op ~arg1 ~arg2))
+                    _expr)
+            (except [e Exception] (print f"Error in {_expr} |" e))))
+
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; (- 1)
@@ -223,7 +230,7 @@
 
 
 ; _____________________________________________________________________________/ }}}1
-; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro pluckm [indx iterable]
 		(cond ; .attr -> "attr"
@@ -359,6 +366,17 @@
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
 	   `(&= ~variable (lns ~@lenses_args)))
+
+; _____________________________________________________________________________/ }}}1
+; assertm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(defmacro assertm [expr [msg "False"]]
+        (setv _test_expr (hy.repr expr))
+       `(try (assert ~expr ~msg)
+             True
+             (except [e Exception]
+                     (print "Error in" ~_test_expr "|" e)
+                     False)))
 
 ; _____________________________________________________________________________/ }}}1
 

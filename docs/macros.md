@@ -14,6 +14,7 @@ This doc will cover following macros:
 * `p:` — pipe of partials
 * `pluckm` — getter for collection of collections
 * `getattrm` — same as getattr, but with small syntax tweak
+* `assertm` — assert with some additions
 
 There are also lens related macros described in separate doc
 ([Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)).
@@ -118,6 +119,28 @@ The only thing this macros does is allowing `.attr` syntax for getattr
 ```hy
 (getattrm Point "x")     ; -> (getattr Point "x")
 (getattrm Point .x)      ; -> (getattr Point "x")
+```
+
+<!-- __________________________________________________________________________/ }}}1 -->
+<!-- assertm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+## `assertm`
+
+```hy
+assertm(expr, msg="False")
+```
+
+Convenience macro with normal `assert` functionality, but:
+1. Prints source expression that is being tested 
+2. Prints only last error, does not print traceback 
+3. Returns True when success, returns False otherwise 
+
+```hy
+    (assertm (= 1 2) "very bad")  
+	; >> Error in '(= 1 2) | very bad
+
+    (assertm (= z1 2) "very bad") 
+	; >> Error in '(= z1 2) | name 'x' is not defined
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
