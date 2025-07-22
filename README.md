@@ -77,6 +77,17 @@ Tested with:
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md) — macros that simplify lens definition/application/composition
 
 <!-- __________________________________________________________________________/ }}}1 -->
+<!-- Project status ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+# Project status
+
+As of today (July 2025) fptk is:
+- [x] well documented, all docstrings are in place
+- [x] streightforward usage of functions and macros is tested
+- [ ] rigorous testing for functions, macros and their interaction is on the way
+- [ ] has not yet reached stable release (small API-breaking changes are expected)
+
+<!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # Installation
