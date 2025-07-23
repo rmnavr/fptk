@@ -1,7 +1,8 @@
     
     (import os)
     (import subprocess)
-    (import _fptk_local *) (require _fptk_local *)
+    (import _fptk_local *)
+    (require _fptk_local *)
 
 ; [F] run shell command ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -22,7 +23,7 @@
 ; _____________________________________________________________________________/ }}}1
 ; [F] vim cells ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    ; this is required because VimCells messes with {({ and such
+    ; these are given in such form, because VimCells messes with {({ and such (this is Vim issue)
     (setv $OP3 (smul "{" 3))
     (setv $CL3 (smul "}" 3))
 
@@ -67,7 +68,7 @@
 
     (print "[Step 1/4] Tests for functions:")
 
-        (run_shell_command "cd ../fptk && hy _test_fpext.hy")
+        (run_shell_command "cd ../tests && hy test_functions.hy")
         ; && chains cmd commands (2nd is run only if 1st was successful)
 
     (print "[Step 2/4] Doc generation for functions:")
@@ -76,8 +77,8 @@
 
     (print "[Step 3/4] Generating _fptk_local.hy:")
 
-        (setv fptk_funcs_code     (->> (read_file "../fptk/fpext.hy") (wrap_in_new_vimcell "functions and modules")))
-        (setv fptk_macros_code    (->> (read_file "../fptk/macro.hy") (wrap_in_new_vimcell "macros")))
+        (setv fptk_funcs_code     (->> (read_file "../fptk/fptk_funcs.hy") (wrap_in_new_vimcell "functions and modules")))
+        (setv fptk_macros_code    (->> (read_file "../fptk/fptk_macros.hy") (wrap_in_new_vimcell "macros")))
         (setv version_in_setup_py (extract_version_from_setup_py (read_file "../setup.py")))
 
         (write_file (sconcat "\n" "; This is local version of github.com/rmnavr/fptk lib.\n"

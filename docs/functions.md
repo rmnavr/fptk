@@ -67,10 +67,10 @@ FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
 FROM: pydantic        | BaseModel
-FROM: pydantic        | Int (<-StrictInt)     ; will be still of int type, but will perform strict typecheck when variable is created
-FROM: pydantic        | Str (<-StrictStr)     ; will be still of str type, but will perform strict typecheck when variable is created
-FROM: pydantic        | Float (<-StrictFloat) ; will be still of float type, but will perform strict typecheck when variable is created
-SETV: fptk            | Number                ; Union of Int and Float
+FROM: pydantic        | StrictInt             ; will be still of int type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictStr             ; will be still of str type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictFloat           ; will be still of float type, but will perform strict typecheck when variable is created
+SETV: fptk            | Number                ; Union of StrictInt and StrictFloat
 FROM: pydantic        | validate_call         ; decorator for type-checking func args
 SETV: fptk            | validateF             ; same as validate_call but with option validate_return=True set (thus validating args and return type)
 FROM: returns.result  | Result                ; Result monad

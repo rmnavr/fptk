@@ -81,11 +81,14 @@ Tested with:
 
 # Project status
 
-As of today (July 2025) fptk is:
-- [x] well documented, all docstrings are in place
-- [x] streightforward usage of functions and macros is tested
-- [ ] rigorous testing for functions, macros and their interaction is on the way
-- [ ] has not yet reached stable release (small API-breaking changes are expected)
+As of July 2025:
+- [x] full documentation
+- [x] tests for functions are written
+
+Currently developed:
+- [ ] tests for macros
+- [ ] tests for interaction of functions and macros
+- [ ] stable release is not yet reached (small API-breaking changes can happen)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -94,7 +97,7 @@ As of today (July 2025) fptk is:
 
 The easiest way to install fptk is via command:
 ```
-pip install git+https://github.com/rmnavr/fptk.git@0.2.0
+pip install git+https://github.com/rmnavr/fptk.git@0.2.3
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->

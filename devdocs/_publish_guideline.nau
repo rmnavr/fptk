@@ -2,11 +2,13 @@
     where to update version (like 0.1.0 -> 0.2.0):
     - setup.py
     - README.md Installation code line
-    - git (local) + push to github
+    - git add .
+	- git commit -m "smth like: commit for v0.2.3"
+	- git push origin main
 
 	Then:
-	- install 0.2.0 locally immediately
-	- change setup.py version to 0.2.1devN
+	- install new version (0.2.0 or smth) locally immediately
+	- change setup.py version to 0.2.1devN or 0.1.0.post1
 
 	====================================================================================================
 
@@ -25,11 +27,11 @@
 
 	Proper versioning:
 
-		0.2.1
-		0.2.2.dev1
-		0.2.2a1
-		0.2.2b1
-		0.2.2rc1
-		0.2.2
-		0.2.2.post1
+	0.2.1
+	0.2.2.dev1
+	0.2.2a1
+	0.2.2b1
+	0.2.2rc1
+	0.2.2
+	0.2.2.post1
 

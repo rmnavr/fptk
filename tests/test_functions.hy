@@ -1,6 +1,32 @@
 
-    (import  fpext *)
-    (require macro *)
+; Imports (tricks to import fptk from sibling folder) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; 1) Load fptk_funcs.hy from sibling folder
+    (import sys)
+    (setv _cur_path (get sys.path 0))
+    (setv _cur_folder_removed (get (_cur_path.rsplit "\\tests" 1) 0))
+    (setv _fptk_path (+ _cur_folder_removed "\\fptk"))
+    (sys.path.append (+ _cur_folder_removed "\\fptk"))
+    (import fptk_funcs *)
+
+    ; 2) Load fptk_macros.hy from sibling folder
+    ; macros cannot be imported with "require" by same method as functions above (probably this is due to hy imports work)
+    ; for this reason relevant file from "fptk_macros.hy" is generated first
+    (setv _macros_code
+        (with
+            [ file
+              (open (+ _fptk_path "\\fptk_macros.hy")
+                    "r"
+                    :encoding "utf-8")]
+            (file.read)))
+    ;
+    (with [ file
+            (open (+ _cur_path  "\\_pulled_macro_code.hy") "w" :encoding "utf-8")]
+          (file.write (+ "; this file is a copy of ../fptr/fptk_macros.hy\n;(because I don't know how to otherwise 'requre' it's macros from another folder lol)\n\n" _macros_code)))
+
+    (require _pulled_macro_code [assertm gives_error_typeQ])
+
+; _____________________________________________________________________________/ }}}1
 
 ; 0-Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -141,7 +167,7 @@
 
 
 ; _____________________________________________________________________________/ }}}1
-; Checks ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; Checks ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
     
     (assertm = (zerolenQ "") True)
     (assertm = (zerolenQ []) True)
@@ -171,7 +197,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (str_join ["a" "b" "" "c"]) "abc")
     (assertm = (str_join :sep "-" ["a" "b" "" "c"]) "a-b--c")
@@ -199,4 +225,3 @@
 ; _____________________________________________________________________________/ }}}1
 
     (print "== TESTING COMPLETED (if there are no errors above, all is good) ==")
-

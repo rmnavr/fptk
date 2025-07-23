@@ -45,14 +45,14 @@
     (import typing      [Type])
 
     (import pydantic    [BaseModel])
-    (import pydantic    [StrictInt   :as Int])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
-    (import pydantic    [StrictStr   :as Str])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
-    (import pydantic    [StrictFloat :as Float])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
+    (import pydantic    [StrictInt])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictStr])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictFloat])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
 
-    #_ "Union of Int and Float"
-    (setv Number (of Union #(Int Float))) ;;
+    #_ "Union of StrictInt and StrictFloat"
+    (setv Number (of Union #(StrictInt StrictFloat))) ;;
 
-    (import pydantic    [validate_call]) #_ "decorator for type-checking func args" ;;
+    (import pydantic    [validate_call])   #_ "decorator for type-checking func args" ;;
 
     #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))

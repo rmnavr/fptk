@@ -1,7 +1,7 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.2dev7
+; This file was generated from local git version: 0.2.3
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -51,14 +51,14 @@
     (import typing      [Type])
 
     (import pydantic    [BaseModel])
-    (import pydantic    [StrictInt   :as Int])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
-    (import pydantic    [StrictStr   :as Str])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
-    (import pydantic    [StrictFloat :as Float])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
+    (import pydantic    [StrictInt])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictStr])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
+    (import pydantic    [StrictFloat])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
 
-    #_ "Union of Int and Float"
-    (setv Number (of Union #(Int Float))) ;;
+    #_ "Union of StrictInt and StrictFloat"
+    (setv Number (of Union #(StrictInt StrictFloat))) ;;
 
-    (import pydantic    [validate_call]) #_ "decorator for type-checking func args" ;;
+    (import pydantic    [validate_call])   #_ "decorator for type-checking func args" ;;
 
     #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))
@@ -140,7 +140,7 @@
           will throw error if elem not found (just like hy get macro)"
         (setv _ns_plus1 
             (lfor &n ns
-                (do (when (= &n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+                (do (when (= &n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
                     (if (and (intQ &n) (>= &n 1))
                         (dec &n)
                         &n)))) ;; this line covers both &n<0 and &n=dict_key        
@@ -152,7 +152,7 @@
           will throw error for n=0,
           will return None if elem not found (just like nth)"
         (when (dictQ seq) (return (nth n seq)))
-        (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+        (when (=  n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (nth (dec n) seq)))
         (return (nth n seq))) ;; this line covers both n<0 and n=dict_key
 
@@ -168,14 +168,14 @@
           - won't take 0 for start and end"
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
-              (=  start 0) (raise (Exception "start=0 can't be used with 1-based getter"))
-              True         (raise (Exception "start in 1-based getter is probably not an integer")))
+              (=  start 0) (raise (IndexError "start=0 can't be used with 1-based getter"))
+              True         (raise (IndexError "start in 1-based getter is probably not an integer")))
         ;;
         (cond (=  end -1) (setv _end None)
               (>= end  1) (setv _end end)
               (<  end -1) (setv _end (inc end))
-              (=  end  0) (raise (Exception "end=0 can't be used with 1-based getter"))
-              True        (raise (Exception "end in 1-based getter is probably not an integer")))
+              (=  end  0) (raise (IndexError "end=0 can't be used with 1-based getter"))
+              True        (raise (IndexError "end in 1-based getter is probably not an integer")))
         (return (slice _start _end step)))
 
     #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
@@ -731,19 +731,15 @@
 ; _____________________________________________________________________________/ }}}1
 ; macros ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
 	(require hyrule [-> of])
-    (import funcy [partial rcompose])
-    (import operator)
+    (import  funcy [partial rcompose])
+    (import  operator)
 
-	; === Helpers ===
+; ________________________________________________________________________/ }}}2
 
-	(defmacro test [op arg1 arg2]
-        (setv _expr (hy.repr (hy.eval ['op 'arg1 'arg2])))
-		(try
-            (assert (hy.eval `(~op ~arg1 ~arg2))
-                    _expr)
-            (except [e Exception] (print f"Error in {_expr} |" e))))
-
+; === Helpers ===
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; (- 1)
@@ -771,7 +767,7 @@
 		eval_and_compile)
 
 ; ________________________________________________________________________/ }}}2
-
+;
 ; DEVDOC: Dot Macro Expressions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 (when False
 
@@ -888,9 +884,7 @@
 
 ; ________________________________________________________________________/ }}}2
 
-	; === Macroses ===
-
-
+; === Macros ===
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro f:: [#* macro_args]
@@ -925,7 +919,7 @@
 	; operator.neg		; [. operator neg]		; _idDottetAccess checks for: [. smth _]
 	; (operator.add 3)	; [[. operator add] 3]
 
-    (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
+    (defn _flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
 
 	(defmacro p: [#* args]
 		;
@@ -933,13 +927,13 @@
 		(for [&arg args]
 			  (cond ; .x  -> (partial flip getattr "x")
 					(_isDottedAttr &arg)
-					(pargs.append `(partial flip getattr ~(str (_extractDottedAttr &arg))))
+					(pargs.append `(partial _flip getattr ~(str (_extractDottedAttr &arg))))
 					; operator.neg
 					(_isDottedAccess &arg)
 					(pargs.append `(partial ~&arg))
 					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
 					(_isDottedMth &arg)
-					(do (pargs.append `(partial flip getattr
+					(do (pargs.append `(partial _flip getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
 						(pargs.append `(partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
 												[~@(get (_extractDottedMth &arg) "args")])))
@@ -959,7 +953,6 @@
 					True
 					(pargs.append `(partial ~&arg))))
 	   `(rcompose ~@pargs))
-
 
 ; ________________________________________________________________________/ }}}2
 ; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -994,7 +987,7 @@
 ; fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; recognizes %1..%9 as arguments
-	; nested fm calls will not work as intended
+	; nested fm calls will probably not work as intended
 
 	(defmacro fm [expr]
 		(import hyrule [flatten thru])
@@ -1100,15 +1093,35 @@
 	   `(&= ~variable (lns ~@lenses_args)))
 
 ; ________________________________________________________________________/ }}}2
-; assertm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-	(defmacro assertm [expr [msg "False"]]
-        (setv _test_expr (hy.repr expr))
-       `(try (assert ~expr ~msg)
-             True
+	(defmacro assertm [op arg1 arg2]
+        (setv to_test `(~op ~arg1 ~arg2))
+        (setv _test_expr (hy.repr `(~op ~arg1 ~arg2)))
+        (setv _arg1 (hy.repr arg1))
+        (setv _arg2 (hy.repr arg2))
+        ;
+        (setv _full_expr_result True)
+       `(try (assert ~to_test False)
+             True ; return
+             (except [eFull Exception]
+                     (print "Error in" ~_test_expr "|" (type eFull) ":" eFull)
+                     (setv _outp eFull)
+                     (try ~arg1
+                          (print ">>" ~_arg1 "=" ~arg1)
+                          (except [e1 Exception]
+                                  (print ">> Can't calc" ~_arg1 "|" (type e1) ":" e1)))
+                     (try ~arg2
+                          (print ">>" ~_arg2 "=" ~arg2)
+                          (except [e2 Exception]
+                                  (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                     eFull )))
+
+	(defmacro gives_error_typeQ [expr error_type]
+       `(try ~expr
+             False
              (except [e Exception]
-                     (print "Error in" ~_test_expr "|" e)
-                     False)))
+                     (= ~error_type (type e)))))
 
 ; ________________________________________________________________________/ }}}2
 
