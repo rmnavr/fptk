@@ -1,6 +1,6 @@
     
-    (import  fptk.fpext *)              ; imports fptk functions, libs, classes
-    (require fptk.fpext * :readers *)   ; used solely for importing hyrule's ->, ->> and such
+    (import  fptk.fptk_funcs *)              ; imports fptk functions, libs, classes
+    (require fptk.fptk_funcs * :readers *)   ; used solely for importing hyrule's ->, ->> and such
 
-    (require fptk.macro * :readers *)   ; imports fptk macroses
+    (require fptk.fptk_macros * :readers *)   ; imports fptk macroses
 
