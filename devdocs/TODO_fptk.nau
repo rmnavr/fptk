@@ -1,5 +1,5 @@
 
-// MACROS LIST ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// MACROS ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	new:
 	• l>=			// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
@@ -124,3 +124,7 @@
 	? test only fptk funcs? or also funcy?
 	+ count_occurrences is bad
 	+ endswith is bad
+	+ (manyQ = (type x) [int float]) 
+	+ all_fn, none_fn, etc.
+	
+	+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)

@@ -66,16 +66,16 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    (print "[Step 1/4] Tests for functions:")
+    (dt_print "[Step 1/4] Tests for functions:")
 
         (run_shell_command "cd ../tests && hy test_functions.hy")
         ; && chains cmd commands (2nd is run only if 1st was successful)
 
-    (print "[Step 2/4] Doc generation for functions:")
+    (dt_print "[Step 2/4] Doc generation for functions:")
 
         (run_shell_command "cd doc_generator && hy doc_generator.hy")
 
-    (print "[Step 3/4] Generating _fptk_local.hy:")
+    (dt_print "[Step 3/4] Generating _fptk_local.hy:")
 
         (setv fptk_funcs_code     (->> (read_file "../fptk/fptk_funcs.hy") (wrap_in_new_vimcell "functions and modules")))
         (setv fptk_macros_code    (->> (read_file "../fptk/fptk_macros.hy") (wrap_in_new_vimcell "macros")))
@@ -89,7 +89,8 @@
 
         (print "File generated_fptk_local/_fptk_local.hy written!")
 
-    (print "\n\n[Step 4/4] Check versions:")
+    (print "\n")
+    (dt_print "[Step 4/4] Check versions:")
 
         (print (sconcat "Version in setup.py: " version_in_setup_py "")) 
 

@@ -1,37 +1,42 @@
     
-    where to update version (like 0.1.0 -> 0.2.0):
-    - setup.py
-    - README.md Installation code line
-    - git add .
-	- git commit -m "smth like: commit for v0.2.3"
-	- git push origin main
+	Publishing with new tag (like 0.1.0 -> 0.2.0):
+
+		- Update setup.py with new version number
+		- Update README.md with new version number
+		- Commit locally and to github:
+		  - git add .
+		  - git commit -m "smth like: commit for v0.2.3"
+		  - git push origin main
+		* Install new version (0.2.0 or smth) locally immediately (>> pip install .),
+		  delete "build" and "egg-info" folders produced by pip 
+		  (it will take version number from setup.py, not from "git tag" or smth)
+
+		Adding tag:
+		- git tag -n										// list all tags, -n gives also their description
+		- git tag -a 0.2.0 -m "main functionality done"		// create tag 0.1.0
+		- git push origin 0.2.0								// push to github
 
 	Then:
-	- install new version (0.2.0 or smth) locally immediately
-	- change setup.py version to 0.2.1devN or 0.1.0.post1
+
+		- change setup.py version to 0.2.1devN or 0.1.0.post1
 
 	====================================================================================================
 
-	Git:
+	//git tag -d 0.2.0	// delete tag 0.1.0
+	//do not forget to delete tag by hand from github website 
 
-		git tag -n										// list all tags, -n gives also their description
-		git tag -a 0.1.0 -m "main functionality done"	// create tag 0.1.0
-		git tag -d 0.1.0								// delete tag 0.1.0
-		git push origin 0.1.0							// push to github
-
-		git fetch --tags  // pulls tags from github (if tag was created via github webpage) to local
+	//git fetch --tags  // pulls tags from github (if tag was created via github webpage) to local
 
 	[³pip install .⁺] installation dir:
-	
-		D:\Soft_categories\Engn_Programming\miniconda3\Lib\site-packages\fptk
+	D:\Soft_categories\Engn_Programming\miniconda3\Lib\site-packages\fptk
 
-	Proper versioning:
 
-	0.2.1
-	0.2.2.dev1
-	0.2.2a1
-	0.2.2b1
-	0.2.2rc1
-	0.2.2
-	0.2.2.post1
+	Proper PEP versioning:
+	- 0.2.1
+	- 0.2.2.dev1
+	- 0.2.2a1
+	- 0.2.2b1
+	- 0.2.2rc1
+	- 0.2.2
+	- 0.2.2.post1
 

@@ -1,4 +1,7 @@
 
+    ; this file relies on "asertm" and "gives_error_typeQ" macros imported
+    ; from tested "fptk_macros.hy" file
+
 ; Imports (tricks to import fptk from sibling folder) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; 1) Load fptk_funcs.hy from sibling folder
@@ -10,20 +13,18 @@
     (import fptk_funcs *)
 
     ; 2) Load fptk_macros.hy from sibling folder
-    ; macros cannot be imported with "require" by same method as functions above (probably this is due to hy imports work)
+    ; macros cannot be imported with "require" by same method as functions above (probably this is due to how hy imports work)
     ; for this reason relevant file from "fptk_macros.hy" is generated first
     (setv _macros_code
-        (with
-            [ file
-              (open (+ _fptk_path "\\fptk_macros.hy")
-                    "r"
-                    :encoding "utf-8")]
-            (file.read)))
+        (with [file (open (+ _fptk_path "\\fptk_macros.hy") "r" :encoding "utf-8")]
+              (file.read)))
     ;
-    (with [ file
-            (open (+ _cur_path  "\\_pulled_macro_code.hy") "w" :encoding "utf-8")]
-          (file.write (+ "; this file is a copy of ../fptr/fptk_macros.hy\n;(because I don't know how to otherwise 'requre' it's macros from another folder lol)\n\n" _macros_code)))
-
+    (with [file (open (+ _cur_path  "\\_pulled_macro_code.hy") "w" :encoding "utf-8")]
+          (file.write (+ "; this file is auto-copy of ../fptk/fptk_macros.hy,\n"
+                         "; copying was done just before tests were executed"
+                         "; (I don't know how to otherwise 'requre' macros from sibling folder lol)\n\n"
+                         _macros_code)))
+    ;
     (require _pulled_macro_code [assertm gives_error_typeQ])
 
 ; _____________________________________________________________________________/ }}}1

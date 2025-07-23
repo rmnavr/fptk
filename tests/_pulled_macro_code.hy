@@ -1,5 +1,5 @@
-; this file is a copy of ../fptr/fptk_macros.hy
-;(because I don't know how to otherwise 'requre' it's macros from another folder lol)
+; this file is auto-copy of ../fptk/fptk_macros.hy,
+; copying was done just before tests were executed; (I don't know how to otherwise 'requre' macros from sibling folder lol)
 
 
 ; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
