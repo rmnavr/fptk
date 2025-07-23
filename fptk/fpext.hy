@@ -134,7 +134,7 @@
           will throw error if elem not found (just like hy get macro)"
         (setv _ns_plus1 
             (lfor &n ns
-                (do (when (= &n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+                (do (when (= &n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
                     (if (and (intQ &n) (>= &n 1))
                         (dec &n)
                         &n)))) ;; this line covers both &n<0 and &n=dict_key        
@@ -146,7 +146,7 @@
           will throw error for n=0,
           will return None if elem not found (just like nth)"
         (when (dictQ seq) (return (nth n seq)))
-        (when (=  n 0) (raise (Exception "n=0 can't be used with 1-based getter")))
+        (when (=  n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (nth (dec n) seq)))
         (return (nth n seq))) ;; this line covers both n<0 and n=dict_key
 
@@ -162,14 +162,14 @@
           - won't take 0 for start and end"
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
-              (=  start 0) (raise (Exception "start=0 can't be used with 1-based getter"))
-              True         (raise (Exception "start in 1-based getter is probably not an integer")))
+              (=  start 0) (raise (IndexError "start=0 can't be used with 1-based getter"))
+              True         (raise (IndexError "start in 1-based getter is probably not an integer")))
         ;;
         (cond (=  end -1) (setv _end None)
               (>= end  1) (setv _end end)
               (<  end -1) (setv _end (inc end))
-              (=  end  0) (raise (Exception "end=0 can't be used with 1-based getter"))
-              True        (raise (Exception "end in 1-based getter is probably not an integer")))
+              (=  end  0) (raise (IndexError "end=0 can't be used with 1-based getter"))
+              True        (raise (IndexError "end in 1-based getter is probably not an integer")))
         (return (slice _start _end step)))
 
     #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"

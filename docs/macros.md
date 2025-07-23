@@ -6,6 +6,8 @@ fptk functions, macroses and imported modules:
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
 ---
 
+<!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
 # fptk macros
 
 This doc will cover following macros:
@@ -14,11 +16,12 @@ This doc will cover following macros:
 * `p:` — pipe of partials
 * `pluckm` — getter for collection of collections
 * `getattrm` — same as getattr, but with small syntax tweak
-* `assertm` — assert with some additions
+* `assertm`, `gives_error_typeQ` — macros for testing code
 
 There are also lens related macros described in separate doc
 ([Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)).
 
+<!-- __________________________________________________________________________/ }}}1 -->
 <!-- f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `f::` — macros for annotating Callables
@@ -122,25 +125,57 @@ The only thing this macros does is allowing `.attr` syntax for getattr
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- assertm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- assertm, gives_error_typeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `assertm`
 
 ```hy
-assertm(expr, msg="False")
+assertm(op, arg1, arg2) -> bool | Error
 ```
 
-Convenience macro with normal `assert` functionality, but:
-1. Prints source expression that is being tested 
-2. Prints only last error, does not print traceback 
-3. Returns True when success, returns False otherwise 
+Checks if `(op arg1 arg2)` returns True and also:
+1. Prints source expressions when check fails
+2. Will return:
+   - True when checks is true
+   - False when check is False
+   - Error object when check was not able to be calculated
+
+```
+(assertm = (+ 1 2) (- 3 10))
+; Error in '(= (+ 1 2) (- 3 10)) | <class 'AssertionError'> : False
+; >> '(+ 1 2) = 3
+; >> '(- 3 10) = -7
+
+(assertm = (+ z1z) (- 7))
+; Error in '(= (+ z1z) (- 7)) | <class 'NameError'> : name 'z1z' is not defined
+; >> Can't calc '(+ z1z) | <class 'NameError'> : name 'z1z' is not defined
+; >> '(- 7) = -7
+```
+
+## `gives_error_typeQ`
 
 ```hy
-    (assertm (= 1 2) "very bad")  
-	; >> Error in '(= 1 2) | very bad
+gives_error_typeQ(expr, error_type) -> bool
+```
 
-    (assertm (= z1 2) "very bad") 
-	; >> Error in '(= z1 2) | name 'x' is not defined
+Returns True when calculating `expr` produces error of `error_type`.
+Returns False otherwise (eather when `expr` calculates without error, or when error type does not match).
+
+Examples:
+```hy
+(gives_error_typeQ (get [1 2 3] 10) IndexError)
+; True
+
+(gives_error_typeQ (get [1 2 3] 1) IndexError)
+; False
+```
+
+Best used with `assertm`:
+```hy
+(assertm gives_error_typeQ (get [1 2 3] 1) IndexError)
+; Error in '(gives_error_typeQ (get [1 2 3] 1) IndexError) | <class 'AssertionError'> : False
+; >> '(get [1 2 3] 1) = 2
+; >> 'IndexError = <class 'IndexError'>
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->

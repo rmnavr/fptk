@@ -1,17 +1,13 @@
 
+; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
 	(require hyrule [-> of])
-    (import funcy [partial rcompose])
-    (import operator)
+    (import  funcy [partial rcompose])
+    (import  operator)
 
-	; === Helpers ===
+; _____________________________________________________________________________/ }}}1
 
-	(defmacro test [op arg1 arg2]
-        (setv _expr (hy.repr (hy.eval ['op 'arg1 'arg2])))
-		(try
-            (assert (hy.eval `(~op ~arg1 ~arg2))
-                    _expr)
-            (except [e Exception] (print f"Error in {_expr} |" e))))
-
+; === Helpers ===
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; (- 1)
@@ -39,7 +35,7 @@
 		eval_and_compile)
 
 ; _____________________________________________________________________________/ }}}1
-
+;
 ; DEVDOC: Dot Macro Expressions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 (when False
 
@@ -156,9 +152,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-	; === Macroses ===
-
-
+; === Macros ===
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro f:: [#* macro_args]
@@ -193,7 +187,7 @@
 	; operator.neg		; [. operator neg]		; _idDottetAccess checks for: [. smth _]
 	; (operator.add 3)	; [[. operator add] 3]
 
-    (defn flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
+    (defn _flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
 
 	(defmacro p: [#* args]
 		;
@@ -201,13 +195,13 @@
 		(for [&arg args]
 			  (cond ; .x  -> (partial flip getattr "x")
 					(_isDottedAttr &arg)
-					(pargs.append `(partial flip getattr ~(str (_extractDottedAttr &arg))))
+					(pargs.append `(partial _flip getattr ~(str (_extractDottedAttr &arg))))
 					; operator.neg
 					(_isDottedAccess &arg)
 					(pargs.append `(partial ~&arg))
 					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
 					(_isDottedMth &arg)
-					(do (pargs.append `(partial flip getattr
+					(do (pargs.append `(partial _flip getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
 						(pargs.append `(partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
 												[~@(get (_extractDottedMth &arg) "args")])))
@@ -227,7 +221,6 @@
 					True
 					(pargs.append `(partial ~&arg))))
 	   `(rcompose ~@pargs))
-
 
 ; _____________________________________________________________________________/ }}}1
 ; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -262,7 +255,7 @@
 ; fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; recognizes %1..%9 as arguments
-	; nested fm calls will not work as intended
+	; nested fm calls will probably not work as intended
 
 	(defmacro fm [expr]
 		(import hyrule [flatten thru])
@@ -368,15 +361,37 @@
 	   `(&= ~variable (lns ~@lenses_args)))
 
 ; _____________________________________________________________________________/ }}}1
-; assertm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	(defmacro assertm [expr [msg "False"]]
-        (setv _test_expr (hy.repr expr))
-       `(try (assert ~expr ~msg)
-             True
+	(defmacro assertm [op arg1 arg2]
+        (setv to_test `(~op ~arg1 ~arg2))
+        (setv _test_expr (hy.repr `(~op ~arg1 ~arg2)))
+        (setv _arg1 (hy.repr arg1))
+        (setv _arg2 (hy.repr arg2))
+        ;
+        (setv _full_expr_result True)
+       `(try (assert ~to_test False)
+             True ; return
+             (except [eFull Exception]
+                     (print "Error in" ~_test_expr "|" (type eFull) ":" eFull)
+                     (setv _outp eFull)
+                     (try ~arg1
+                          (print ">>" ~_arg1 "=" ~arg1)
+                          (except [e1 Exception]
+                                  (print ">> Can't calc" ~_arg1 "|" (type e1) ":" e1)))
+                     (try ~arg2
+                          (print ">>" ~_arg2 "=" ~arg2)
+                          (except [e2 Exception]
+                                  (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                     eFull )))
+
+	(defmacro gives_error_typeQ [expr error_type]
+       `(try ~expr
+             False
              (except [e Exception]
-                     (print "Error in" ~_test_expr "|" e)
-                     False)))
+                     (= ~error_type (type e)))))
 
 ; _____________________________________________________________________________/ }}}1
+
+
 
