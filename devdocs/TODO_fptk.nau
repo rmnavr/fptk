@@ -110,21 +110,29 @@
 
 // ____________________________________________________________________________/ }}}1
 
-	assertm:
-	- print what 1st expr returns
-	- behaviour: try onliner
-	- option: always oneliners (shorten strings and remove \n)
-	- option: always full output
-	- option: return result (True/False/Error)
-	- tests when returns error is correct test?
+	• [l] and [m] versions for:
+	  - filter, lfilter, lfilterm, filterm (x4 versions)
+	  - map
+	  - range
+	  - range_
+	  - pluck
+
+    Vim:
+    - jump to F def: not working when decorator is present
+
+
+	····························································
+
+	• 1-based index with dicts
+	* also test funcy functions
 
 	+ pick_
 	+ slice_/cut_ with 1 arg
-	+ test: errors for getters, 1-based index with dicts
-	? test only fptk funcs? or also funcy?
 	+ count_occurrences is bad
 	+ endswith is bad
 	+ (manyQ = (type x) [int float]) 
 	+ all_fn, none_fn, etc.
 	
 	+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
+
+	? Split to submodules?

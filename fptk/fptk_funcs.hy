@@ -50,7 +50,7 @@
     (import pydantic    [StrictFloat])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
 
     #_ "Union of StrictInt and StrictFloat"
-    (setv Number (of Union #(StrictInt StrictFloat))) ;;
+    (setv StrictNumber (of Union #(StrictInt StrictFloat))) ;;
 
     (import pydantic    [validate_call])   #_ "decorator for type-checking func args" ;;
 
@@ -433,13 +433,19 @@
     #_ "minus(x, y) = x - y |"
     (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
-    ;; operator *
+    ;; dunders
 
-        #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
-        (defn mul [#* args]
-            " multiplication as a monoid with identity = 1,
-              can be used with 0 or 1 arg"
-            (reduce operator.mul args 1))
+        #_ "dmul(*args) = arg1 + arg2 + ... | 'dunder mul', '*' operator as a function"
+        (defn dmul [#* args]
+            "dunder mul, '*' operator as a function"
+            (* #* args))
+
+        #_ "dadd(*args) = arg1 + arg2 + ... | 'dunder add', '+' operator as a function"
+        (defn dadd [#* args]
+            "dunder add, '+' operator as a function"
+            (* #* args))
+
+    ;; renames
 
         #_ "lmul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for list"
         (defn lmul [#* args]
@@ -451,13 +457,19 @@
             "rename of * operator, can be used to underline usage on string"
             (* #* args))
 
-    ;; operator +
+    ;; monoids
+
+        #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
+        (defn mul [#* args]
+            " multiplication as a monoid with identity = 1,
+              can be used with 0 or 1 arg"
+            (reduce operator.mul args 1))
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
         (defn plus [#* args]
             " plus as a monoid with identity = 0,
               can be used with 0 or 1 arg"
-            (reduce operator.add args 0))
+            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args 0))
 
         #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
         (defn sconcat [#* args]
@@ -483,6 +495,12 @@
 
     (import funcy [isnone  :as noneQ])
     (import funcy [notnone :as notnoneQ]) ;;
+
+    #_ "| checks directly via (= x True)"
+    (defn trueQ     [x] "checks literally if x == True" (= x True))
+
+    #_ "| checks directly via (= x False)"
+    (defn falseQ    [x] "checks literally if x == False" (= x True))
 
     #_ "| checks directly via (= x 0)"
     (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
@@ -703,9 +721,9 @@
         ]
         " on first run, starts the timer (and print message that it started)
           on subsequent runs prints how many time (in seconds) have passed since previous call
-
+          #
           call with fresh_run = True to reset timer
-
+          #
           last_T should not be touched by user!
           it is used for storing time of previous run between runs"
         (when fresh_run (assoc last_T 0 None))
