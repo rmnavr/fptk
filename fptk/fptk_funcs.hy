@@ -443,7 +443,7 @@
         #_ "dadd(*args) = arg1 + arg2 + ... | 'dunder add', '+' operator as a function"
         (defn dadd [#* args]
             "dunder add, '+' operator as a function"
-            (* #* args))
+            (+ #* args))
 
     ;; renames
 

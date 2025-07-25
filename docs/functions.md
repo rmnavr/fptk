@@ -70,7 +70,7 @@ FROM: pydantic        | BaseModel
 FROM: pydantic        | StrictInt             ; will be still of int type, but will perform strict typecheck when variable is created
 FROM: pydantic        | StrictStr             ; will be still of str type, but will perform strict typecheck when variable is created
 FROM: pydantic        | StrictFloat           ; will be still of float type, but will perform strict typecheck when variable is created
-SETV: fptk            | Number                ; Union of StrictInt and StrictFloat
+SETV: fptk            | StrictNumber          ; Union of StrictInt and StrictFloat
 FROM: pydantic        | validate_call         ; decorator for type-checking func args
 SETV: fptk            | validateF             ; same as validate_call but with option validate_return=True set (thus validating args and return type)
 FROM: returns.result  | Result                ; Result monad
@@ -217,9 +217,11 @@ FROM: math            | atan2                 :: atan2(y, x)  ; both signs are c
 
 === Base operators to functions ===
 DEFN: fptk            | minus                 :: minus(x, y) = x - y
-DEFN: fptk            | mul                   :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | dmul                  :: dmul(*args) = arg1 + arg2 + ...  ; 'dunder mul', '*' operator as a function
+DEFN: fptk            | dadd                  :: dadd(*args) = arg1 + arg2 + ...  ; 'dunder add', '+' operator as a function
 DEFN: fptk            | lmul                  :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
 DEFN: fptk            | smul                  :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
+DEFN: fptk            | mul                   :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | plus                  :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | sconcat               :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | lconcat               :: lconcat(*args)  ; list concantenation as a monoid (will not give error when used with 0 or 1 args)
@@ -232,6 +234,8 @@ FROM: funcy           | evenQ (<-even)
 FROM: funcy           | oddQ (<-odd)
 FROM: funcy           | noneQ (<-isnone)
 FROM: funcy           | notnoneQ (<-notnone)
+DEFN: fptk            | trueQ                 ; checks directly via (= x True)
+DEFN: fptk            | falseQ                ; checks directly via (= x False)
 DEFN: fptk            | zeroQ                 ; checks directly via (= x 0)
 DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
