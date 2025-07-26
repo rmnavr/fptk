@@ -1,6 +1,6 @@
 
-    ; this file relies on "asertm" and "gives_error_typeQ" macros imported
-    ; from tested "fptk_macros.hy" file
+    ; this file relies on "asertm" and "gives_error_typeQ" macros imported from tested "fptk_macros.hy" file for testing,
+    ; if those macros are updated themselves, be sure that all testing is still working
 
 ; Imports (tricks to import fptk from sibling folder) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -12,23 +12,12 @@
     (sys.path.append (+ _cur_folder_removed "\\fptk"))
     (import fptk_funcs *)
 
-    ; 2) Load fptk_macros.hy from sibling folder
-    ; macros cannot be imported with "require" by same method as functions above (probably this is due to how hy imports work)
-    ; for this reason relevant file from "fptk_macros.hy" is generated first
-    (setv _macros_code
-        (with [file (open (+ _fptk_path "\\fptk_macros.hy") "r" :encoding "utf-8")]
-              (file.read)))
-    ;
-    (with [file (open (+ _cur_path  "\\_pulled_macro_code.hy") "w" :encoding "utf-8")]
-          (file.write (+ "; this file is auto-copy of ../fptk/fptk_macros.hy,\n"
-                         "; copying was done just before tests were executed"
-                         "; (I don't know how to otherwise 'requre' macros from sibling folder lol)\n\n"
-                         _macros_code)))
-    ;
-    (require _pulled_macro_code [assertm gives_error_typeQ])
+    ; 2) Load fptk_macros.hy from coppied file:
+    (require fptk_macros *)
 
 ; _____________________________________________________________________________/ }}}1
 
+; functions
 ; 0-Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (first []) None)
@@ -96,7 +85,6 @@
     (assertm gives_error_typeQ (cut_ [1 2 3] 3 0) IndexError)
 
 ; _____________________________________________________________________________/ }}}1
-
 ; FP ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (list (flip map [-1 -2 -3] abs))    [1 2 3])
@@ -147,11 +135,26 @@
     (setv _norm (py "math.sqrt(1+4+4)"))
     (assertm = (normalize [1 2 2]) (list (map (fn [x] (operator.truediv x _norm)) [1 2 2])))
 
+    ; basic python */+ act as a monoid on numbers, but can't work on 1-arg "" or []:
+    (assertm = (+ 3) 3)
+    (assertm = (+)   0)
+    (assertm = (* 3) 3)
+    (assertm = (*)   1)
+    (assertm gives_error_typeQ (+ "pups") TypeError)
+    (assertm gives_error_typeQ (+ [1]) TypeError)
 
-    (assertm = (lmul [1] 3) [1 1 1])
-    (assertm = (smul "a" 3) "aaa")
+    ; same as */+ :
+    (assertm = (dadd 3) 3)
+    (assertm = (dadd)   0)
+    (assertm = (dmul 3) 3)
+    (assertm = (dmul)   1)
+    (assertm gives_error_typeQ (dadd "pups") TypeError)
+    (assertm gives_error_typeQ (dadd [1]) TypeError)
 
+    (assertm = (smul 3 "a") "aaa")
+    (assertm = (lmul 3 [1]) [1 1 1])
 
+    ; monoids:
     ; monoids:
     (assertm = (mul) 1)
     (assertm = (mul 3) 3)
@@ -163,7 +166,10 @@
     (assertm = (plus 7 0) 7)
     (assertm = (plus 2 2 3) 7)
 
+    (assertm = (lconcat) [])
     (assertm = (lconcat [1] [] [2]) [1 2])
+
+    (assertm = (sconcat) "")
     (assertm = (sconcat "a" "b" "") "ab")
 
 
@@ -197,7 +203,6 @@
     (assertm = (fnot eq 1 1) False)
 
 ; _____________________________________________________________________________/ }}}1
-
 ; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (str_join ["a" "b" "" "c"]) "abc")
@@ -225,4 +230,110 @@
 
 ; _____________________________________________________________________________/ }}}1
 
+; macros
+; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = (f:: int -> int => int) (of Callable [int int] int))
+    (assertm = (f:: int -> int -> (of Tuple int str)) (of Callable [int int] (of Tuple int str)))
+
+; _____________________________________________________________________________/ }}}1
+; p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = (lmap (p: (fn [x] x)           ; fn
+                         (fm it)              ; fm macro
+                         (abs)                ; function
+                         (operator.add 4)     ; function
+                         str                  ; function
+                         (.__contains__ "2")  ; method access
+                         .__class__)          ; attribute access
+                      [1 2 3])
+               (lmap type [True True True]))
+
+; _____________________________________________________________________________/ }}}1
+; (l)pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = (type (pluckm 0 [[1 2 3] [4 5 6]])) (type (map abs [1 4])))
+    (assertm = (list (pluckm 0 [[1 2 3] [4 5 6]])) [1 4])
+    (assertm = (lpluckm 0 [[1 2 3] [4 5 6]]) [1 4])
+    (assertm = (lpluckm 0 [[1 2 3] [4 5 6]]) [1 4])
+
+    (defclass [dataclass] Point [] (#^ int x) (#^ int y))
+
+    (assertm = (list (pluckm .x [(Point 1 2) (Point 3 4)])) [1 3])
+    (assertm = (lpluckm .x [(Point 1 2) (Point 3 4)]) [1 3])
+
+    (assertm = (getattrm (Point 1 2) .x) 1)
+    (assertm = (getattrm (Point 1 2) "y") 2)
+
+; _____________________________________________________________________________/ }}}1
+; fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = ((fm (+ %1 %3 1)) 1 2 3) 5)
+    (assertm = ((fm (+ it 1)) 3) 4)
+    (assertm gives_error_typeQ ((fm (+ it %1 1)) 3) NameError)
+    (assertm gives_error_typeQ ((fm (+ it %1 1)) 3 4) TypeError)
+
+    (assertm = (f> (+ %1 %3 1) 1 2 3) 5)
+    (assertm = (f> (+ it 1) 3) 4)
+    (assertm gives_error_typeQ (f> (+ it %1 1) 3) NameError)
+    (assertm gives_error_typeQ (f> (+ it %1 1) 3 4) TypeError)
+
+    (assertm = (list (mapm (+ it 1) [1 2 3])) [2 3 4])
+    (assertm = (lmapm (+ %1 1) [1 2 3]) [2 3 4])
+    (assertm = (lfilterm (= it True) [1 0 1]) [1 1])
+    (assertm = (list (filterm (= it True) [1 0 1])) [1 1])
+
+; _____________________________________________________________________________/ }}}1
+; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (setv idx 3)
+
+    (assertm = (  lns   1   -2 (- 7)  "key"   idx)
+               (. lens [1] [-2] [-7] ["key"] [idx]))
+
+    (assertm = (  lns   .attr)
+               (. lens   attr))
+
+    (assertm = ((  lns  (Each) (set 3)) [1 2 3])
+               ((. lens (Each) (set 3)) [1 2 3]))
+
+    (assertm gives_error_typeQ (lns (+ idx 3)) TypeError)
+
+    (assertm = (  lns  [(+ idx 3)])
+               (. lens [(+ idx 3)]))
+
+    (assertm = ((  lns   1  (mth> .sort))  [[1 2] [3 4]])
+               ((. lens [1] (call "sort")) [[1 2] [3 4]]))
+
+    (assertm = ((  lns   1  (mut>     .copy  :shallow True)) [[1 2] [3 4]])
+               ((. lens [1] (call_mut "copy" :shallow True)) [[1 2] [3 4]]))
+
+    (assertm = ((lns 1 (dndr> / 3)) [1 2 3])
+               ((/ (. lens [1]) 3)  [1 2 3]))
+
+    (assertm = ((lns 1 (dndr>> / 3)) [1 2 3])
+               ((/ 3 (. lens [1]))   [1 2 3]))
+
+; _____________________________________________________________________________/ }}}1
+; &+ &+> l> l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = (l> [[1 2 3] [4 5 6]]          1  (Each) (modify sqrt))
+               (&  [[1 2 3] [4 5 6]] (. lens [1] (Each) (modify sqrt))))   ; btw & can accept multiple lens
+
+    (assertm = (do (setv xs [[1 2 3] [4 5 6]])
+                   (l>= xs          1  (Each) (modify sqrt))
+                   xs)
+               (do (setv xs [[1 2 3] [4 5 6]])
+                   (&=  xs (. lens [1] (Each) (modify sqrt)))
+                   xs))
+
+    (assertm = ((&+ (  lns   1)  (. lens [2]) (set "here")) [[1 2 3] [4 5 6]])
+               ((&  (. lens [1]) (. lens [2] (set "here"))) [[1 2 3] [4 5 6]]))   ; btw & can accept multiple lens
+
+    (assertm = (&+> [[1 2 3] [4 5 6]] (lns 1) (mut> .sort))
+               ((& (. lens [1] (call_mut "sort"))) [[1 2 3] [4 5 6]]))   ; btw & can accept multiple lens
+
+; _____________________________________________________________________________/ }}}1
+
+; ===========================================================
     (print "== TESTING COMPLETED (if there are no errors above, all is good) ==")

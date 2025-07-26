@@ -68,7 +68,8 @@
 
     (dt_print "[Step 1/4] Tests for functions:")
 
-        (run_shell_command "cd ../tests && hy test_functions.hy")
+        (run_shell_command "cd ../tests && hy _util_to_copy_macros.hy")
+        (run_shell_command "cd ../tests && hy test_fptk.hy")
         ; && chains cmd commands (2nd is run only if 1st was successful)
 
     (dt_print "[Step 2/4] Doc generation for functions:")

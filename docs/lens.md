@@ -86,14 +86,14 @@ For context, original lenses library offers `&` and `&=` functions that are used
 fptk lens macros (`l>`, `l>=`, `&+` and `&+>`) do not aim to replace original `&` and `&=` functions.
 They aim to extend number of ways in which lenses can be composed syntactically.
 ```hy
-; l> is used to apply SF, l>= also updates value:
+; l> is used to apply SF, l>= also updates value, both of them use lns syntax:
 (l>  xs 1 (Each) (modify sqrt))     ; ((. lens [1] (Each) (modify sqrt)) xs)
 (l>= xs 1 (Each) (modify sqrt))     ; (setv xs ((. lens [1] (Each) (modify sqrt)) xs))
 
-; &+ can combine several ULs and expects getter/setter at the end
+; &+ can combine several ULs (in eather lns or normal syntax) and require getter/setter at the end,
 ; &+> also applies composed SF:
-(&+ (lns 1) (lns 2) (set "here"))   ; (& (. lens [1]) (. lens [2] (set "here")))
-(&+> xs (lns 1) (mut> .sort))       ; ((& (. lens [1] (call_mut "sort"))) xs)
+(&+ (lns 1) (. lens [2]) (set "here"))  ; (& (. lens [1]) (. lens [2] (set "here")))
+(&+> xs (lns 1) (mut> .sort))           ; ((& (. lens [1] (call_mut "sort"))) xs)
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->

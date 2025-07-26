@@ -1,7 +1,7 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.4dev4
+; This file was generated from local git version: 0.2.4dev5
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -440,7 +440,11 @@
     (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
     ;; dunders
-
+    ;; - python behaves like so:
+    ;; - (*) = 1, (* 3) = 3 
+    ;; - (+) = 0, (+ 3) = 3 
+    ;; - (+ "") = error, (+ []) = error
+        
         #_ "dmul(*args) = arg1 + arg2 + ... | 'dunder mul', '*' operator as a function"
         (defn dmul [#* args]
             "dunder mul, '*' operator as a function"
@@ -473,8 +477,7 @@
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
         (defn plus [#* args]
-            " plus as a monoid with identity = 0,
-              can be used with 0 or 1 arg"
+            " plus as a monoid with identity = 0 "
             (reduce (fn [%s1 %s2] (+ %s1 %s2)) args 0))
 
         #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
@@ -751,8 +754,8 @@
 
 ; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-	(require hyrule [-> of])
-    (import  funcy [partial rcompose])
+    (import  hyrule [rest butlast])
+	(require hyrule [-> ->> of])
     (import  operator)
 
 ; ________________________________________________________________________/ }}}2
@@ -937,27 +940,24 @@
 	; operator.neg		; [. operator neg]		; _idDottetAccess checks for: [. smth _]
 	; (operator.add 3)	; [[. operator add] 3]
 
-    (defn _flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
-
 	(defmacro p: [#* args]
-		;
 		(setv pargs [])
 		(for [&arg args]
 			  (cond ; .x  -> (partial flip getattr "x")
 					(_isDottedAttr &arg)
-					(pargs.append `(partial _flip getattr ~(str (_extractDottedAttr &arg))))
+					(pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr ~(str (_extractDottedAttr &arg))))
 					; operator.neg
 					(_isDottedAccess &arg)
-					(pargs.append `(partial ~&arg))
+					(pargs.append `(hy.I.funcy.partial ~&arg))
 					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
 					(_isDottedMth &arg)
-					(do (pargs.append `(partial _flip getattr
+					(do (pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
-						(pargs.append `(partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
+						(pargs.append `(hy.I.funcy.partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
 												[~@(get (_extractDottedMth &arg) "args")])))
 					; abs -> (partial abs)
 					(= (type &arg) hy.models.Symbol)
-					(pargs.append `(partial ~&arg))
+					(pargs.append `(hy.I.funcy.partial ~&arg))
 	                ; (fn/fm ...) -> no change
                     (or (_isExprWithHeadSymbol &arg "fn")
                         (_isExprWithHeadSymbol &arg "fm")
@@ -966,22 +966,26 @@
 					; (func 1 2) -> (partial func 1 2)
 					; (operator.add 3) -> (partial operator.add 3)
 					(= (type &arg) hy.models.Expression)
-					(pargs.append `(partial ~@(cut &arg 0 None)))
+					(pargs.append `(hy.I.funcy.partial ~@(cut &arg 0 None)))
 					; (etc ...) -> (partial etc ...)
 					True
-					(pargs.append `(partial ~&arg))))
-	   `(rcompose ~@pargs))
+					(pargs.append `(hy.I.funcy.partial ~&arg))))
+	   `(hy.I.funcy.rcompose ~@pargs))
 
 ; ________________________________________________________________________/ }}}2
-; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; (l)pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro pluckm [indx iterable]
 		(cond ; .attr -> "attr"
 			  (_isDottedAttr indx)
-			  (return `(lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  (return `(hy.I.funcy.pluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
 			  ;
 			  True
-			  (return `(lpluck ~indx ~iterable))))
+			  (return `(hy.I.funcy.pluck ~indx ~iterable))))
+
+	(defmacro lpluckm [indx iterable]
+		(cond (_isDottedAttr indx) (return `(hy.I.funcy.lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  True                 (return `(hy.I.funcy.lpluck ~indx ~iterable))))
 
 	(defmacro getattrm [iterable #* args] ; first arg is «indx», second - is «default» (may be absent)
         (setv indx (get args 0))
@@ -1002,43 +1006,51 @@
                   (return `(getattr ~iterable ~indx ~default)))))
 
 ; ________________________________________________________________________/ }}}2
-; fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-	; recognizes %1..%9 as arguments
+	; recognizes "it" as solo-arg
+    ; or %1..%9 as multi args
+    ; 
+	; "it" cannot be used together with %i
+	; 
 	; nested fm calls will probably not work as intended
 
 	(defmacro fm [expr]
 		(import hyrule [flatten thru])
 		;
-		(setv models (flatten expr))
-		(setv args (filter (fn [%x] (= (type %x) hy.models.Symbol)) models))	; Symbols
-		(setv args (filter (fn [%x] (and (= (get %x 0) "%")						; "%_"
-										 (= (len %x) 2)))
-									args))
-		(setv args (filter (fn [%x] (and (.isdigit (get %x 1))					; "%1..%9"
-										 (!= "0" (get %x 1))))
-									args))
-		(setv args (sorted args))
+        (setv args (->> expr
+                        flatten
+                        (filter (fn [%x] (or (= %x 'it)
+                                             (= %x '%1) (= %x '%2) (= %x '%3)
+                                             (= %x '%4) (= %x '%5) (= %x '%6)
+                                             (= %x '%7) (= %x '%8) (= %x '%9))))
+                        sorted))    ; example: [hy.models.Symbol('%1'), hy.models.Symbol('%2')]
+        (when (in 'it args) (return `(fn [it] ~expr)))
 		(if (= (len args) 0)
 			(setv maxN 0)
-			(setv maxN (int (get args -1 -1))))
-		;
+			(setv maxN (int (get args -1 -1)))) 
 		(setv inputs (lfor n (thru 1 maxN) (hy.models.Symbol f"%{n}")))
-		; (print (hy.repr `(fn [~@inputs] ~expr)))
 		(return `(fn [~@inputs] ~expr)))
 
 	(defmacro f> [lambda_def #* args]
-		(return `((fm ~lambda_def) ~@args)))
+		(return `((hy.R.fptk_macros.fm ~lambda_def) ~@args)))
+
+    (defmacro mapm [one_shot_fm #* args]
+		(return `(map (hy.R.fptk_macros.fm ~one_shot_fm) ~@args)))
 
     (defmacro lmapm [one_shot_fm #* args]
-		(return `(list (map (fm ~one_shot_fm) ~@args))))
+		(return `(list (map (hy.R.fptk_macros.fm ~one_shot_fm) ~@args))))
 
+    (defmacro filterm [one_shot_fm iterable]
+		(return `(filter (hy.R.fptk_macros.fm ~one_shot_fm) ~iterable)))
+
+    (defmacro lfilterm [one_shot_fm iterable]
+		(return `(list (filter (hy.R.fptk_macros.fm ~one_shot_fm) ~iterable))))
 
 ; ________________________________________________________________________/ }}}2
 ; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro lns [#* macro_args]
-		(import hyrule [rest])
 		;
 		(setv args (list macro_args)) ; for mutations
 		(for [[&i &arg] (enumerate args)]
@@ -1073,45 +1085,37 @@
 			 `(. lens ~@args)))
 
 ; ________________________________________________________________________/ }}}2
-; &+, &+>, l>, l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; &+ &+> l> l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; compose lens, add setters/getters
 
 	(defmacro &+ [#* macro_args]
-		(import hyrule [rest butlast])
-		;
-		(setv lenses (butlast macro_args))
+		(setv lenses_ (butlast macro_args))
 		(setv func	 (get macro_args (- 1)))
-	   `(& ~@lenses (lns ~func)))
+	   `(& ~@lenses_ (hy.R.fptk_macros.lns ~func)))
 
 	; compose lens, add setters/getters, apply
 
 	(defmacro &+> [#* macro_args]
-		(import hyrule [rest butlast])
-		;
 		(setv variable (get macro_args 0))
 		(setv lenses   (butlast (rest macro_args)))
 		(setv func	   (get macro_args (- 1)))
-	   `((& ~@lenses (lns ~func)) ~variable))
+	   `((& ~@lenses (hy.R.fptk_macros.lns ~func)) ~variable))
 
 	; construct lens, apply:
 
 	(defmacro l> [#* macro_args]
-		(import hyrule [rest])
-		;
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `((lns ~@lenses_args) ~variable))
+	   `((hy.R.fptk_macros.lns ~@lenses_args) ~variable))
 
 	(defmacro l>= [#* macro_args]
-		(import  hyrule [rest])
-		;
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `(&= ~variable (lns ~@lenses_args)))
+	   `(&= ~variable (hy.R.fptk_macros.lns ~@lenses_args)))
 
 ; ________________________________________________________________________/ }}}2
-; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro assertm [op arg1 arg2]
         (setv to_test `(~op ~arg1 ~arg2))

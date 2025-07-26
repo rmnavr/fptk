@@ -37,28 +37,42 @@ Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument sepa
 Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `fm`, `f>`, `lmapm` — macros for writing lambdas
+## `fm`, `f>`, `(l)mapm`, `(l)filterm` — macros for writing lambdas
 
-Following macros all have same similar `%i` arguments recognition:
+Those macros all have same similar arguments recognition:
+- eather `it` as a solo-argument
+- or `%i` for multi-arguments (from `%1` to `%9`)
+- those 2 approaches cannot be mixed
+
+Macros description:
 - `fm` defines lambda
 - `f>` defines and immediately applicates lambda
-- `lmapm` is "list map" that takes lambda for func of map
+- `mapm` and `lmapm` are both `map` that require lambda-syntax
+- `filterm` and `lfilterm` are both `filter` that require lambda-syntax
 
 ```hy
-(fm (* %1 2))               ; -> (fn [%1] (* %1 2))
+(fm (* it 2))               ; -> (fn [it] (* it 2))
+(fm (* it %1 2))            ; -> will give error (can't mix "it" with "%1")
+
 (f> (* %1 %2 10) 3 4)       ; -> ((fn [%1 %2] (* %1 %2 10) 3 4)
-(lmapm (pow %1 2) [1 2 3]   ; -> (list (map (fn [%1] (pow %1 2)) [1 2 3]))
+(mapm (pow %1 2) [1 2 3])   ; -> (map (fn [%1] (pow %1 2)) [1 2 3])
+(lmapm (pow %1 2) [1 2 3])  ; -> (list (map (fn [%1] (pow %1 2)) [1 2 3]))
+(filterm (> it 1) [1 2 3])  ; -> (filter (fn [it] (> it 1)) [1 2 3])
+(lfilterm (> %1 1) [1 2 3]) ; -> (list (filter (fn [%1] (> %1 1)) [1 2 3]))
+
+; notice that (l)mapm and (l)filterm won't work as expected if lambda-syntax is not used:
+(lmapm abs [1 2 3])         ; -> (list (map (fn [] abs) [1 2 3]))
 
 ; Just as original fn, fm will also work correctly with non-() forms:
-(fm abs)                    ; -> (fn [] abs) 
+(fm abs)                    ; -> (fn [] abs)
 (fm [%1 (str %2)])          ; -> (fn [%1 %2] [%1 (str %2)])
 ```
 
-`fm` (and friends) has functionality similar to hyrule's `#%` reader macro, but:
-- `fm` is more REPL-friendly than `#%` in my setup (I use [hy-ipython](https://pypi.org/project/hy-ipython/) with hy 1.0.0, despite lib saying it needs exactly hy 0.24)
-- `fm` currently support only args of form `%1`..`%9` (while `#%` reader macro can also work with args and kwargs)
+Current limitations:
+- nesting fm inside fm won't work as expected
+- `fm` supports only args of form `it` and `%1`..`%9` (while hyrule `#%` reader macro can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -73,7 +87,8 @@ Example:
 (setv x 4)
                                      ; after application to x will produce at each step:
 (setv pipe (p: operator.neg          ; -4
-               (fn [x] x)            ; -4    // fn and fm-macro can be used with p:
+               (fn [x] x)            ; -4    // fn can be used with p:
+               (fm it)               ; -4    // fm-macro can be used with p:
                (abs)                 ; 4
                (operator.add 4)      ; 8
                str                   ; '8'
@@ -88,9 +103,9 @@ Notice that unlike in `->` macro, `.attr` is seen as attribute access rather tha
 This is also in accordance with `.attr` usage inside another fptk macros.
 
 <!-- __________________________________________________________________________/ }}}1 -->
-<!-- pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+<!-- (l)pluckm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
-## `pluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
+## `pluckm` and `lpluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
 
 Pluckm extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
 to be able to recognize `(pluckm .attr)` syntax for accessing attributes.
@@ -109,7 +124,6 @@ Reason for adding such syntax is the following:
 (pluckm (+ i 3) xs) ; (lpluck (+ i 3) xs)
 (pluckm "key" xs)   ; (lpluck "key" xs)
 ```
-
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

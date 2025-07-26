@@ -434,7 +434,11 @@
     (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
     ;; dunders
-
+    ;; - python behaves like so:
+    ;; - (*) = 1, (* 3) = 3 
+    ;; - (+) = 0, (+ 3) = 3 
+    ;; - (+ "") = error, (+ []) = error
+        
         #_ "dmul(*args) = arg1 + arg2 + ... | 'dunder mul', '*' operator as a function"
         (defn dmul [#* args]
             "dunder mul, '*' operator as a function"
@@ -467,8 +471,7 @@
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
         (defn plus [#* args]
-            " plus as a monoid with identity = 0,
-              can be used with 0 or 1 arg"
+            " plus as a monoid with identity = 0 "
             (reduce (fn [%s1 %s2] (+ %s1 %s2)) args 0))
 
         #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
