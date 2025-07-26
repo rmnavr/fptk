@@ -12,7 +12,7 @@ fptk functions, macroses and imported modules:
 
 This doc will cover following macros:
 * `f::` — macro for annotating callables
-* `fm`, `f>`, `(l)mapm` `(l)filterm` — anonymous functions with special syntax for arguments
+* `fm`, `f>`, `(l)mapm`, `(l)filterm` — anonymous functions with special syntax for arguments
 * `p:` — pipe of partials
 * `(l)pluckm` — getter for collection of collections
 * `getattrm` — same as getattr, but with small syntax tweak
@@ -107,7 +107,7 @@ This is also in accordance with `.attr` usage inside another fptk macros.
 
 ## `pluckm` and `lpluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
 
-`pluckm` extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
+`pluckm` extends [funcy.pluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
 to be able to recognize `(pluckm .attr)` syntax for accessing attributes.
 
 `lpluckm` is just calling list on top of `pluckm`.
