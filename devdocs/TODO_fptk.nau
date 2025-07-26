@@ -77,65 +77,58 @@
 		• functools: total_ordering for Tokens?
 		• rename partition_by to split_by? (split_with?)
 		• add/substract lists/dictionaries
-		+ ncut_ ?
 		+ partial testers: isa, re_tester (extented funcy semantics? wut?)
-		+ flat on 1 level?
+		+ (flatten xs :level 3) 
 		+ on_each(f, xs) -> None	// as map but with no result
 		+ juxt_apply(fs, *xi)
 
 	Fix/Upd:
 		• rstrip should also pass kwargs and such
-		• rename partial in "pt" ?
+		• rename partial to "pt" ?
 		• partition: filler elem option
-		• get_ works bad with dicts keys when they are numbers
 		• logically with_execution_time should give result of LAST execution ?
 
-	New:
-		• assoc -> assoc_
-		• [³macro⁺] is p: working with fn/fm and such/
-		• [³macro⁺] lfilterm with lambda syntax
-		• [³macro⁺] "it" in my lambdas
-		• [³macro⁺] df:: str -> #* str -> str
-
 	Packaging:
-		! move _macros_test.hy elsewhere
-		? include funcy lol? (but will have troubles with _fptk_local.hy)
+		? also include funcy lol? 
 
-	info: SQL-alike:
-		- pipe (select, where, chain, traverse=flat1, traverse=flatInf, groupby, dedup, as_list)
-		- pyfunctional
-		- hy 1.0.0 google article
- 
- 
+	// SQL-like:
+	// - pipe (select, where, chain, traverse=flat1, traverse=flatInf, groupby, dedup, as_list)
+	// - pyfunctional
+	// - hy 1.0.0 google article
 
 // ____________________________________________________________________________/ }}}1
+
+	• annotations:
+	  - [³macro⁺] (defn:: [validateF] str -> #* (of List Int) => str [ string #* kwargs ] ... )
+
+	• tests:
+	  - check if macros can be imported by themselves
+	  - check if pip install fptk (without -e) works
+	  ? test funcy funtions also?
 
 	• robust fm syntax:
 	  - throw error when %1 and "it" is mixed
 	  - allow (lmapm abs [1 2 3]) recognition?
 
-	• [l] and [m] versions for:
-	  - range
-	  - range_
+	• robust 1-based index:
+	  - with dicts
+	  - range, lrange, range_, lrange_
+	  - assoc_
+	  - pick_
+	  - slice_/cut_ with 1 arg
+	  + ncut_ ?
 
-	+ div, minus, ddiv, dminus?
+	Consider for removal:
+	+ count_occurrences is bad
+	+ endswith is bad
 
     Vim:
     - jump to F def: not working when decorator is present
 
-
 	····························································
 
-	• 1-based index with dicts
-	* also test funcy functions
-
-	+ pick_
-	+ slice_/cut_ with 1 arg
-	+ count_occurrences is bad
-	+ endswith is bad
 	+ (manyQ = (type x) [int float]) 
 	+ all_fn, none_fn, etc.
-	
 	+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
+	? Split to submodules for faster import? (I can rely on funcy and base py modules, but not on pydantic and returns)
 
-	? Split to submodules?

@@ -81,14 +81,8 @@ Tested with:
 
 # Project status
 
-As of July 2025:
-- [x] full documentation
-- [x] tests for functions are written
-
-Currently developed:
-- [ ] tests for macros
-- [ ] tests for interaction of functions and macros
-- [ ] stable release is not yet reached (small API-breaking changes can happen)
+As of July 2025, full documentation and testing is implemented.
+However, stable release is not yet reached (small API-breaking changes can happen)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
