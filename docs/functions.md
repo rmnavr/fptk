@@ -38,21 +38,21 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ```hy
 === Import Full Modules ===
-FULL MODULE           | sys                   ; py base module
-FULL MODULE           | os                    ; py base module
-FULL MODULE           | math                  ; py base module
-FULL MODULE           | operator              ; py base module
-FULL MODULE           | random                ; py base module
-FULL MODULE           | re                    ; py base module
-FULL MODULE           | itertools             ; py base module
-FULL MODULE           | functools             ; py base module
+FULL MODULE           | sys                      ; py base module
+FULL MODULE           | os                       ; py base module
+FULL MODULE           | math                     ; py base module
+FULL MODULE           | operator                 ; py base module
+FULL MODULE           | random                   ; py base module
+FULL MODULE           | re                       ; py base module
+FULL MODULE           | itertools                ; py base module
+FULL MODULE           | functools                ; py base module
 FROM: pprint          | pprint
-FULL MODULE           | hyrule                ; hy base module
-FULL MODULE           | funcy                 ; 3rd party module (FP related)
-FROM: lenses          | lens                  ; 3rd party module (for working with immutable structures)
+FULL MODULE           | hyrule                   ; hy base module
+FULL MODULE           | funcy                    ; 3rd party module (FP related)
+FROM: lenses          | lens                     ; 3rd party module (for working with immutable structures)
 
 === Typing ===
-MACR: hyrule          | of                    ; (of List int) -> List[int]
+MACR: hyrule          | of                       ; (of List int) -> List[int]
 FROM: dataclasses     | dataclass
 FROM: enum            | Enum
 FROM: typing          | List
@@ -67,58 +67,58 @@ FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
 FROM: pydantic        | BaseModel
-FROM: pydantic        | StrictInt             ; will be still of int type, but will perform strict typecheck when variable is created
-FROM: pydantic        | StrictStr             ; will be still of str type, but will perform strict typecheck when variable is created
-FROM: pydantic        | StrictFloat           ; will be still of float type, but will perform strict typecheck when variable is created
-SETV: fptk            | StrictNumber          ; Union of StrictInt and StrictFloat
-FROM: pydantic        | validate_call         ; decorator for type-checking func args
-SETV: fptk            | validateF             ; same as validate_call but with option validate_return=True set (thus validating args and return type)
-FROM: returns.result  | Result                ; Result monad
-FROM: returns.result  | Success               ; One of Result monad constructor
-FROM: returns.result  | Failure               ; One of Result monad constructor
+FROM: pydantic        | StrictInt                ; will be still of int type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictStr                ; will be still of str type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictFloat              ; will be still of float type, but will perform strict typecheck when variable is created
+SETV: fptk            | StrictNumber             ; Union of StrictInt and StrictFloat
+FROM: pydantic        | validate_call            ; decorator for type-checking func args
+SETV: fptk            | validateF                ; same as validate_call but with option validate_return=True set (thus validating args and return type)
+FROM: returns.result  | Result                   ; Result monad
+FROM: returns.result  | Success                  ; One of Result monad constructor
+FROM: returns.result  | Failure                  ; One of Result monad constructor
 
 === Buffed getters ===
-INFO: hy              | . /macro/             :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
-INFO: hy              | get /macro/           :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
-FROM: funcy           | nth                   :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
-INFO: py              | slice /base/          :: (slice start end step)
-INFO: hy              | cut /macro/           :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
-FROM: hyrule          | assoc                 :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+INFO: hy              | . /macro/                :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
+INFO: hy              | get /macro/              :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
+FROM: funcy           | nth                      :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
+INFO: py              | slice /base/             :: (slice start end step)
+INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
+FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
 MACR: hyrule          | ncut
-FROM: funcy           | first                 :: first(seq) -> Optional elem
-FROM: funcy           | second                :: second(seq) -> Optional elem
-DEFN: fptk            | third                 :: third(seq) -> Optional elem
-DEFN: fptk            | fourth                :: fourth(seq) -> Optional elem
-DEFN: fptk            | beforelast            :: beforelast(seq) -> Optional elem
-FROM: funcy           | last                  :: last(seq) -> Optional elem
-DEFN: fptk            | rest                  :: rest(seq) -> List  ; drops 1st elem of list
-DEFN: fptk            | butlast               :: butlast(seq) -> List  ; drops last elem of list
-DEFN: fptk            | drop                  :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
-DEFN: fptk            | take                  :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
-DEFN: fptk            | pick                  :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
-FROM: funcy           | pluck                 :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
-FROM: funcy           | lpluck                :: lpluck(key, mappings) -> list
-FROM: funcy           | pluck_attr            :: pluck_attr(attr, objects) -> generator
-FROM: funcy           | lpluck_attr           :: lpluck_attr(attr, objects) -> list
+FROM: funcy           | first                    :: first(seq) -> Optional elem
+FROM: funcy           | second                   :: second(seq) -> Optional elem
+DEFN: fptk            | third                    :: third(seq) -> Optional elem
+DEFN: fptk            | fourth                   :: fourth(seq) -> Optional elem
+DEFN: fptk            | beforelast               :: beforelast(seq) -> Optional elem
+FROM: funcy           | last                     :: last(seq) -> Optional elem
+DEFN: fptk            | rest                     :: rest(seq) -> List  ; drops 1st elem of list
+DEFN: fptk            | butlast                  :: butlast(seq) -> List  ; drops last elem of list
+DEFN: fptk            | drop                     :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
+DEFN: fptk            | take                     :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
+DEFN: fptk            | pick                     :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
+FROM: funcy           | pluck                    :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
+FROM: funcy           | lpluck                   :: lpluck(key, mappings) -> list
+FROM: funcy           | pluck_attr               :: pluck_attr(attr, objects) -> generator
+FROM: funcy           | lpluck_attr              :: lpluck_attr(attr, objects) -> list
 
 === index-1-based getters ===
-FROM: hyrule          | range_ (<-thru)       :: range_(start, end, step) -> List  ; same as range, but with 1-based index
-DEFN: fptk            | get_                  :: get_(seq, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
-DEFN: fptk            | nth_                  :: nth_(n, seq) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
-DEFN: fptk            | slice_                :: slice_(start, end, step)  ; similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)
-DEFN: fptk            | cut_                  :: cut_(seq, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
+FROM: hyrule          | range_ (<-thru)          :: range_(start, end, step) -> List  ; same as range, but with 1-based index
+DEFN: fptk            | get_                     :: get_(seq, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | nth_                     :: nth_(n, seq) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | slice_                   :: slice_(start, end, step)  ; similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)
+DEFN: fptk            | cut_                     :: cut_(seq, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
 
 === Control flow ===
-INFO: hy              | if /base/             :: (if check true false)
-INFO: hy              | cond /base/           :: (cond check1 do1 ... true doT)
+INFO: hy              | if /base/                :: (if check true false)
+INFO: hy              | cond /base/              :: (cond check1 do1 ... true doT)
 MACR: hyrule          | case
 MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
 
 === FP: composition ===
-FROM: hyrule          | constantly            ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
-FROM: funcy           | identity              ; identity(30) -> 30
+FROM: hyrule          | constantly               ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
+FROM: funcy           | identity                 ; identity(30) -> 30
 MACR: hyrule          | as->
 MACR: hyrule          | ->
 MACR: hyrule          | ->>
@@ -129,157 +129,157 @@ FROM: funcy           | partial
 FROM: funcy           | rpartial
 FROM: funcy           | compose
 FROM: funcy           | rcompose
-FROM: funcy           | ljuxt                 :: ljuxt(*fs) = [f1, f2, ...] applicator
-DEFN: fptk            | flip                  :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
-DEFN: fptk            | pflip                 :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
+FROM: funcy           | ljuxt                    :: ljuxt(*fs) = [f1, f2, ...] applicator
+DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
+DEFN: fptk            | pflip                    :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
 
 === FP: threading ===
-INFO: py              | map /base/            ; usage: map(func, *iterables) -> map object
-FROM: funcy           | lmap                  :: lmap(f, *seqs) -> List
-FROM: itertools       | starmap               ; starmap from itertools; usage: starmap(f, seq)
-DEFN: fptk            | lstarmap              :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
-FROM: functools       | reduce                :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
-FROM: funcy           | reductions            :: reduction(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
-FROM: funcy           | lreductions           :: lreduction(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
-FROM: funcy           | sums                  :: sums(seq [, acc]) -> generator  ; reductions with addition function
-FROM: funcy           | lsums                 :: lsums(seq [, acc]) -> List
-INFO: py              | zip /base/            :: zip(*iterables) -> zip object
-DEFN: fptk            | lzip                  :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
-DEFN: fptk            | on                    :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
+INFO: py              | map /base/               ; usage: map(func, *iterables) -> map object
+FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List
+FROM: itertools       | starmap                  ; starmap from itertools; usage: starmap(f, seq)
+DEFN: fptk            | lstarmap                 :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
+FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
+FROM: funcy           | reductions               :: reduction(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | lreductions              :: lreduction(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | sums                     :: sums(seq [, acc]) -> generator  ; reductions with addition function
+FROM: funcy           | lsums                    :: lsums(seq [, acc]) -> List
+INFO: py              | zip /base/               :: zip(*iterables) -> zip object
+DEFN: fptk            | lzip                     :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
+DEFN: fptk            | on                       :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
 
 === FP: n-applicators ===
-MACR: hyrule          | do_n                  :: (do_n   n #* body) -> None
-MACR: hyrule          | list_n                :: (list_n n #* body) -> List
-DEFN: fptk            | nested                :: nested(n, f)  ; f(f(f(...f))), returns function
-DEFN: fptk            | apply_n               :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
+MACR: hyrule          | do_n                     :: (do_n   n #* body) -> None
+MACR: hyrule          | list_n                   :: (list_n n #* body) -> List
+DEFN: fptk            | nested                   :: nested(n, f)  ; f(f(f(...f))), returns function
+DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
 === APL: filtering ===
-INFO: py              | filter /base/         :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
-FROM: funcy           | lfilter               :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
-DEFN: fptk            | fltr1st               :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
-FROM: funcy           | reject (<-remove)     :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
-FROM: funcy           | lreject (<-lremove)   :: lreject(pred, seq) -> List  ; list(reject(...))
-DEFN: fptk            | without               :: without(items, seq) -> generator  ; returns seq without each item in items
-DEFN: fptk            | lwithout              :: lwithout(items, seq) -> list  ; list(without(...))
-FROM: funcy           | takewhile             :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
-FROM: funcy           | dropwhile             :: dropwhile([pred, ] seq)  ; mirror of dropwhile
-FROM: funcy           | filter_split (<-split) :: filter_split(pred, seq) -> passed, rejected
+INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
+FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
+DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
+FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
+FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
+DEFN: fptk            | without                  :: without(items, seq) -> generator  ; returns seq without each item in items
+DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list(without(...))
+FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
+FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
+FROM: funcy           | filter_split (<-split)   :: filter_split(pred, seq) -> passed, rejected
 FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list(filter_split(...))
-FROM: funcy           | bisect_at (<-split_at) :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
-DEFN: fptk            | lbisect_at            :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
-FROM: funcy           | bisect_by (<-split_by) :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
+FROM: funcy           | bisect_at (<-split_at)   :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
+DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
+FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
 FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
 
 === APL: working with lists ===
-FROM: hyrule          | flatten               ; flattens to the bottom
-DEFN: fptk            | lprint                :: lprint(seq)  ; literally just list(map(print,seq))
-INFO: py              | reversed /base/       :: reversed(sequence) -> iterator
-DEFN: fptk            | lreversed             :: lreversed(sequence) = list(reversed(seq))
-DEFN: fptk            | partition             :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
-DEFN: fptk            | lpartition            :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
-FROM: funcy           | partition_by          :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
-FROM: funcy           | lpartition_by         :: lpartition_by(f,seq) -> list of lists  ; list(partition_by(...))
+FROM: hyrule          | flatten                  ; flattens to the bottom
+DEFN: fptk            | lprint                   :: lprint(seq)  ; literally just list(map(print,seq))
+INFO: py              | reversed /base/          :: reversed(sequence) -> iterator
+DEFN: fptk            | lreversed                :: lreversed(sequence) = list(reversed(seq))
+DEFN: fptk            | partition                :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
+DEFN: fptk            | lpartition               :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
+FROM: funcy           | partition_by             :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
+FROM: funcy           | lpartition_by            :: lpartition_by(f,seq) -> list of lists  ; list(partition_by(...))
 
 === APL: counting ===
-DEFN: fptk            | count_occurrences     :: count_occurrences(elem, seq) -> int  ; rename of list.count method
+DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 
 === General Math ===
 FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
-FROM: operator        | neg                   ; (half x) = (/ x 2)
+FROM: operator        | neg                      ; (half x) = (/ x 2)
 DEFN: fptk            | half
-DEFN: fptk            | double                ; (double x) = (* x 2)
-DEFN: fptk            | squared               ; (squared x) = (pow x 2)
-DEFN: fptk            | reciprocal            :: reciprocal(x) = 1/x literally
+DEFN: fptk            | double                   ; (double x) = (* x 2)
+DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
+DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally
 FROM: math            | sqrt
-FROM: math            | dist                  :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
-FROM: math            | hypot                 :: hypot(*coordinates)  ; = √(x² + y² + ...)
-DEFN: fptk            | normalize             :: normalize(xs) -> xs  ; returns same vector xs if it's norm=0
-FROM: operator        | div (<-truediv)       :: div(a, b)
-FROM: math            | product (<-prod)      :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
-FROM: math            | exp                   :: exp(x)
-FROM: math            | log                   ; log(x, base=math.e)
-DEFN: fptk            | ln                    :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
-FROM: math            | log10                 :: log10(x)
+FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
+FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
+DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; returns same vector xs if it's norm=0
+FROM: operator        | div (<-truediv)          :: div(a, b)
+FROM: math            | product (<-prod)         :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
+FROM: math            | exp                      :: exp(x)
+FROM: math            | log                      ; log(x, base=math.e)
+DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
+FROM: math            | log10                    :: log10(x)
 
 === Trigonometry ===
-FROM: math            | pi                    ; literally just float pi=3.14...
-FROM: math            | sin                   :: sin(x)  ; x is in radians
-FROM: math            | cos                   :: cos(x)  ; x is in radians
-FROM: math            | tan                   :: tan(x)  ; x is in radians, will give smth like 1.6E+16 for x = pi
-FROM: math            | degrees               :: degrees(x)  ; x in radians is converted to degrees
-FROM: math            | radians               :: radians(x)  ; x in degrees is converted to radians
-FROM: math            | acos                  :: acos(x)  ; x is in radians, result is between 0 and pi
-FROM: math            | asin                  :: asin(x)  ; x is in radians, result is between -pi/2 and pi/2
-FROM: math            | atan                  :: asin(x)  ; x is in radians, result is between -pi/2 and pi/2
-FROM: math            | atan2                 :: atan2(y, x)  ; both signs are considered
+FROM: math            | pi                       ; literally just float pi=3.14...
+FROM: math            | sin                      :: sin(x)  ; x is in radians
+FROM: math            | cos                      :: cos(x)  ; x is in radians
+FROM: math            | tan                      :: tan(x)  ; x is in radians, will give smth like 1.6E+16 for x = pi
+FROM: math            | degrees                  :: degrees(x)  ; x in radians is converted to degrees
+FROM: math            | radians                  :: radians(x)  ; x in degrees is converted to radians
+FROM: math            | acos                     :: acos(x)  ; x is in radians, result is between 0 and pi
+FROM: math            | asin                     :: asin(x)  ; x is in radians, result is between -pi/2 and pi/2
+FROM: math            | atan                     :: asin(x)  ; x is in radians, result is between -pi/2 and pi/2
+FROM: math            | atan2                    :: atan2(y, x)  ; both signs are considered
 
 === Base operators to functions ===
-DEFN: fptk            | minus                 :: minus(x, y) = x - y
-DEFN: fptk            | dmul                  :: dmul(*args) = arg1 + arg2 + ...  ; 'dunder mul', '*' operator as a function
-DEFN: fptk            | dadd                  :: dadd(*args) = arg1 + arg2 + ...  ; 'dunder add', '+' operator as a function
-DEFN: fptk            | lmul                  :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
-DEFN: fptk            | smul                  :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
-DEFN: fptk            | mul                   :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | plus                  :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | sconcat               :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | lconcat               :: lconcat(*args)  ; list concantenation as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | minus                    :: minus(x, y) = x - y
+DEFN: fptk            | dmul                     :: dmul(*args) = arg1 + arg2 + ...  ; 'dunder mul', '*' operator as a function
+DEFN: fptk            | dadd                     :: dadd(*args) = arg1 + arg2 + ...  ; 'dunder add', '+' operator as a function
+DEFN: fptk            | lmul                     :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
+DEFN: fptk            | smul                     :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
+DEFN: fptk            | mul                      :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | plus                     :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | lconcat                  :: lconcat(*args)  ; list concantenation as a monoid (will not give error when used with 0 or 1 args)
 
 === Logic and ChecksQ ===
 FROM: hyrule          | xor
-FROM: operator        | eq                    ; equal
-FROM: operator        | neq (<-ne)            ; non-equal
+FROM: operator        | eq                       ; equal
+FROM: operator        | neq (<-ne)               ; non-equal
 FROM: funcy           | evenQ (<-even)
 FROM: funcy           | oddQ (<-odd)
 FROM: funcy           | noneQ (<-isnone)
 FROM: funcy           | notnoneQ (<-notnone)
-DEFN: fptk            | trueQ                 ; checks directly via (= x True)
-DEFN: fptk            | falseQ                ; checks directly via (= x False)
-DEFN: fptk            | zeroQ                 ; checks directly via (= x 0)
-DEFN: fptk            | negativeQ             ; checks directly via (< x 0)
-DEFN: fptk            | positiveQ             ; checks directly via (> x 0)
-DEFN: fptk            | zerolenQ              ; checks literally if (= (len xs) 0)
-DEFN: fptk            | oftypeQ               :: (oftypeQ tp x) -> (= (type x) tp)
-DEFN: fptk            | oflenQ                :: (oflenQ xs n) -> (= (len xs) n)
-DEFN: fptk            | intQ                  :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
-DEFN: fptk            | floatQ                :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
-DEFN: fptk            | numberQ               :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
-DEFN: fptk            | dictQ                 :: dictQ(x)  ; checks literally if type(x) == dict
-FROM: funcy           | listQ (<-is_list)     :: listQ(seq)  ; checks if seq is list
-FROM: funcy           | tupleQ (<-is_tuple)   :: tupleQ(seq)  ; checks if seq is tuple
-DEFN: fptk            | fnot                  :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
+DEFN: fptk            | trueQ                    ; checks directly via (= x True)
+DEFN: fptk            | falseQ                   ; checks directly via (= x False)
+DEFN: fptk            | zeroQ                    ; checks directly via (= x 0)
+DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
+DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
+DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
+DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
+DEFN: fptk            | oflenQ                   :: (oflenQ xs n) -> (= (len xs) n)
+DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
+DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
+DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
+DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
+FROM: funcy           | listQ (<-is_list)        :: listQ(seq)  ; checks if seq is list
+FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(seq)  ; checks if seq is tuple
+DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
 
 === Strings ===
-DEFN: fptk            | strlen                :: strlen(text)  ; rename of len, underlines usage on strings
-DEFN: fptk            | str_join              :: str_join(ss, sep='')  ; rearrangement of funcy.str_join, ss is seq of strings
-DEFN: fptk            | str_replace           :: str_replace(string, old, new, count=-1)  ; str.replace method as a function
-DEFN: fptk            | lowercase             :: lowercase(string)  ; str.lower method as a function
-DEFN: fptk            | endswith              :: endswith(string, suffix) -> bool  ; str.endswith method as a function (but can't take start/end params)
-DEFN: fptk            | strip                 :: strip(string, chars=None)  ; str.strip method as a function
-DEFN: fptk            | lstrip                :: lstrip(string, chars=None)  ; str.lstrip method as a function
-DEFN: fptk            | rstrip                :: rstrip(string, chars=None)  ; str.rstrip method as a function
-DEFN: fptk            | enlengthen            :: enlengthen(string, target_len, char=' ', fill_tail=True)  ; adds char to string until target_len reached
+DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
+DEFN: fptk            | str_join                 :: str_join(ss, sep='')  ; rearrangement of funcy.str_join, ss is seq of strings
+DEFN: fptk            | str_replace              :: str_replace(string, old, new, count=-1)  ; str.replace method as a function
+DEFN: fptk            | lowercase                :: lowercase(string)  ; str.lower method as a function
+DEFN: fptk            | endswith                 :: endswith(string, suffix) -> bool  ; str.endswith method as a function (but can't take start/end params)
+DEFN: fptk            | strip                    :: strip(string, chars=None)  ; str.strip method as a function
+DEFN: fptk            | lstrip                   :: lstrip(string, chars=None)  ; str.lstrip method as a function
+DEFN: fptk            | rstrip                   :: rstrip(string, chars=None)  ; str.rstrip method as a function
+DEFN: fptk            | enlengthen               :: enlengthen(string, target_len, char=' ', fill_tail=True)  ; adds char to string until target_len reached
 
 === Regex ===
-FROM: re              | re_sub (<-sub)        :: re_sub(rpattern, replacement, string, count=0, flags=0)
-FROM: re              | re_split (<-split)    :: re_split(rpattern, string)
-FROM: funcy           | re_find               :: re_find(rpattern, string, flags=0) -> str  ; returns first found
-FROM: funcy           | re_test               :: re_test(rpattern, string, ...) -> bool  ; tests if string has match (not neccessarily whole string)
-FROM: funcy           | re_all                :: re_all(rpattern, string, ...) -> List
+FROM: re              | re_sub (<-sub)           :: re_sub(rpattern, replacement, string, count=0, flags=0)
+FROM: re              | re_split (<-split)       :: re_split(rpattern, string)
+FROM: funcy           | re_find                  :: re_find(rpattern, string, flags=0) -> str  ; returns first found
+FROM: funcy           | re_test                  :: re_test(rpattern, string, ...) -> bool  ; tests if string has match (not neccessarily whole string)
+FROM: funcy           | re_all                   :: re_all(rpattern, string, ...) -> List
 
 === Random ===
-FROM: random          | choice                :: choice(seq) -> Elem  ; throws error for empty list
-FROM: random          | randint               :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
-FROM: random          | randfloat (<-uniform) :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
-FROM: random          | rand01 (<-random)     :: rand01() -> float  ; generates random number in interval [0, 1)
+FROM: random          | choice                   :: choice(seq) -> Elem  ; throws error for empty list
+FROM: random          | randint                  :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
+FROM: random          | randfloat (<-uniform)    :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
+FROM: random          | rand01 (<-random)        :: rand01() -> float  ; generates random number in interval [0, 1)
 
 === IO ===
-FROM: os.path         | file_existsQ (<-exists) :: file_existsQ(filename)  ; also works on folders
-DEFN: fptk            | read_file             :: read_file(file_name, encoding='utf-8') -> str  ; returns whole file content
-DEFN: fptk            | write_file            :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
+FROM: os.path         | file_existsQ (<-exists)  :: file_existsQ(filename)  ; also works on folders
+DEFN: fptk            | read_file                :: read_file(file_name, encoding='utf-8') -> str  ; returns whole file content
+DEFN: fptk            | write_file               :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
 
 === Benchmarking ===
-DEFN: fptk            | with_execution_time   :: w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
-DEFN: fptk            | dt_print              :: dt_printer(* args, fresh_run=False)  ; starts timer on fresh run, prints time passed since previous call
+DEFN: fptk            | with_execution_time      :: w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
+DEFN: fptk            | dt_print                 :: dt_printer(* args, fresh_run=False)  ; starts timer on fresh run, prints time passed since previous call
 ```

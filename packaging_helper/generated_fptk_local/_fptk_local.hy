@@ -1,7 +1,7 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.4dev5
+; This file was generated from local git version: 0.2.4dev6
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -1033,19 +1033,19 @@
 		(return `(fn [~@inputs] ~expr)))
 
 	(defmacro f> [lambda_def #* args]
-		(return `((hy.R.fptk_macros.fm ~lambda_def) ~@args)))
+		(return `((fm ~lambda_def) ~@args)))
 
     (defmacro mapm [one_shot_fm #* args]
-		(return `(map (hy.R.fptk_macros.fm ~one_shot_fm) ~@args)))
+		(return `(map (fm ~one_shot_fm) ~@args)))
 
     (defmacro lmapm [one_shot_fm #* args]
-		(return `(list (map (hy.R.fptk_macros.fm ~one_shot_fm) ~@args))))
+		(return `(list (map (fm ~one_shot_fm) ~@args))))
 
     (defmacro filterm [one_shot_fm iterable]
-		(return `(filter (hy.R.fptk_macros.fm ~one_shot_fm) ~iterable)))
+		(return `(filter (fm ~one_shot_fm) ~iterable)))
 
     (defmacro lfilterm [one_shot_fm iterable]
-		(return `(list (filter (hy.R.fptk_macros.fm ~one_shot_fm) ~iterable))))
+		(return `(list (filter (fm ~one_shot_fm) ~iterable))))
 
 ; ________________________________________________________________________/ }}}2
 ; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -1092,7 +1092,7 @@
 	(defmacro &+ [#* macro_args]
 		(setv lenses_ (butlast macro_args))
 		(setv func	 (get macro_args (- 1)))
-	   `(& ~@lenses_ (hy.R.fptk_macros.lns ~func)))
+	   `(& ~@lenses_ (lns ~func)))
 
 	; compose lens, add setters/getters, apply
 
@@ -1100,19 +1100,19 @@
 		(setv variable (get macro_args 0))
 		(setv lenses   (butlast (rest macro_args)))
 		(setv func	   (get macro_args (- 1)))
-	   `((& ~@lenses (hy.R.fptk_macros.lns ~func)) ~variable))
+	   `((& ~@lenses (lns ~func)) ~variable))
 
 	; construct lens, apply:
 
 	(defmacro l> [#* macro_args]
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `((hy.R.fptk_macros.lns ~@lenses_args) ~variable))
+	   `((lns ~@lenses_args) ~variable))
 
 	(defmacro l>= [#* macro_args]
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `(&= ~variable (hy.R.fptk_macros.lns ~@lenses_args)))
+	   `(&= ~variable (lns ~@lenses_args)))
 
 ; ________________________________________________________________________/ }}}2
 ; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2

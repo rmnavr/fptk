@@ -54,6 +54,23 @@
                  "\n" closer))
 
 ; _____________________________________________________________________________/ }}}1
+; [F] relink R imports ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; fptk_macros.hy has calls like:
+    ; - hy.R.fptk_macros.lns
+    ; - hy.R.fptk_macros.fm
+    ; 
+    ; For them to work correctly in _fptk_local, they need to be updated
+
+    (defn #^ str
+        relink_R_imports
+        [ #^ str text
+        ]
+        (re_sub r"(hy\.R\.fptk_macros\.)(lns|fm)" 
+                (fm (%1.group 2))
+                text))
+
+; _____________________________________________________________________________/ }}}1
 ; [F] get version in setup.py ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str
@@ -79,7 +96,7 @@
     (dt_print "[Step 3/4] Generating _fptk_local.hy:")
 
         (setv fptk_funcs_code     (->> (read_file "../fptk/fptk_funcs.hy") (wrap_in_new_vimcell "functions and modules")))
-        (setv fptk_macros_code    (->> (read_file "../fptk/fptk_macros.hy") (wrap_in_new_vimcell "macros")))
+        (setv fptk_macros_code    (->> (read_file "../fptk/fptk_macros.hy") (wrap_in_new_vimcell "macros") relink_R_imports))
         (setv version_in_setup_py (extract_version_from_setup_py (read_file "../setup.py")))
 
         (write_file (sconcat "\n" "; This is local version of github.com/rmnavr/fptk lib.\n"

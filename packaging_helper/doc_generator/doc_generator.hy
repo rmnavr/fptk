@@ -429,7 +429,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
     (defn entity2str [ #^ FEntity fe ]
         (setv pad1 (fm (pad_string %1 15)))
-        (setv pad2 (fm (pad_string %1 21)))
+        (setv pad2 (fm (pad_string %1 24)))
         ;
         (case fe.kind
               ;
