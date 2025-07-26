@@ -109,6 +109,7 @@
 	• robust fm syntax:
 	  - throw error when %1 and "it" is mixed
 	  - allow (lmapm abs [1 2 3]) recognition?
+	  - reducem
 
 	• robust 1-based index:
 	  - with dicts

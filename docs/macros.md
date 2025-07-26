@@ -12,9 +12,9 @@ fptk functions, macroses and imported modules:
 
 This doc will cover following macros:
 * `f::` — macro for annotating callables
-* `fm`, `f>`, `lmapm` — anonymous functions with special syntax for arguments
+* `fm`, `f>`, `(l)mapm` `(l)filterm` — anonymous functions with special syntax for arguments
 * `p:` — pipe of partials
-* `pluckm` — getter for collection of collections
+* `(l)pluckm` — getter for collection of collections
 * `getattrm` — same as getattr, but with small syntax tweak
 * `assertm`, `gives_error_typeQ` — macros for testing code
 
@@ -107,8 +107,10 @@ This is also in accordance with `.attr` usage inside another fptk macros.
 
 ## `pluckm` and `lpluckm` — unification of lpluck/lpluck_attr funcs from funcy libs
 
-Pluckm extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
+`pluckm` extends [funcy.lpluck](https://funcy.readthedocs.io/en/stable/colls.html#pluck)
 to be able to recognize `(pluckm .attr)` syntax for accessing attributes.
+
+`lpluckm` is just calling list on top of `pluckm`.
 
 Reason for adding such syntax is the following:
 * In hy original syntax `.attr` is the way to access attribute, not `"attr"` (how lpluck_attr does it)
@@ -116,13 +118,13 @@ Reason for adding such syntax is the following:
 
 ```hy
 ; .attr syntax expands to lpluck_attr:
-(pluckm .attr cs)   ; (lpluck_attr "attr" cs)
+(pluckm .attr cs)   ; (pluck_attr "attr" cs)
 ; [!] notice that .attr syntax can't pass attr as argument,
 ;     use (lpluck_attr "attr" cs) instead
 
 ; everything else is expanded to lpluck:
-(pluckm (+ i 3) xs) ; (lpluck (+ i 3) xs)
-(pluckm "key" xs)   ; (lpluck "key" xs)
+(pluckm (+ i 3) xs) ; (pluck (+ i 3) xs)
+(pluckm "key" xs)   ; (pluck "key" xs)
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
