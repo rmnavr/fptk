@@ -44,6 +44,9 @@
     (import typing      [Literal])
     (import typing      [Type])
 
+; _____________________________________________________________________________/ }}}1
+; [GROUP] Strict Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (import pydantic    [BaseModel])
     (import pydantic    [StrictInt])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
     (import pydantic    [StrictStr])       #_ "will be still of str type, but will perform strict typecheck when variable is created"
@@ -56,10 +59,6 @@
 
     #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))
-
-    (import returns.result  [Result])   #_ "Result monad"
-    (import returns.result  [Success])  #_ "One of Result monad constructor"
-    (import returns.result  [Failure])  #_ "One of Result monad constructor"
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Buffed getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1

@@ -29,31 +29,26 @@ import fptk *
 fptk aims to unite and bring following things into main scope.
 
 Basics:
-- [x] Full basic modules that are math and FP-relevant (`math`, `operator`, `itertools`, etc.)
-- [x] Math, logic and checks (most checks in fptk end with "Q": like `intQ`, `zerolenQ`, etc.)
-- [x] Strings manipulation and regexes
-- [x] Convenience functions for basic IO (like `read_file` and `file_existsQ`)
-- [ ] Basic benchmarking and debugging
+- Full basic modules that are math and FP-relevant (`math`, `operator`, `itertools`, etc.)
+- Math, logic and checks (most checks in fptk end with "Q": like `intQ`, `zerolenQ`, etc.)
+- Strings manipulation and regexes
+- Convenience functions for basic IO (like `read_file` and `file_existsQ`)
+- Basic benchmarking and debugging
 
 Typing:
-- [x] Basic types like `Any`, `Optional`, etc.
-- [ ] Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
+- Basic types like `Any`, `Optional`, etc.
+- Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
 
 APL-like functionality (heavily based on [funcy](https://github.com/Suor/funcy/) lib):
 > fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`).
 > Also, most functions do not mutate data.
-- [x] Buffed getters (first, second, last, rest, ...)
-- [x] Functional composition, piping, partial application and currying
-- [x] Mapping, filtering and partitioning of sequences
+- Buffed getters (first, second, last, rest, ...)
+- Functional composition, piping, partial application and currying
+- Mapping, filtering and partitioning of sequences
 
 Other quirky things:
-- [x] 1-based index variants of basic getters (don't worry, fptk does not force using them)
-- [x] macros for lenses ([lenses](https://github.com/ingolemo/python-lenses) is Haskell-ish approach for manipulating deeply nested immutable data)
-
-Currently under development:
-- [ ] Immutable structures (source lib is under consideration)
-- [ ] Monadic machinery (considering using [returns](https://github.com/dry-python/returns) lib)
-
+- 1-based index variants of basic getters (don't worry, fptk does not force using them)
+- macros for lenses ([lenses](https://github.com/ingolemo/python-lenses) is Haskell-ish approach for manipulating deeply nested immutable data)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Dependencies ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -64,9 +59,8 @@ Tested with:
 * [hy](https://github.com/hylang/hy) 1.0.0
 * [hyrule](https://github.com/hylang/hyrule) 1.0.0
 * [funcy](https://github.com/Suor/funcy/) 2.0
-* [pydantic](https://github.com/pydantic/pydantic) 2.0
 * [lenses](https://github.com/ingolemo/python-lenses) 1.2 
-* [returns](https://github.com/dry-python/returns) 0.23 
+* [pydantic](https://github.com/pydantic/pydantic) 2.0
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Documentation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

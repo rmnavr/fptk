@@ -20,14 +20,13 @@ class install(install):
 libs_required = [ 'hy >= 1',
                   'hyrule >= 1',
                   'funcy >= 2',
-                  'returns >= 0.23',
                   'pydantic >= 2.0',
                   'lenses >= 1.2'
                 ]
 
 setup(
     name              = 'fptk',
-    version           = '0.2.4dev6', 
+    version           = '0.2.4dev7', 
     setup_requires    = ['wheel'] + libs_required,
     install_requires  = libs_required,
     packages          = setuptools.find_packages(exclude = ["private*"]),

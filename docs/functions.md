@@ -66,6 +66,8 @@ FROM: typing          | Optional
 FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
+
+=== Strict Typing ===
 FROM: pydantic        | BaseModel
 FROM: pydantic        | StrictInt                ; will be still of int type, but will perform strict typecheck when variable is created
 FROM: pydantic        | StrictStr                ; will be still of str type, but will perform strict typecheck when variable is created
@@ -73,9 +75,6 @@ FROM: pydantic        | StrictFloat              ; will be still of float type, 
 SETV: fptk            | StrictNumber             ; Union of StrictInt and StrictFloat
 FROM: pydantic        | validate_call            ; decorator for type-checking func args
 SETV: fptk            | validateF                ; same as validate_call but with option validate_return=True set (thus validating args and return type)
-FROM: returns.result  | Result                   ; Result monad
-FROM: returns.result  | Success                  ; One of Result monad constructor
-FROM: returns.result  | Failure                  ; One of Result monad constructor
 
 === Buffed getters ===
 INFO: hy              | . /macro/                :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
