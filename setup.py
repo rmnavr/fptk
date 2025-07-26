@@ -18,6 +18,7 @@ class install(install):
                 )
 
 libs_required = [ 'hy >= 1',
+                  'hyrule >= 1',
                   'funcy >= 2',
                   'returns >= 0.23',
                   'pydantic >= 2.0',

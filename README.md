@@ -62,6 +62,7 @@ Currently under development:
 
 Tested with:
 * [hy](https://github.com/hylang/hy) 1.0.0
+* [hyrule](https://github.com/hylang/hyrule) 1.0.0
 * [funcy](https://github.com/Suor/funcy/) 2.0
 * [pydantic](https://github.com/pydantic/pydantic) 2.0
 * [lenses](https://github.com/ingolemo/python-lenses) 1.2 
