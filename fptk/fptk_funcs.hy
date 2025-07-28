@@ -405,20 +405,20 @@
         "
         (when (= (len seq) 0) (return []))
         (setv _newLists [])
-        ;
+        ;;
         (for [&elem seq]
             (if (pred &elem)
                 (_newLists.append [&elem])
                 (if (= (len _newLists) 0)
                     (_newLists.append [&elem])
                     (. (last _newLists) (append &elem)))))
-        ;
+        ;;
         (when (not keep_border)
               (setv _newLists (lmap (fn [it] (if (pred (get it 0))
                                                  (cut it 1 None)
                                                  it))
                                     _newLists)))
-        ;
+        ;;
         (when merge_border
               (if keep_border
                   (do (setv single_borders_pos [])
@@ -682,12 +682,12 @@
         "
         (when (< target_len 0) (raise (ValueError "target_len < 0 is not allowed")))
         (when (= char "")      (raise (ValueError "empty char is not allowed")))
-        ;
+        ;;
         (when (and force_len 
                    (> (len string) target_len))
               (if on_tail (return (cut string target_len))
                           (return (take (- target_len) string))))
-        ;
+        ;;
         (setv n_required (max 0 (- target_len (len string))))
 		(if on_tail
 			(setv outp (sconcat string (cut (* char n_required) 0 (- target_len (len string)))))

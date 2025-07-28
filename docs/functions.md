@@ -171,6 +171,17 @@ DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start,
 FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
 FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
 
+=== APL: working with lists ===
+FROM: hyrule          | flatten                  ; flattens to the bottom
+DEFN: fptk            | lprint                   :: lprint(seq, sep=None)  ; literally just list(map(print,seq))
+INFO: py              | reversed /base/          :: reversed(sequence) -> iterator
+DEFN: fptk            | lreversed                :: lreversed(sequence) = list(reversed(seq))
+DEFN: fptk            | partition                :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
+DEFN: fptk            | lpartition               :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
+FROM: funcy           | partition_by             :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
+FROM: funcy           | lpartition_by            :: lpartition_by(f,seq) -> list of lists  ; list(partition_by(...))
+DEFN: fptk            | lmulticut_by             :: lmulticut_by(pred, seq, keep_border=True, merge_border=False) -> list  ; cut at pred(elem)==True elems
+
 === APL: counting ===
 DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 
@@ -240,6 +251,15 @@ DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally
 FROM: funcy           | listQ (<-is_list)        :: listQ(seq)  ; checks if seq is list
 FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(seq)  ; checks if seq is tuple
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
+
+=== Strings ===
+DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
+DEFN: fptk            | str_join                 :: str_join(ss, sep='')  ; rearrangement of funcy.str_join, ss is seq of strings
+DEFN: fptk            | lowercase                :: lowercase(string)  ; str.lower method as a function
+DEFN: fptk            | strip                    :: strip(string, chars=None)  ; str.strip method as a function
+DEFN: fptk            | lstrip                   :: lstrip(string, chars=None)  ; str.lstrip method as a function
+DEFN: fptk            | rstrip                   :: rstrip(string, chars=None)  ; str.rstrip method as a function
+DEFN: fptk            | enlengthen               :: enlengthen(string, target_len, char=' ', on_tail=True)  ; adds char to string until target_len reached
 
 === Regex ===
 FROM: re              | re_sub (<-sub)           :: re_sub(rpattern, replacement, string, count=0, flags=0)
