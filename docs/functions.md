@@ -152,23 +152,6 @@ MACR: hyrule          | list_n                   :: (list_n n #* body) -> List
 DEFN: fptk            | nested                   :: nested(n, f)  ; f(f(f(...f))), returns function
 DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
-=== APL: filtering ===
-INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
-FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
-DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
-FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
-FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
-DEFN: fptk            | without                  :: without(items, seq) -> generator  ; returns seq without each item in items
-DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list(without(...))
-FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
-FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
-FROM: funcy           | filter_split (<-split)   :: filter_split(pred, seq) -> passed, rejected
-FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list(filter_split(...))
-FROM: funcy           | bisect_at (<-split_at)   :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
-DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
-FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
-FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
-
 === APL: working with lists ===
 FROM: hyrule          | flatten                  ; flattens to the bottom
 DEFN: fptk            | lprint                   :: lprint(seq)  ; literally just list(map(print,seq))

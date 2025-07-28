@@ -98,6 +98,20 @@
 
 // ____________________________________________________________________________/ }}}1
 
+	• lprint: include option ":sep '-----------'"
+	• takewhile -> l/m versions?
+	• mapcat, cat (=chain.from_iterable), concat (=chain)
+	• dt_print: 
+	  - return result
+	  - :silent
+	  - return total
+	• lrest ?
+	• multicut
+	  - lmulticut, multicut
+	  - multicut_at :keep_border
+	  - multicut_by :keep_border
+	  - tests
+
 	• annotations:
 	  - [³macro⁺] (defn:: [validateF] str -> #* (of List Int) => str [ string #* kwargs ] ... )
 

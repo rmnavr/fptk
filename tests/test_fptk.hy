@@ -128,6 +128,118 @@
     (assertm = (lpartition 2 :tail True [1 2 3 4 5]) [[1 2] [3 4] [5]])
 
 ; _____________________________________________________________________________/ }}}1
+; lmulticut_by ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+; ■ False False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [])
+               [])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True True False False True True True False True True True False True])
+               [[] [False False] [] [] [False] [] [] [False] []])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True True])
+               [[] []])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True])
+               [[]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [False False])
+               [[False False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [False])
+               [[False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True False True])
+               [[False] []])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True False False True True False])
+               [[False False] [] [False]])
+
+; ________________________________________________________________________/ }}}2
+; ■ False True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [])
+               [])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True True False False True True True False True True True False True])
+               [[False False] [False] [False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True True])
+               [])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True])
+               [])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [False False])
+               [[False False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [False])
+               [[False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True False True])
+               [[False]])
+
+    (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True False False True True False])
+               [[False False] [False]])
+
+; ________________________________________________________________________/ }}}2
+; ■ True  False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [])
+               [])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True True False False True True True False True True True False True])
+               [[True] [True False False] [True] [True] [True False] [True] [True] [True False] [True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True True])
+               [[True] [True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True])
+               [[True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [False False])
+               [[False False]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [False])
+               [[False]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True False True])
+               [[True False] [True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True False False True True False])
+               [[True False False] [True] [True False]])
+
+; ________________________________________________________________________/ }}}2
+; ■ True  True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [])
+               [])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True True False False True True True False True True True False True])
+               [[True True False False] [True True True False] [True True True False] [True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True True])
+               [[True True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True])
+               [[True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [False False])
+               [[False False]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [False])
+               [[False]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True False True])
+               [[True False] [True]])
+
+    (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True False False True True False])
+               [[True False False] [True True False]])
+
+; ________________________________________________________________________/ }}}2
+
+; _____________________________________________________________________________/ }}}1
 ; Math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (normalize [3 0 0]) [1 0 0])

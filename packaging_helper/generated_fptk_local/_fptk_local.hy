@@ -99,10 +99,10 @@
     ;; list getters:
 
         #_ "rest(seq) -> List | drops 1st elem of list"
-        (defn rest [seq] "drops 1st elem of list" (get seq (slice 1 None)))
+        (defn rest [seq] "drops 1st elem of list" (cut seq 1 None))
 
         #_ "butlast(seq) -> List | drops last elem of list"
-        (defn butlast [seq] "drops last elem of list" (get seq (slice None -1)))
+        (defn butlast [seq] "drops last elem of list" (cut seq None -1))
 
         #_ "drop(n, seq) -> List | drops n>=0 elems from start of the list; when n<0, drops from end of the list"
         (defn drop [n seq]
@@ -324,6 +324,51 @@
     (import funcy [split_by   :as bisect_by])     #_ " bisect_by(pred, seq) -> taken, dropped | similar to (takewhile, dropwhile)"
     (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
     ;;
+
+    #_ "lmulticut_by(pred, seq, keep_border=True, merge_border=False) -> list | cut at pred(elem)==True elems"
+    (defn #^ (of List list)
+        lmulticut_by 
+        [ pred
+          #^ list seq
+          [keep_border  True ]
+          [merge_border False]
+        ]
+        " cuts at elems which give pred(elem)=True
+
+          keep_border =True  will keep elements with pred(elem)=True
+          merge_border=True  will cut only at first of a sequence of pred(elem)=True elems 
+        "
+        (when (= (len seq) 0) (return []))
+        (setv _newLists [])
+        ;
+        (for [&elem seq]
+            (if (pred &elem)
+                (_newLists.append [&elem])
+                (if (= (len _newLists) 0)
+                    (_newLists.append [&elem])
+                    (. (last _newLists) (append &elem)))))
+        (when (not keep_border)
+              (setv _newLists (lmap (fn [it] (if (pred (get it 0))
+                                                 (cut it 1 None)
+                                                 it))
+                                    _newLists)))
+        (when merge_border
+              (if keep_border
+                  (do (setv single_borders_pos [])
+                      (for [&i (range 0 (len _newLists))]
+                           (setv cur_list (get _newLists &i))
+                           (when (and (= (len cur_list) 1)
+                                      (pred (get cur_list 0)))
+                                 (single_borders_pos.append &i)))
+                      (for [&i single_borders_pos]
+                           (when (< &i (dec (len _newLists)))
+                                 (setv (get _newLists (inc &i)) (+ (get _newLists &i) (get _newLists (inc &i))))))
+                      (setv others_pos (list (- (set (range 0 (len _newLists))) (set single_borders_pos))))
+                      (when (in (dec (len _newLists)) single_borders_pos)
+                            (others_pos.append (dec (len _newLists))))
+                      (setv _newLists (pick others_pos _newLists)))
+                  (setv _newLists (lwithout [[]] _newLists))))
+        (return _newLists))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -747,6 +792,12 @@
 
 ; ________________________________________________________________________/ }}}2
 
+
+
+
+    ; todo: 
+    ; - lmulticut_by doc
+    ; - minus/plus lists
 
 ; _____________________________________________________________________________/ }}}1
 ; macros ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
