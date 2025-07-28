@@ -127,10 +127,9 @@
     (assertm = (lpartition 2 :step 3 :tail True [1 2 3 4]) [[1 2] [4]])
     (assertm = (lpartition 2 :tail True [1 2 3 4 5]) [[1 2] [3 4] [5]])
 
-; _____________________________________________________________________________/ }}}1
-; lmulticut_by ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ■ lmulticut_by ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-; ■ False False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; ■ ■ False False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{3
 
     (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [])
                [])
@@ -156,8 +155,8 @@
     (assertm = (lmulticut_by :keep_border False :merge_border False (fn [it] (eq True it)) [True False False True True False])
                [[False False] [] [False]])
 
-; ________________________________________________________________________/ }}}2
-; ■ False True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; ___________________________________________________________________/ }}}3
+; ■ ■ False True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{3
 
     (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [])
                [])
@@ -183,8 +182,8 @@
     (assertm = (lmulticut_by :keep_border False :merge_border True  (fn [it] (eq True it)) [True False False True True False])
                [[False False] [False]])
 
-; ________________________________________________________________________/ }}}2
-; ■ True  False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; ___________________________________________________________________/ }}}3
+; ■ ■ True  False ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{3
 
     (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [])
                [])
@@ -210,8 +209,8 @@
     (assertm = (lmulticut_by :keep_border True  :merge_border False (fn [it] (eq True it)) [True False False True True False])
                [[True False False] [True] [True False]])
 
-; ________________________________________________________________________/ }}}2
-; ■ True  True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; ___________________________________________________________________/ }}}3
+; ■ ■ True  True ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{3
 
     (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [])
                [])
@@ -236,6 +235,14 @@
 
     (assertm = (lmulticut_by :keep_border True  :merge_border True  (fn [it] (eq True it)) [True False False True True False])
                [[True False False] [True True False]])
+
+; ___________________________________________________________________/ }}}3
+
+    ; examples from lmulticut_by docstring:
+    (assertm = (lmulticut_by oddQ [1 0 1 1 0 0 1] True  True ) [[1 0] [1 1 0 0] [1]])
+    (assertm = (lmulticut_by oddQ [1 0 1 1 0 0 1] True  False) [[1 0] [1] [1 0 0] [1]])
+    (assertm = (lmulticut_by oddQ [1 0 1 1 0 0 1] False True ) [[0] [0 0]])
+    (assertm = (lmulticut_by oddQ [1 0 1 1 0 0 1] False False) [[0] [] [0 0] []])
 
 ; ________________________________________________________________________/ }}}2
 
@@ -320,9 +327,6 @@
     (assertm = (str_join ["a" "b" "" "c"]) "abc")
     (assertm = (str_join :sep "-" ["a" "b" "" "c"]) "a-b--c")
 
-    (assertm = (str_replace "pupsububr" "u" "R") "pRpsRbRbr")
-    (assertm = (str_replace :count 1 "pupsububr" "u" "R") "pRpsububr")
-
     (assertm = (strip " bubr ") "bubr")
     (assertm = (strip :chars "|" "Ybubr|") "Ybubr")
     (assertm = (strip :chars "|Ybr" "Ybubr|") "u")
@@ -333,12 +337,29 @@
     (assertm = (rstrip :chars "|" "Ybubr|") "Ybubr")
     (assertm = (rstrip :chars "|Ybr" "Ybubr|") "Ybu")
 
+; ■ enlengthen ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
     (assertm = (enlengthen 3 " ") (* " " 3))
     (assertm = (enlengthen 0 "pups") "pups")
-    (assertm = (enlengthen -10 "pups") "pups")
+    (assertm = (enlengthen 0 "pups" :on_tail True) "pups")
+    (assertm = (enlengthen 0 "pups" :on_tail True :char "123") "pups")
+    (assertm = (enlengthen 0 "pups" :on_tail True :char "123" :force_len True) "")
     (assertm = (enlengthen 6 "pups" :char "-") "pups--")
-    (assertm = (enlengthen 6 "pups" :char "-" :fill_tail False) "--pups")
-    (assertm = (enlengthen 4 "pups" :char "-" :fill_tail False) "pups")
+    (assertm = (enlengthen 6 "pups" :char "-" :on_tail False) "--pups")
+    (assertm = (enlengthen 4 "pups" :char "-" :on_tail False) "pups")
+    (assertm gives_error_typeQ (enlengthen -10 "pups") ValueError)
+    (assertm gives_error_typeQ (enlengthen 10 "pups" :char "") ValueError)
+
+    (assertm = (enlengthen 8 "pupos" :force_len True  :on_tail False :char "12") "121pupos")
+    (assertm = (enlengthen 8 "pupos" :force_len True  :on_tail True  :char "12") "pupos121")
+    (assertm = (enlengthen 8 "pupos" :force_len False :on_tail False :char "12") "121pupos")
+    (assertm = (enlengthen 8 "pupos" :force_len False :on_tail True  :char "12") "pupos121")
+    (assertm = (enlengthen 3 "pupos" :force_len True  :on_tail False :char "12") "pos")
+    (assertm = (enlengthen 3 "pupos" :force_len True  :on_tail True  :char "12") "pup")
+    (assertm = (enlengthen 3 "pupos" :force_len False :on_tail False :char "12") "pupos")
+    (assertm = (enlengthen 3 "pupos" :force_len False :on_tail True  :char "12") "pupos")
+
+; ________________________________________________________________________/ }}}2
 
 ; _____________________________________________________________________________/ }}}1
 

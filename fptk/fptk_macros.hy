@@ -384,6 +384,7 @@
                           (print ">>" ~_arg2 "=" ~arg2)
                           (except [e2 Exception]
                                   (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                                  (print)
                      eFull )))
 
 	(defmacro gives_error_typeQ [expr error_type]

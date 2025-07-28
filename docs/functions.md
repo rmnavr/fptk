@@ -152,15 +152,24 @@ MACR: hyrule          | list_n                   :: (list_n n #* body) -> List
 DEFN: fptk            | nested                   :: nested(n, f)  ; f(f(f(...f))), returns function
 DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
-=== APL: working with lists ===
-FROM: hyrule          | flatten                  ; flattens to the bottom
-DEFN: fptk            | lprint                   :: lprint(seq)  ; literally just list(map(print,seq))
-INFO: py              | reversed /base/          :: reversed(sequence) -> iterator
-DEFN: fptk            | lreversed                :: lreversed(sequence) = list(reversed(seq))
-DEFN: fptk            | partition                :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
-DEFN: fptk            | lpartition               :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
-FROM: funcy           | partition_by             :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
-FROM: funcy           | lpartition_by            :: lpartition_by(f,seq) -> list of lists  ; list(partition_by(...))
+=== APL: filtering ===
+INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
+FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
+DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
+FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
+FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
+DEFN: fptk            | without                  :: without(items, seq) -> generator  ; returns seq without each item in items
+DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list(without(...))
+FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
+FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
+FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
+FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
+FROM: funcy           | filter_split (<-split)   :: filter_split(pred, seq) -> passed, rejected
+FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list(filter_split(...))
+FROM: funcy           | bisect_at (<-split_at)   :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
+DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
+FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
+FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
 
 === APL: counting ===
 DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq) -> int  ; rename of list.count method
@@ -231,17 +240,6 @@ DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally
 FROM: funcy           | listQ (<-is_list)        :: listQ(seq)  ; checks if seq is list
 FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(seq)  ; checks if seq is tuple
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
-
-=== Strings ===
-DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
-DEFN: fptk            | str_join                 :: str_join(ss, sep='')  ; rearrangement of funcy.str_join, ss is seq of strings
-DEFN: fptk            | str_replace              :: str_replace(string, old, new, count=-1)  ; str.replace method as a function
-DEFN: fptk            | lowercase                :: lowercase(string)  ; str.lower method as a function
-DEFN: fptk            | endswith                 :: endswith(string, suffix) -> bool  ; str.endswith method as a function (but can't take start/end params)
-DEFN: fptk            | strip                    :: strip(string, chars=None)  ; str.strip method as a function
-DEFN: fptk            | lstrip                   :: lstrip(string, chars=None)  ; str.lstrip method as a function
-DEFN: fptk            | rstrip                   :: rstrip(string, chars=None)  ; str.rstrip method as a function
-DEFN: fptk            | enlengthen               :: enlengthen(string, target_len, char=' ', fill_tail=True)  ; adds char to string until target_len reached
 
 === Regex ===
 FROM: re              | re_sub (<-sub)           :: re_sub(rpattern, replacement, string, count=0, flags=0)

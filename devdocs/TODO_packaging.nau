@@ -1,4 +1,6 @@
 
+	? auto-increase dev version each packaging-helper run lol?
+
 	doc_gen:
 		+ Remove requirement for `;;` comments to have double-semicolon
 		+ Enhance recognition of if `#_ "comment"` belongs to prev `(import ...)` or next `(defn ...)`

@@ -1,19 +1,31 @@
 
-// MACROS ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Log ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	new:
-	• l>=			// TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
-	• => =>>		// optional «it», .attr access
-
-	sleeping:
-	• #L (deprecated)
-	• <-
+	28 Jul 2025
+		+ lmulticut_by: full functionality and test
+		+ upd: enlengthen
+		+ removed funcs on strings (ends_with, subsitute or smth)
+		  that can be replaced with regex funcs with similar functionality
 
 // ____________________________________________________________________________/ }}}1
-// ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Later: Macro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	new:
+	• [³macro⁺] defn::		// (defn:: [validateF] () str -> #* (of List Int) => str [ string #* kwargs ] ... )
+	• [³macro⁺] => =>>		// optional «it», .attr access
+
+	low priority:
+	• [³macro⁺] l>= // TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
+
+	sleeping:
+	• [³macro⁺]  #L (deprecated)
+	• [³macro⁺]  <-
+
+// ____________________________________________________________________________/ }}}1
+// Later: ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	ADT machinery: product/sum
-			
+
 		defunion
 
 		- dataclass
@@ -24,126 +36,82 @@
 		- Generic Types <A>, GenericListExample[int]
 		- List, Tuple, Nested
 		- Type[Shape]
-		+ Inheritance?  
-		 
+		+ Inheritance?
+
 		type (exact)
 		isinstance (exact + subclasses) <- Union
 		Unions, Discr/Tagged Unions
-	 
+
 	Monads:
-	 
+
 		Maybe
 		Result
-		 
+
 		Possible libs:
 		- hy monad
 		- returns
 		- effects
-		 
+
 		Later:
 		- Transformers
 
 // ____________________________________________________________________________/ }}}1
-// things to do for polishing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Polishing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+	- typecheck: with = or is, or type or smth?
 	- correctly pass through extra args/kwargs (in partial and such)
-	- map vs lmap, iterator/generator/list (do not falsly consume iterators and such)
+	- iterator/generator/list (do not falsly consume iterators and such)
 	- consistent namings of args
-	- is every func indeed immutable?
-	- macro: hygensims?
+	- macro: hygensims
 
-	·······························
+// ____________________________________________________________________________/ }}}1
+// Prior 2 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	git branch
-	docs 
-	tests 
-	proper error messages, forbid working with incorrect types/data
-	license
+	• logically with_execution_time should give result of LAST execution ?
+	+ (flatten xs :level 3)
+	+ on_each(f, xs) -> None	// as map but with no result
+	+ juxt_apply(fs, *xi)
 
 // ____________________________________________________________________________/ }}}1
 
-// sorted ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	Consider study/adding:
+	Learn and add:
+		• mapcat, cat (=chain.from_iterable), concat (=chain)
+		• count_occurrences -> count_by, count_reps or smth
+		• itertools/funcy: count, cycle, repeat
+		• inteleave, interpose
+		• all_fn, none_fn, isa, re_tester/partial?
+		  (eq_all x [1 2 3]) (eq_any x [1 2 3]) (eq_none x [1 2 3]) (manyfQ = [f1 f2 f3] x)
 		• juxt/ljuxt, compose/lcompose, what does l-version do? is it really required?
-		• isa (partial checker)
-		• all_fn
 		• with_prev, with_next
-    	• mapcat lmapcat cat
-    	• count_by, count_reps
-    	• some, any, anyfn
-		• itertools: accumulate, batched, drop/take_while + option to include value where drop happened
-		• itertools: count, cycle, repeat
-		• functools: total_ordering for Tokens?
-		• rename partition_by to split_by? (split_with?)
 		• add/substract lists/dictionaries
-		+ partial testers: isa, re_tester (extented funcy semantics? wut?)
-		+ (flatten xs :level 3) 
-		+ on_each(f, xs) -> None	// as map but with no result
-		+ juxt_apply(fs, *xi)
+		• dedup
+		* itertools/funcy: accumulate, batched
 
-	Fix/Upd:
-		• rstrip should also pass kwargs and such
-		• rename partial to "pt" ?
-		• partition: filler elem option
-		• logically with_execution_time should give result of LAST execution ?
+	Update existing funcs/macros:
+		• strig/lstrip/rstrip should also pass kwargs and such
+		• dt_print:
+			- return result
+			- :silent (no print, only return)
+			- return dT/total
+		• fm syntax:
+			- throw error when %1 and "it" is mixed
+	  		- allow (lmapm abs [1 2 3]) recognition?
+	  		- reducem
+		• 1-based-indexing:
+			- with dicts
+	  		- range, lrange, range_, lrange_
+	  		- assoc_
+	  		- pick_
+	  		- slice_/cut_ with 1 arg ?
+	  		+ ncut_ ?
 
-	Packaging:
-		? also include funcy lol? 
+	Tests:
+		- check if macros can be imported by themselves
+	  	- check if pip install fptk (without -e) works
+	  	? test funcy funtions also?
 
-	// SQL-like:
-	// - pipe (select, where, chain, traverse=flat1, traverse=flatInf, groupby, dedup, as_list)
-	// - pyfunctional
-	// - hy 1.0.0 google article
+    Other:
+		+ jump to F def: not working when decorator is present
+		+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
 
-// ____________________________________________________________________________/ }}}1
-
-	• lprint: include option ":sep '-----------'"
-	• takewhile -> l/m versions?
-	• mapcat, cat (=chain.from_iterable), concat (=chain)
-	• dt_print: 
-	  - return result
-	  - :silent
-	  - return total
-	• lrest ?
-	• multicut
-	  - lmulticut, multicut
-	  - multicut_at :keep_border
-	  - multicut_by :keep_border
-	  - tests
-
-	• annotations:
-	  - [³macro⁺] (defn:: [validateF] str -> #* (of List Int) => str [ string #* kwargs ] ... )
-
-	• tests:
-	  - check if macros can be imported by themselves
-	  - check if pip install fptk (without -e) works
-	  ? test funcy funtions also?
-
-	• robust fm syntax:
-	  - throw error when %1 and "it" is mixed
-	  - allow (lmapm abs [1 2 3]) recognition?
-	  - reducem
-
-	• robust 1-based index:
-	  - with dicts
-	  - range, lrange, range_, lrange_
-	  - assoc_
-	  - pick_
-	  - slice_/cut_ with 1 arg
-	  + ncut_ ?
-
-	Consider for removal:
-	+ count_occurrences is bad
-	+ endswith is bad
-
-    Vim:
-    - jump to F def: not working when decorator is present
-
-	····························································
-
-	+ (manyQ = (type x) [int float]) 
-	+ all_fn, none_fn, etc.
-	+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
-	? Split to submodules for faster import? (I can rely on funcy and base py modules, but not on pydantic and returns)
 
