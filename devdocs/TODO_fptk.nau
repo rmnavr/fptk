@@ -74,9 +74,28 @@
 
 // ____________________________________________________________________________/ }}}1
 
+	? Polishing: does function consumes iterator? does it output iterator (for input iterator/iterable)?
+	? hy-only — in hy syntax
+
+	new funcs:
+	- enlengthen_list
+
+	checks:
+	- lcycle
+	- lrepeat
+	- mask2idxs
+	- idxs2mask
+	- lmask_sel
+	- lchain
+
+    (print (mask2idxs [1 0 1 0 1]))
+    (print (mask2idxs []))
+    (print (mask2idxs [True False True 0 1]))
+
+	·······························
+
 	Learn and add:
-		• mapcat, cat (=chain.from_iterable), concat (=chain)
-		• count_occurrences -> count_by, count_reps or smth
+		• count_occurrences -> count_by, count_reps, count_elem
 		• itertools/funcy: count, cycle, repeat
 		• inteleave, interpose
 		• all_fn, none_fn, isa, re_tester/partial?

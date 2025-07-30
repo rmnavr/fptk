@@ -2,7 +2,7 @@
 ; Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (require hyrule [comment])
-    ; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
+    ;; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
 
 ; _____________________________________________________________________________/ }}}1
 
@@ -229,7 +229,7 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] FP: threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (comment "py | base | map || usage: map(func, *iterables) -> map object")
+    (comment "py | base | map | map(func, *iterables) -> map object |")
     (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
     (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
 
@@ -239,8 +239,8 @@
         (list (starmap f #* seqs)))
 
     (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
-    (import funcy [reductions])   #_ " reduction(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
-    (import funcy [lreductions])  #_ "lreduction(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy [reductions])   #_ " reductions(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy [lreductions])  #_ "lreductions(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
     (import funcy [sums])   #_ " sums(seq [, acc]) -> generator | reductions with addition function"
     (import funcy [lsums])  #_ "lsums(seq [, acc]) -> List |"
     ;;
@@ -249,14 +249,6 @@
     
     #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
     (defn lzip [#* iterables] (list (zip #* iterables)))
-
-    #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
-    (defn on [f check x y #* args]
-        " inspired by Haskell's 'on' function,
-          applies f to x, y, and other args (if provided),
-          then applies reduce to them with check
-        "
-        (reduce check (lmap f [x y #* args])))
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -287,6 +279,34 @@
     (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
     (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | list(filter(...)) from funcy"
     ;;
+
+    (import itertools [compress :as mask_sel]) #_ "mask_sel(data, selectors) -> iterator | selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'"
+
+    #_ "lmask_sel(data, selectors) -> list"
+    (defn lmask_sel [data selectors]
+        "selects by mask: lmask_sel('abc', [1,0,1]) -> ['a', 'c']"
+        (list (mask_sel data selectors)))
+
+    #_ "mask2idxs(mask) -> list | mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]"
+    (defn mask2idxs [mask]
+        "mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]"
+        (setv idxs [])
+        (for [[&i &elem] (enumerate mask)]
+             (if &elem (idxs.append &i) "no action"))
+        (return idxs))
+
+    #_ "idxs2mask(idxs) -> list | idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]"
+    (defn idxs2mask [idxs [bools False]]
+        " idxs is non-sorted list of positive integers like [0 3 2], which will be converted to [1 0 1 1] ;
+          setting bools=True will output [True False True True] instead"
+        (when (= (len idxs) 0) (return []))
+        ;;
+        (setv mask_len (+ 1 (max idxs)))
+        (setv mask (list (funcy.repeat 0 mask_len)))
+        (for [&idx idxs] (assoc mask &idx 1))
+        ;;
+        (when bools (setv mask (lmap (fn [it] (= True it)) mask)))
+        (return mask))
 
     #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
     (defn fltr1st [function iterable]
@@ -330,6 +350,39 @@
     (import funcy [split_by   :as bisect_by])     #_ " bisect_by(pred, seq) -> taken, dropped | similar to (takewhile, dropwhile)"
     (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
     ;;
+
+; _____________________________________________________________________________/ }}}1
+; [GROUP] APL: iterators and looping ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (import itertools [islice])              #_ "islice(iterable, stop), islice(iterable, start, stop[, step]) |" 
+
+    (import itertools [count :as inf_range]) #_ "inf_range(start [, step]) | inf_range(10) -> 10, 11, 12, ..."
+    (import itertools [cycle])               #_ "cycle(p) | cycle('AB') -> A B A B ..."
+
+    #_ "lcycle(p, n) -> list | takes first n elems from cycle(p)"
+    (defn lcycle [p n] "takes first n elems from cycle(p)" (list (islice (cycle p) n)))
+
+    (import itertools [repeat])              #_ "repeat(elem [, n]) | repeat(10,3) -> 10 10 10" 
+
+    #_ "lrepeat(elem, n) -> list | unlike in repeat, n has to be provided"
+    (defn lrepeat [elem n] "literally just list(repeat(elem, n))" (list (repeat elem n)))
+
+    ;; ========================================
+
+    (import itertools [chain])      #_ "chain(*seqs) -> iterator |"
+
+    #_ "lchain(*seqs) -> list | list(chain(*seqs))"
+    (defn lchain [#* seqs] "literally just list(chain(*seqs))" (list (chain #* seqs)))
+
+    (import funcy     [cat])        #_ "cat(seqs) | non-variadic version of chain"
+    (import funcy     [lcat])       #_ "lcat(seqs) | non-variadic version of chain"
+
+    (import funcy     [mapcat])     #_ "mapcat(f, *seqs)  | maps, then concatenates"
+    (import funcy     [lmapcat])    #_ "lmapcat(f, *seqs) | maps, then concatenates"
+
+    (import funcy     [pairwise])   #_ "pairwise(seq) -> iterator | supposed to be used in loops, will produce no elems for seq with len <= 1"
+    (import funcy     [with_prev])  #_ "with_prev(seq, fill=None) -> iterator | supposed to be used in loops"
+    (import funcy     [with_next])  #_ "with_next(seq, fill=None) -> iterator | supposed to be used in loops"
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -451,6 +504,8 @@
     (import hyrule    [dec])
     (import hyrule    [sign])
     (import operator  [neg])
+    (import operator  [matmul])      #_ "'@' as function"
+    ;;
 
     #_ "(half x) = (/ x 2)"
     (defn half       [x] "half(x) = x / 2" (/ x 2))
@@ -565,12 +620,40 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import hyrule   [xor])
+    (import operator [and_])        #_ "'and' as function"
+    (import operator [or_])         #_ "'or' as function"
+    (import operator [not_])        #_ "'not' as function"
+    (import operator [is_])         #_ "'is' as function"
+    (import operator [xor])         
 
-    (import operator [eq])              #_ "equal"
-    (import operator [ne   :as neq])    #_ "non-equal"
-    (import funcy    [even :as evenQ])
-    (import funcy    [odd  :as oddQ])   
+    (import operator [eq])          #_ "equal"
+    (import operator [ne :as neq])  #_ "non-equal"
+    (import operator [gt])          #_ "greater than"
+    (import operator [lt])          #_ "less than"
+    (import operator [ge :as geq])  #_ "greater or equal"
+    (import operator [le :as leq])  #_ "less or equal"
+
+    ;; my convenience funcs:
+
+    #_ "(eq_any x values) | (and (eq x value1) (eq x value2) ...)"
+    (defn eq_any [x values]
+        "essentially just or(eq(x, value1), eq(x, value2), ...)"
+        (or #* (lmap (fn [it] (= x it)) values)))
+
+    #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
+    (defn fnot [f #* args #** kwargs]
+        "literally just not(f(*args, **kwrgs))"
+        (not (f #* args #** kwargs)))
+
+    #_ "(on f check x y) | (on len eq xs ys) -> (eq (len xs) (len yx))"
+    (defn on [f check x y]
+        "inspired by Haskell's 'on' function, essentially is check(f(x), f(y)) "
+        (check (f x) (f y)))
+
+    ;; back to primitive funcs:
+
+    (import funcy [even :as evenQ])
+    (import funcy [odd  :as oddQ])   
 
     (import funcy [isnone  :as noneQ])
     (import funcy [notnone :as notnoneQ]) ;;
@@ -599,6 +682,8 @@
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
     (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
 
+    ;; predefined types checks:
+
     #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
     (defn intQ [x]
         "checks literally if type(x) == int"
@@ -614,18 +699,21 @@
         "checks literally if type(x) == int or type(x) == float"
         (= (type x) float))
 
+    #_ "strQ(x) | checks literally if type(x) == str, will also work with StrictStr from pydantic"
+    (defn strQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
+
     #_ "dictQ(x) | checks literally if type(x) == dict"
     (defn dictQ [x]
         "checks literally if type(x) == dict"
         (= (type x) dict))
 
-    (import funcy [is_list  :as listQ ])  #_ "listQ(seq)  | checks if seq is list"
-    (import funcy [is_tuple :as tupleQ])  #_ "tupleQ(seq) | checks if seq is tuple"
-
-    #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
-    (defn fnot [f #* args #** kwargs]
-        "literally just not(f(*args, **kwrgs))"
-        (not (f #* args #** kwargs)))
+    (import funcy [is_list  :as listQ ])    #_ "listQ(value)     | checks if value is list"
+    (import funcy [is_tuple :as tupleQ])    #_ "tupleQ(value)    | checks if value is tuple"
+    (import funcy [is_set   :as setQ])      #_ "setQ(value)      | checks if value is set"
+    (import funcy [is_iter  :as iteratorQ]) #_ "iteratorQ(value) | checks if value is iterator"
+    (import funcy [iterable :as iterableQ]) #_ "iterableQ(value) | checks if value is iterable"
 
 ; _____________________________________________________________________________/ }}}1
 

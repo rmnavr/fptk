@@ -295,6 +295,16 @@
 ; _____________________________________________________________________________/ }}}1
 ; Checks ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
     
+    (assertm = (on len eq "123" ["a" 2 "c"]) True)
+    (assertm = (on len eq "" []) True)
+    (assertm = (on len eq "" "a") False)
+
+    (assertm = (fnot eq 1 2) True)
+    (assertm = (fnot eq 1 1) False)
+
+    (assertm = (eq_any 1 [1 2 3]) True)
+    (assertm = (eq_any 1 [2 3]) False)
+
     (assertm = (zerolenQ "") True)
     (assertm = (zerolenQ []) True)
     (assertm = (zerolenQ "a") False)
@@ -310,16 +320,9 @@
     (assertm = (oftypeQ str "1") True)
     (assertm = (oftypeQ int "1") False)
 
-    (assertm = (on len eq "123" ["a" 2 "c"]) True)
-    (assertm = (on len eq "" []) True)
-    (assertm = (on len eq "" "a") False)
-
     (assertm = (listQ []) True)
     (assertm = (listQ list) False)
     (assertm = (listQ (list)) True)
-
-    (assertm = (fnot eq 1 2) True)
-    (assertm = (fnot eq 1 1) False)
 
 ; _____________________________________________________________________________/ }}}1
 ; Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1

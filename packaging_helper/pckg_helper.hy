@@ -60,7 +60,8 @@
     ; - hy.R.fptk_macros.lns
     ; - hy.R.fptk_macros.fm
     ; 
-    ; For them to work correctly in _fptk_local, they need to be updated
+    ; For them to work correctly in _fptk_local,
+    ; [hy.R.fptk_macros] text should be removed
 
     (defn #^ str
         relink_R_imports

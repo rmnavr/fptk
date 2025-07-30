@@ -133,18 +133,17 @@ DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; e
 DEFN: fptk            | pflip                    :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
 
 === FP: threading ===
-INFO: py              | map /base/               ; usage: map(func, *iterables) -> map object
+INFO: py              | map /base/               :: map(func, *iterables) -> map object
 FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List
 FROM: itertools       | starmap                  ; starmap from itertools; usage: starmap(f, seq)
 DEFN: fptk            | lstarmap                 :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
 FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
-FROM: funcy           | reductions               :: reduction(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
-FROM: funcy           | lreductions              :: lreduction(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | lreductions              :: lreductions(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
 FROM: funcy           | sums                     :: sums(seq [, acc]) -> generator  ; reductions with addition function
 FROM: funcy           | lsums                    :: lsums(seq [, acc]) -> List
 INFO: py              | zip /base/               :: zip(*iterables) -> zip object
 DEFN: fptk            | lzip                     :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
-DEFN: fptk            | on                       :: (on f check x y #* args)  ; (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args
 
 === FP: n-applicators ===
 MACR: hyrule          | do_n                     :: (do_n   n #* body) -> None
@@ -155,6 +154,10 @@ DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwarg
 === APL: filtering ===
 INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
 FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
+FROM: itertools       | mask_sel (<-compress)    :: mask_sel(data, selectors) -> iterator  ; selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'
+DEFN: fptk            | lmask_sel                ; lmask_sel(data, selectors) -> list
+DEFN: fptk            | mask2idxs                :: mask2idxs(mask) -> list  ; mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]
+DEFN: fptk            | idxs2mask                :: idxs2mask(idxs) -> list  ; idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]
 DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
 FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
 FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
@@ -170,6 +173,23 @@ FROM: funcy           | bisect_at (<-split_at)   :: bisect_at(n, seq) -> start, 
 DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
 FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
 FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
+
+=== APL: iterators and looping ===
+FROM: itertools       | islice                   :: islice(iterable, stop), islice(iterable, start, stop[, step])
+FROM: itertools       | inf_range (<-count)      :: inf_range(start [, step])  ; inf_range(10) -> 10, 11, 12, ...
+FROM: itertools       | cycle                    :: cycle(p)  ; cycle('AB') -> A B A B ...
+DEFN: fptk            | lcycle                   :: lcycle(p, n) -> list  ; takes first n elems from cycle(p)
+FROM: itertools       | repeat                   :: repeat(elem [, n])  ; repeat(10,3) -> 10 10 10
+DEFN: fptk            | lrepeat                  :: lrepeat(elem, n) -> list  ; unlike in repeat, n has to be provided
+FROM: itertools       | chain                    :: chain(*seqs) -> iterator
+DEFN: fptk            | lchain                   :: lchain(*seqs) -> list  ; list(chain(*seqs))
+FROM: funcy           | cat                      :: cat(seqs)  ; non-variadic version of chain
+FROM: funcy           | lcat                     :: lcat(seqs)  ; non-variadic version of chain
+FROM: funcy           | mapcat                   :: mapcat(f, *seqs)  ; maps, then concatenates
+FROM: funcy           | lmapcat                  :: lmapcat(f, *seqs)  ; maps, then concatenates
+FROM: funcy           | pairwise                 :: pairwise(seq) -> iterator  ; supposed to be used in loops, will produce no elems for seq with len <= 1
+FROM: funcy           | with_prev                :: with_prev(seq, fill=None) -> iterator  ; supposed to be used in loops
+FROM: funcy           | with_next                :: with_next(seq, fill=None) -> iterator  ; supposed to be used in loops
 
 === APL: working with lists ===
 FROM: hyrule          | flatten                  ; flattens to the bottom
@@ -189,8 +209,9 @@ DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq)
 FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
-FROM: operator        | neg                      ; (half x) = (/ x 2)
-DEFN: fptk            | half
+FROM: operator        | neg
+FROM: operator        | matmul                   ; '@' as function
+DEFN: fptk            | half                     ; (half x) = (/ x 2)
 DEFN: fptk            | double                   ; (double x) = (* x 2)
 DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
 DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally
@@ -229,9 +250,20 @@ DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string con
 DEFN: fptk            | lconcat                  :: lconcat(*args)  ; list concantenation as a monoid (will not give error when used with 0 or 1 args)
 
 === Logic and ChecksQ ===
-FROM: hyrule          | xor
+FROM: operator        | and_                     ; 'and' as function
+FROM: operator        | or_                      ; 'or' as function
+FROM: operator        | not_                     ; 'not' as function
+FROM: operator        | is_                      ; 'is' as function
+FROM: operator        | xor
 FROM: operator        | eq                       ; equal
 FROM: operator        | neq (<-ne)               ; non-equal
+FROM: operator        | gt                       ; greater than
+FROM: operator        | lt                       ; less than
+FROM: operator        | geq (<-ge)               ; greater or equal
+FROM: operator        | leq (<-le)               ; less or equal
+DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
+DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
+DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
 FROM: funcy           | evenQ (<-even)
 FROM: funcy           | oddQ (<-odd)
 FROM: funcy           | noneQ (<-isnone)
@@ -247,10 +279,13 @@ DEFN: fptk            | oflenQ                   :: (oflenQ xs n) -> (= (len xs)
 DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
 DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
 DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
+DEFN: fptk            | strQ                     :: strQ(x)  ; checks literally if type(x) == str, will also work with StrictStr from pydantic
 DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
-FROM: funcy           | listQ (<-is_list)        :: listQ(seq)  ; checks if seq is list
-FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(seq)  ; checks if seq is tuple
-DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
+FROM: funcy           | listQ (<-is_list)        :: listQ(value)  ; checks if value is list
+FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(value)  ; checks if value is tuple
+FROM: funcy           | setQ (<-is_set)          :: setQ(value)  ; checks if value is set
+FROM: funcy           | iteratorQ (<-is_iter)    :: iteratorQ(value)  ; checks if value is iterator
+FROM: funcy           | iterableQ (<-iterable)   :: iterableQ(value)  ; checks if value is iterable
 
 === Strings ===
 DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
