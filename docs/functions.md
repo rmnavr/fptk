@@ -142,6 +142,7 @@ FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -
 FROM: funcy           | lreductions              :: lreductions(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
 FROM: funcy           | sums                     :: sums(seq [, acc]) -> generator  ; reductions with addition function
 FROM: funcy           | lsums                    :: lsums(seq [, acc]) -> List
+FROM: math            | product (<-prod)         :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
 INFO: py              | zip /base/               :: zip(*iterables) -> zip object
 DEFN: fptk            | lzip                     :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
 
@@ -181,8 +182,8 @@ FROM: itertools       | cycle                    :: cycle(p)  ; cycle('AB') -> A
 DEFN: fptk            | lcycle                   :: lcycle(p, n) -> list  ; takes first n elems from cycle(p)
 FROM: itertools       | repeat                   :: repeat(elem [, n])  ; repeat(10,3) -> 10 10 10
 DEFN: fptk            | lrepeat                  :: lrepeat(elem, n) -> list  ; unlike in repeat, n has to be provided
-FROM: itertools       | chain                    :: chain(*seqs) -> iterator
-DEFN: fptk            | lchain                   :: lchain(*seqs) -> list  ; list(chain(*seqs))
+FROM: itertools       | concat (<-chain)         :: concat(*seqs) -> iterator
+DEFN: fptk            | lconcat                  :: lconcat(*seqs) -> list  ; list(concat(*seqs))
 FROM: funcy           | cat                      :: cat(seqs)  ; non-variadic version of chain
 FROM: funcy           | lcat                     :: lcat(seqs)  ; non-variadic version of chain
 FROM: funcy           | mapcat                   :: mapcat(f, *seqs)  ; maps, then concatenates
@@ -220,7 +221,6 @@ FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ �
 FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
 DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; returns same vector xs if it's norm=0
 FROM: operator        | div (<-truediv)          :: div(a, b)
-FROM: math            | product (<-prod)         :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
 FROM: math            | exp                      :: exp(x)
 FROM: math            | log                      ; log(x, base=math.e)
 DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
@@ -247,7 +247,6 @@ DEFN: fptk            | smul                     :: smul(*args) = arg1 * arg2 * 
 DEFN: fptk            | mul                      :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | plus                     :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | lconcat                  :: lconcat(*args)  ; list concantenation as a monoid (will not give error when used with 0 or 1 args)
 
 === Logic and ChecksQ ===
 FROM: operator        | and_                     ; 'and' as function
@@ -264,6 +263,8 @@ FROM: operator        | leq (<-le)               ; less or equal
 DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
 DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
+DEFN: fptk            | all_fs                   :: all_fs(fs, *args, **kwargs)  ; checks if all f(*args, **kwargs) are True
+DEFN: fptk            | any_fs                   :: any_fs(fs, *args, **kwargs)  ; checks if any of f(*args, **kwargs) is True
 FROM: funcy           | evenQ (<-even)
 FROM: funcy           | oddQ (<-odd)
 FROM: funcy           | noneQ (<-isnone)

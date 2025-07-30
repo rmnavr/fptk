@@ -244,11 +244,12 @@
         "literally just list(starmap(f, *seqs))"
         (list (starmap f #* seqs)))
 
-    (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
-    (import funcy [reductions])   #_ " reductions(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
-    (import funcy [lreductions])  #_ "lreductions(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
-    (import funcy [sums])   #_ " sums(seq [, acc]) -> generator | reductions with addition function"
-    (import funcy [lsums])  #_ "lsums(seq [, acc]) -> List |"
+    (import functools [reduce])             #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
+    (import funcy     [reductions])         #_ " reductions(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy     [lreductions])        #_ "lreductions(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy     [sums])               #_ " sums(seq [, acc]) -> generator | reductions with addition function"
+    (import funcy     [lsums])              #_ "lsums(seq [, acc]) -> List |"
+    (import math      [prod :as product])   #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
     ;;
 
     (comment "py | base | zip | zip(*iterables) -> zip object |")
@@ -375,10 +376,10 @@
 
     ;; ========================================
 
-    (import itertools [chain])      #_ "chain(*seqs) -> iterator |"
+    (import itertools [chain :as concat])    #_ "concat(*seqs) -> iterator |"
 
-    #_ "lchain(*seqs) -> list | list(chain(*seqs))"
-    (defn lchain [#* seqs] "literally just list(chain(*seqs))" (list (chain #* seqs)))
+    #_ "lconcat(*seqs) -> list | list(concat(*seqs))"
+    (defn lconcat [#* seqs] "literally just list(concat(*seqs))" (list (concat #* seqs)))
 
     (import funcy     [cat])        #_ "cat(seqs) | non-variadic version of chain"
     (import funcy     [lcat])       #_ "lcat(seqs) | non-variadic version of chain"
@@ -540,7 +541,6 @@
         (if (!= norm 0) (return (lmap (pflip div norm) xs)) (return xs)))
 
     (import operator [truediv :as div]) #_ "div(a, b) |"
-    (import math     [prod :as product]) #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
     (import math     [exp]) #_ "exp(x) |"
 
     (import math     [log]) #_ "log(x, base=math.e)" ;;
@@ -617,11 +617,7 @@
               can be used with 0 or 1 args"
             (reduce (fn [%s1 %s2] (+ %s1 %s2)) args ""))
 
-        #_ "lconcat(*args) | list concantenation as a monoid (will not give error when used with 0 or 1 args)"
-        (defn lconcat [#* args]
-            " lists concantenation as a monoid with identity = [],
-              can be used with 0 or 1 args"
-            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args []))
+        ;; lconcat (list on itertools.chain) is a monoid on lists too
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -655,6 +651,16 @@
     (defn on [f check x y]
         "inspired by Haskell's 'on' function, essentially is check(f(x), f(y)) "
         (check (f x) (f y)))
+
+    #_ "all_fs(fs, *args, **kwargs) | checks if all f(*args, **kwargs) are True"
+    (defn all_fs [fs #* args #** kwargs]
+        "checks if all f(*args, **kwargs) are True"
+        (and #* (lfor &f fs (&f #* args #** kwargs))))
+
+    #_ "any_fs(fs, *args, **kwargs) | checks if any of f(*args, **kwargs) is True"
+    (defn any_fs [fs #* args #** kwargs]
+        "checks if any of f(*args, **kwargs) is True"
+        (or #* (lfor &f fs (&f #* args #** kwargs))))
 
     ;; back to primitive funcs:
 
@@ -914,6 +920,7 @@
                 (print f"[dT = {dT :.6f} s]" #* args))))
 
 ; ________________________________________________________________________/ }}}2
+
 
 
 ; _____________________________________________________________________________/ }}}1

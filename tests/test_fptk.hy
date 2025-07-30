@@ -247,6 +247,32 @@
 ; ________________________________________________________________________/ }}}2
 
 ; _____________________________________________________________________________/ }}}1
+; Iterators related ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (assertm = (lcycle [1 2] 5) [1 2 1 2 1])
+    (assertm = (lcycle [] 5) [])
+
+    (assertm = (lrepeat "pups" 2) ["pups" "pups"])
+    (assertm = (lrepeat "" 2) ["" ""])
+    (assertm = (lrepeat [] 2) [[] []])
+
+    (assertm = (mask2idxs [1 0 1 0 0]) [0 2])
+    (assertm = (mask2idxs []) [])
+    (assertm = (mask2idxs [0 0]) [])
+    (assertm = (mask2idxs [True False True 0 1]) [0 2 4])
+
+    (assertm = (idxs2mask [0 3]) [1 0 0 1])
+    (assertm = (idxs2mask []) [])
+    (assertm = (idxs2mask [1] :bools True) [False True])
+    (assertm = (idxs2mask [] :bools True) [])
+
+    (assertm = (lmask_sel ["pups" "riba" "gus" "kroks"] [0 1 0 1 0 0 1 0]) ["riba" "kroks"])
+    (assertm = (lmask_sel ["pups" "riba" "gus" "kroks"] (idxs2mask [0 3])) ["pups" "kroks"])
+
+    (assertm = (lconcat [1 2 3] ["bubr"]) [1 2 3 "bubr"])
+    (assertm = (lconcat [] []) [])
+
+; _____________________________________________________________________________/ }}}1
 ; Math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (assertm = (normalize [3 0 0]) [1 0 0])
@@ -298,6 +324,9 @@
     (assertm = (on len eq "123" ["a" 2 "c"]) True)
     (assertm = (on len eq "" []) True)
     (assertm = (on len eq "" "a") False)
+
+    (assertm = (any_fs [evenQ trueQ] True) True)
+    (assertm = (all_fs [evenQ trueQ] True) False)
 
     (assertm = (fnot eq 1 2) True)
     (assertm = (fnot eq 1 1) False)
