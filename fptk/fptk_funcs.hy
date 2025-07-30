@@ -44,6 +44,45 @@
     (import typing      [Literal])
     (import typing      [Type])
 
+    ;; type checks:
+
+    (import funcy [isnone  :as noneQ])
+    (import funcy [notnone :as notnoneQ]) ;;
+
+    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
+    (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
+
+    #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
+    (defn intQ [x]
+        "checks literally if type(x) == int"
+        (= (type x) int))    
+
+    #_ "floatQ(x) | checks literally if type(x) == float, will also work with StrictFloat from pydantic"
+    (defn floatQ [x]
+        "checks literally if type(x) == float"
+        (= (type x) float))
+
+    #_ "numberQ(x) | checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic"
+    (defn numberQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
+
+    #_ "strQ(x) | checks literally if type(x) == str, will also work with StrictStr from pydantic"
+    (defn strQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
+
+    #_ "dictQ(x) | checks literally if type(x) == dict"
+    (defn dictQ [x]
+        "checks literally if type(x) == dict"
+        (= (type x) dict))
+
+    (import funcy [is_list  :as listQ ])    #_ "listQ(value)     | checks if value is list"
+    (import funcy [is_tuple :as tupleQ])    #_ "tupleQ(value)    | checks if value is tuple"
+    (import funcy [is_set   :as setQ])      #_ "setQ(value)      | checks if value is set"
+    (import funcy [is_iter  :as iteratorQ]) #_ "iteratorQ(value) | checks if value is iterator"
+    (import funcy [iterable :as iterableQ]) #_ "iterableQ(value) | checks if value is iterable"
+
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Strict Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -231,12 +270,12 @@
 
     (comment "py | base | map | map(func, *iterables) -> map object |")
     (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
-    (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
+    (import itertools [starmap])    #_ "starmap(function, iterable)" ;;
 
-    #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
-    (defn lstarmap [f #* seqs]
-        "literally just list(starmap(f, *seqs))"
-        (list (starmap f #* seqs)))
+    #_ "lstarmap(function, iterable) -> list | literally just list(starmap(function, iterable))"
+    (defn lstarmap [function iterable]
+        "literally just list(starmap(function, iterable))"
+        (list (starmap function iterable)))
 
     (import functools [reduce])             #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
     (import funcy     [reductions])         #_ " reductions(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
@@ -283,7 +322,7 @@
 
     (import itertools [compress :as mask_sel]) #_ "mask_sel(data, selectors) -> iterator | selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'"
 
-    #_ "lmask_sel(data, selectors) -> list"
+    #_ "lmask_sel(data, selectors) -> list |"
     (defn lmask_sel [data selectors]
         "selects by mask: lmask_sel('abc', [1,0,1]) -> ['a', 'c']"
         (list (mask_sel data selectors)))
@@ -375,8 +414,8 @@
     #_ "lconcat(*seqs) -> list | list(concat(*seqs))"
     (defn lconcat [#* seqs] "literally just list(concat(*seqs))" (list (concat #* seqs)))
 
-    (import funcy     [cat])        #_ "cat(seqs) | non-variadic version of chain"
-    (import funcy     [lcat])       #_ "lcat(seqs) | non-variadic version of chain"
+    (import funcy     [cat])        #_ "cat(seqs)  | non-variadic version of concat"
+    (import funcy     [lcat])       #_ "lcat(seqs) | non-variadic version of concat"
 
     (import funcy     [mapcat])     #_ "mapcat(f, *seqs)  | maps, then concatenates"
     (import funcy     [lmapcat])    #_ "lmapcat(f, *seqs) | maps, then concatenates"
@@ -505,7 +544,6 @@
     (import hyrule    [dec])
     (import hyrule    [sign])
     (import operator  [neg])
-    (import operator  [matmul])      #_ "'@' as function"
     ;;
 
     #_ "(half x) = (/ x 2)"
@@ -534,7 +572,6 @@
         (setv norm (hypot #* xs))
         (if (!= norm 0) (return (lmap (pflip div norm) xs)) (return xs)))
 
-    (import operator [truediv :as div]) #_ "div(a, b) |"
     (import math     [exp]) #_ "exp(x) |"
 
     (import math     [log]) #_ "log(x, base=math.e)" ;;
@@ -543,6 +580,21 @@
     (defn ln [x] (log x))
 
     (import math [log10])  #_ "log10(x) |"
+
+    ;; checks:
+
+    (import funcy [even :as evenQ])
+    (import funcy [odd  :as oddQ])   
+
+    #_ "| checks directly via (= x 0)"
+    (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
+
+    #_ "| checks directly via (< x 0)"
+    (defn negativeQ [x] "checks literally if x < 0" (< x 0))
+
+    #_ "| checks directly via (> x 0)"
+    (defn positiveQ [x] "checks literally if x > 0" (> x 0))
+
 
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Trigonometry ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -561,9 +613,26 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+    (import operator [and_])                #_ "'and' as function"
+    (import operator [or_])                 #_ "'or' as function"
+    (import operator [not_])                #_ "'not' as function"
+    (import operator [is_])                 #_ "'is' as function"
+    (import operator [xor])                 
+
+    (import operator [eq])                  #_ "equal"
+    (import operator [ne :as neq])          #_ "non-equal"
+    (import operator [gt])                  #_ "greater than"
+    (import operator [lt])                  #_ "less than"
+    (import operator [ge :as geq])          #_ "greater or equal"
+    (import operator [le :as leq])          #_ "less or equal"
+
+    (import operator [matmul])              #_ "'@' as function"
+    (import operator [truediv :as div])     #_ "div(a, b) |"
+
     #_ "minus(x, y) = x - y |"
     (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
+    ;; =========================================================================
     ;; dunders
     ;; - python behaves like so:
     ;; - (*) = 1, (* 3) = 3 
@@ -614,32 +683,19 @@
         ;; lconcat (list on itertools.chain) is a monoid on lists too
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (import operator [and_])        #_ "'and' as function"
-    (import operator [or_])         #_ "'or' as function"
-    (import operator [not_])        #_ "'not' as function"
-    (import operator [is_])         #_ "'is' as function"
-    (import operator [xor])         
-
-    (import operator [eq])          #_ "equal"
-    (import operator [ne :as neq])  #_ "non-equal"
-    (import operator [gt])          #_ "greater than"
-    (import operator [lt])          #_ "less than"
-    (import operator [ge :as geq])  #_ "greater or equal"
-    (import operator [le :as leq])  #_ "less or equal"
+; [GROUP] General checksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ;; my convenience funcs:
-
-    #_ "(eq_any x values) | (and (eq x value1) (eq x value2) ...)"
-    (defn eq_any [x values]
-        "essentially just or(eq(x, value1), eq(x, value2), ...)"
-        (or #* (lmap (fn [it] (= x it)) values)))
 
     #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
     (defn fnot [f #* args #** kwargs]
         "literally just not(f(*args, **kwrgs))"
         (not (f #* args #** kwargs)))
+
+    #_ "(eq_any x values) | (and (eq x value1) (eq x value2) ...)"
+    (defn eq_any [x values]
+        "essentially just or(eq(x, value1), eq(x, value2), ...)"
+        (or #* (lmap (fn [it] (= x it)) values)))
 
     #_ "(on f check x y) | (on len eq xs ys) -> (eq (len xs) (len yx))"
     (defn on [f check x y]
@@ -656,70 +712,17 @@
         "checks if any of f(*args, **kwargs) is True"
         (or #* (lfor &f fs (&f #* args #** kwargs))))
 
-    ;; back to primitive funcs:
-
-    (import funcy [even :as evenQ])
-    (import funcy [odd  :as oddQ])   
-
-    (import funcy [isnone  :as noneQ])
-    (import funcy [notnone :as notnoneQ]) ;;
-
     #_ "| checks directly via (= x True)"
     (defn trueQ     [x] "checks literally if x == True" (= x True))
 
     #_ "| checks directly via (= x False)"
     (defn falseQ    [x] "checks literally if x == False" (= x True))
 
-    #_ "| checks directly via (= x 0)"
-    (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
-
-    #_ "| checks directly via (< x 0)"
-    (defn negativeQ [x] "checks literally if x < 0" (< x 0))
-
-    #_ "| checks directly via (> x 0)"
-    (defn positiveQ [x] "checks literally if x > 0" (> x 0))
-
-    #_ "| checks literally if (= (len xs) 0)"
-    (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
-
-    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
-    (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
-
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
     (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
 
-    ;; predefined types checks:
-
-    #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
-    (defn intQ [x]
-        "checks literally if type(x) == int"
-        (= (type x) int))    
-
-    #_ "floatQ(x) | checks literally if type(x) == float, will also work with StrictFloat from pydantic"
-    (defn floatQ [x]
-        "checks literally if type(x) == float"
-        (= (type x) float))
-
-    #_ "numberQ(x) | checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic"
-    (defn numberQ [x]
-        "checks literally if type(x) == int or type(x) == float"
-        (= (type x) float))
-
-    #_ "strQ(x) | checks literally if type(x) == str, will also work with StrictStr from pydantic"
-    (defn strQ [x]
-        "checks literally if type(x) == int or type(x) == float"
-        (= (type x) float))
-
-    #_ "dictQ(x) | checks literally if type(x) == dict"
-    (defn dictQ [x]
-        "checks literally if type(x) == dict"
-        (= (type x) dict))
-
-    (import funcy [is_list  :as listQ ])    #_ "listQ(value)     | checks if value is list"
-    (import funcy [is_tuple :as tupleQ])    #_ "tupleQ(value)    | checks if value is tuple"
-    (import funcy [is_set   :as setQ])      #_ "setQ(value)      | checks if value is set"
-    (import funcy [is_iter  :as iteratorQ]) #_ "iteratorQ(value) | checks if value is iterator"
-    (import funcy [iterable :as iterableQ]) #_ "iterableQ(value) | checks if value is iterable"
+    #_ "| checks literally if (= (len xs) 0)"
+    (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
 ; _____________________________________________________________________________/ }}}1
 

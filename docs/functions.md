@@ -66,6 +66,19 @@ FROM: typing          | Optional
 FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
+FROM: funcy           | noneQ (<-isnone)
+FROM: funcy           | notnoneQ (<-notnone)
+DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
+DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
+DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
+DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
+DEFN: fptk            | strQ                     :: strQ(x)  ; checks literally if type(x) == str, will also work with StrictStr from pydantic
+DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
+FROM: funcy           | listQ (<-is_list)        :: listQ(value)  ; checks if value is list
+FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(value)  ; checks if value is tuple
+FROM: funcy           | setQ (<-is_set)          :: setQ(value)  ; checks if value is set
+FROM: funcy           | iteratorQ (<-is_iter)    :: iteratorQ(value)  ; checks if value is iterator
+FROM: funcy           | iterableQ (<-iterable)   :: iterableQ(value)  ; checks if value is iterable
 
 === Strict Typing ===
 FROM: pydantic        | BaseModel
@@ -135,8 +148,8 @@ DEFN: fptk            | pflip                    :: pflip(f, a)  ; partial appli
 === FP: threading ===
 INFO: py              | map /base/               :: map(func, *iterables) -> map object
 FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List
-FROM: itertools       | starmap                  ; starmap from itertools; usage: starmap(f, seq)
-DEFN: fptk            | lstarmap                 :: lstarmap(f, *seqs) -> List  ; literally just list(starmap(f, *seqs))
+FROM: itertools       | starmap                  ; starmap(function, iterable)
+DEFN: fptk            | lstarmap                 :: lstarmap(function, iterable) -> list  ; literally just list(starmap(function, iterable))
 FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
 FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
 FROM: funcy           | lreductions              :: lreductions(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
@@ -156,7 +169,7 @@ DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwarg
 INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
 FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
 FROM: itertools       | mask_sel (<-compress)    :: mask_sel(data, selectors) -> iterator  ; selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'
-DEFN: fptk            | lmask_sel                ; lmask_sel(data, selectors) -> list
+DEFN: fptk            | lmask_sel                :: lmask_sel(data, selectors) -> list
 DEFN: fptk            | mask2idxs                :: mask2idxs(mask) -> list  ; mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]
 DEFN: fptk            | idxs2mask                :: idxs2mask(idxs) -> list  ; idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]
 DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
@@ -184,8 +197,8 @@ FROM: itertools       | repeat                   :: repeat(elem [, n])  ; repeat
 DEFN: fptk            | lrepeat                  :: lrepeat(elem, n) -> list  ; unlike in repeat, n has to be provided
 FROM: itertools       | concat (<-chain)         :: concat(*seqs) -> iterator
 DEFN: fptk            | lconcat                  :: lconcat(*seqs) -> list  ; list(concat(*seqs))
-FROM: funcy           | cat                      :: cat(seqs)  ; non-variadic version of chain
-FROM: funcy           | lcat                     :: lcat(seqs)  ; non-variadic version of chain
+FROM: funcy           | cat                      :: cat(seqs)  ; non-variadic version of concat
+FROM: funcy           | lcat                     :: lcat(seqs)  ; non-variadic version of concat
 FROM: funcy           | mapcat                   :: mapcat(f, *seqs)  ; maps, then concatenates
 FROM: funcy           | lmapcat                  :: lmapcat(f, *seqs)  ; maps, then concatenates
 FROM: funcy           | pairwise                 :: pairwise(seq) -> iterator  ; supposed to be used in loops, will produce no elems for seq with len <= 1
@@ -211,7 +224,6 @@ FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
 FROM: operator        | neg
-FROM: operator        | matmul                   ; '@' as function
 DEFN: fptk            | half                     ; (half x) = (/ x 2)
 DEFN: fptk            | double                   ; (double x) = (* x 2)
 DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
@@ -220,11 +232,15 @@ FROM: math            | sqrt
 FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
 FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
 DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; returns same vector xs if it's norm=0
-FROM: operator        | div (<-truediv)          :: div(a, b)
 FROM: math            | exp                      :: exp(x)
 FROM: math            | log                      ; log(x, base=math.e)
 DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
 FROM: math            | log10                    :: log10(x)
+FROM: funcy           | evenQ (<-even)
+FROM: funcy           | oddQ (<-odd)             ; checks directly via (= x 0)
+DEFN: fptk            | zeroQ
+DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
+DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
 
 === Trigonometry ===
 FROM: math            | pi                       ; literally just float pi=3.14...
@@ -239,16 +255,6 @@ FROM: math            | atan                     :: asin(x)  ; x is in radians, 
 FROM: math            | atan2                    :: atan2(y, x)  ; both signs are considered
 
 === Base operators to functions ===
-DEFN: fptk            | minus                    :: minus(x, y) = x - y
-DEFN: fptk            | dmul                     :: dmul(*args) = arg1 + arg2 + ...  ; 'dunder mul', '*' operator as a function
-DEFN: fptk            | dadd                     :: dadd(*args) = arg1 + arg2 + ...  ; 'dunder add', '+' operator as a function
-DEFN: fptk            | lmul                     :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
-DEFN: fptk            | smul                     :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
-DEFN: fptk            | mul                      :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | plus                     :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
-DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
-
-=== Logic and ChecksQ ===
 FROM: operator        | and_                     ; 'and' as function
 FROM: operator        | or_                      ; 'or' as function
 FROM: operator        | not_                     ; 'not' as function
@@ -260,33 +266,27 @@ FROM: operator        | gt                       ; greater than
 FROM: operator        | lt                       ; less than
 FROM: operator        | geq (<-ge)               ; greater or equal
 FROM: operator        | leq (<-le)               ; less or equal
-DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
+FROM: operator        | matmul                   ; '@' as function
+FROM: operator        | div (<-truediv)          :: div(a, b)
+DEFN: fptk            | minus                    :: minus(x, y) = x - y
+DEFN: fptk            | dmul                     :: dmul(*args) = arg1 + arg2 + ...  ; 'dunder mul', '*' operator as a function
+DEFN: fptk            | dadd                     :: dadd(*args) = arg1 + arg2 + ...  ; 'dunder add', '+' operator as a function
+DEFN: fptk            | lmul                     :: lmul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for list
+DEFN: fptk            | smul                     :: smul(*args) = arg1 * arg2 * ...  ; rename of * operator, underlines usage for string
+DEFN: fptk            | mul                      :: mul(*args)  ; multiplication as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | plus                     :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
+DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
+
+=== General checksQ ===
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
+DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
 DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
 DEFN: fptk            | all_fs                   :: all_fs(fs, *args, **kwargs)  ; checks if all f(*args, **kwargs) are True
 DEFN: fptk            | any_fs                   :: any_fs(fs, *args, **kwargs)  ; checks if any of f(*args, **kwargs) is True
-FROM: funcy           | evenQ (<-even)
-FROM: funcy           | oddQ (<-odd)
-FROM: funcy           | noneQ (<-isnone)
-FROM: funcy           | notnoneQ (<-notnone)
 DEFN: fptk            | trueQ                    ; checks directly via (= x True)
 DEFN: fptk            | falseQ                   ; checks directly via (= x False)
-DEFN: fptk            | zeroQ                    ; checks directly via (= x 0)
-DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
-DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
-DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
-DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
 DEFN: fptk            | oflenQ                   :: (oflenQ xs n) -> (= (len xs) n)
-DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
-DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
-DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
-DEFN: fptk            | strQ                     :: strQ(x)  ; checks literally if type(x) == str, will also work with StrictStr from pydantic
-DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
-FROM: funcy           | listQ (<-is_list)        :: listQ(value)  ; checks if value is list
-FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(value)  ; checks if value is tuple
-FROM: funcy           | setQ (<-is_set)          :: setQ(value)  ; checks if value is set
-FROM: funcy           | iteratorQ (<-is_iter)    :: iteratorQ(value)  ; checks if value is iterator
-FROM: funcy           | iterableQ (<-iterable)   :: iterableQ(value)  ; checks if value is iterable
+DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
 
 === Strings ===
 DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
