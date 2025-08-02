@@ -66,6 +66,7 @@ FROM: typing          | Optional
 FROM: typing          | Callable
 FROM: typing          | Literal
 FROM: typing          | Type
+FROM: typing          | TypeVar
 FROM: funcy           | noneQ (<-isnone)
 FROM: funcy           | notnoneQ (<-notnone)
 DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
@@ -177,8 +178,6 @@ FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator
 FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
 DEFN: fptk            | without                  :: without(items, seq) -> generator  ; returns seq without each item in items
 DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list(without(...))
-FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
-FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
 FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
 FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
 FROM: funcy           | filter_split (<-split)   :: filter_split(pred, seq) -> passed, rejected

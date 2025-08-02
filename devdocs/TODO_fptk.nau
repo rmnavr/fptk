@@ -80,12 +80,20 @@
 	Polishing:
 	- check every function: iterator/sequence, truly lazy
 	- hy-only — in hy syntax
+	- split to many files?
 
 	·······························
 
 	New funcs:
+		- dataclass: replace (upd one field)
 		- enlengthen_list
 		- append, prepend, insert
+		- upd one item in dataclass
+		- lrange, lrest
+		- funcy.tap, ltap (listprint)
+		- [1 2 3] [a b c] -> [1 2 3 a] [b c]
+		- is_distinct
+		- dedup
 
 	Learn and add:
 		• is_distinct, dedup
@@ -95,6 +103,8 @@
 		• add/substract lists/dictionaries
 
 	Update existing funcs/macros:
+		• rest returns iterator, drop returns list, wtf
+		• lbisect_by: option to include/exclude first found; negation in f in unclear
 		• strig/lstrip/rstrip should also pass kwargs and such
 		• dt_print:
 			- return result

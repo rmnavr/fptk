@@ -43,6 +43,7 @@
     (import typing      [Callable])
     (import typing      [Literal])
     (import typing      [Type])
+    (import typing      [TypeVar])
 
     ;; type checks:
 
@@ -367,8 +368,6 @@
         "returns seq with each item in items removed (does not mutate seq)"
         (funcy.lwithout seq #* items))
 
-    (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
-    (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
     (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
     (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
 
@@ -713,10 +712,10 @@
         (or #* (lfor &f fs (&f #* args #** kwargs))))
 
     #_ "| checks directly via (= x True)"
-    (defn trueQ     [x] "checks literally if x == True" (= x True))
+    (defn trueQ [x] "checks literally if x == True" (= x True))
 
     #_ "| checks directly via (= x False)"
-    (defn falseQ    [x] "checks literally if x == False" (= x True))
+    (defn falseQ [x] "checks literally if x == False" (= x False))
 
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
     (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
@@ -883,7 +882,7 @@
         ;;
         (setv line_01       f"/ ({msg})")
         (setv line_02_time1 f"\\ {time_1 :.3f} {unit_str}")
-        (setv line_02_n     (str_replace f"average of {n :,} runs" "," "'"))
+        (setv line_02_n     (re_sub "," "'" f"average of {n :,} runs"))
         (setv line_02_timeN f"test duration: {seconds :.3f} s")
         ;;
         (setv _prompt (sconcat line_01 "\n"
@@ -917,5 +916,4 @@
                 (print f"[dT = {dT :.6f} s]" #* args))))
 
 ; _____________________________________________________________________________/ }}}1
-
 

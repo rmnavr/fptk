@@ -57,18 +57,17 @@
 ; [F] relink R imports ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; fptk_macros.hy has calls like:
-    ; - hy.R.fptk_macros.lns
-    ; - hy.R.fptk_macros.fm
+    ; - hy.R.fptk.lns
+    ; - hy.R.fptk.fm
     ; 
-    ; For them to work correctly in _fptk_local,
-    ; [hy.R.fptk_macros] text should be removed
+    ; For them to work correctly in _fptk_local, it should be relinked to _fptk_local 
 
     (defn #^ str
         relink_R_imports
         [ #^ str text
         ]
-        (re_sub r"(hy\.R\.fptk_macros\.)(lns|fm)" 
-                (fm (%1.group 2))
+        (re_sub r"(hy\.R\.fptk\.)(lns|fm)" 
+                (fm (+ "hy.R._fptk_local." (%1.group 2)))
                 text))
 
 ; _____________________________________________________________________________/ }}}1
@@ -84,9 +83,10 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    (dt_print "[Step 1/4] Tests for functions:")
+    (print "\n" "=== FPTK PCKG HELPER =======================================" "\n")
 
-        (run_shell_command "cd ../tests && hy _util_to_copy_macros.hy")
+    (dt_print "[Step 1/4] Performing tests:")
+
         (run_shell_command "cd ../tests && hy test_fptk.hy")
         ; && chains cmd commands (2nd is run only if 1st was successful)
 
@@ -113,3 +113,4 @@
 
         (print (sconcat "Version in setup.py: " version_in_setup_py "")) 
 
+    (print "\n" "=== ALL DONE ===============================================" "\n")

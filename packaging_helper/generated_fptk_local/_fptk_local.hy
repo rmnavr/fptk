@@ -1,7 +1,7 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.4dev9
+; This file was generated from local git version: 0.2.4dev10
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -49,6 +49,7 @@
     (import typing      [Callable])
     (import typing      [Literal])
     (import typing      [Type])
+    (import typing      [TypeVar])
 
     ;; type checks:
 
@@ -373,8 +374,6 @@
         "returns seq with each item in items removed (does not mutate seq)"
         (funcy.lwithout seq #* items))
 
-    (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
-    (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
     (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
     (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
 
@@ -719,10 +718,10 @@
         (or #* (lfor &f fs (&f #* args #** kwargs))))
 
     #_ "| checks directly via (= x True)"
-    (defn trueQ     [x] "checks literally if x == True" (= x True))
+    (defn trueQ [x] "checks literally if x == True" (= x True))
 
     #_ "| checks directly via (= x False)"
-    (defn falseQ    [x] "checks literally if x == False" (= x True))
+    (defn falseQ [x] "checks literally if x == False" (= x False))
 
     #_ "(oflenQ xs n) -> (= (len xs) n) |"
     (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
@@ -889,7 +888,7 @@
         ;;
         (setv line_01       f"/ ({msg})")
         (setv line_02_time1 f"\\ {time_1 :.3f} {unit_str}")
-        (setv line_02_n     (str_replace f"average of {n :,} runs" "," "'"))
+        (setv line_02_n     (re_sub "," "'" f"average of {n :,} runs"))
         (setv line_02_timeN f"test duration: {seconds :.3f} s")
         ;;
         (setv _prompt (sconcat line_01 "\n"
@@ -925,7 +924,6 @@
 ; ________________________________________________________________________/ }}}2
 
 
-
 ; _____________________________________________________________________________/ }}}1
 ; macros ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -937,7 +935,8 @@
 
 ; ________________________________________________________________________/ }}}2
 
-; === Helpers ===
+
+; === Helpers (precompiled functions) ===
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; (- 1)
@@ -1083,6 +1082,17 @@
 ; ________________________________________________________________________/ }}}2
 
 ; === Macros ===
+
+    ; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
+    ; 
+    ; -> hy.R._fptk_local.fm               -> ✗ does not work in dev file
+    ;                                  ✓ works from outside projs (it is essentially call to installed lib)
+    ;                                  ✓ this is how it is done in hyrule (I think this is due to their hy_init.hy importing everything)
+    ;                                        
+    ;    fm                         -> [✓ ✗] works from dev file
+    ;    hy.R.fptk_macros.fm        -> [✓ ✗] works from dev file
+    ;    hy.R.fptk.fptk_macros.fm   -> [✗ ✗] does not work anywhere
+
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro f:: [#* macro_args]
@@ -1210,19 +1220,19 @@
 		(return `(fn [~@inputs] ~expr)))
 
 	(defmacro f> [lambda_def #* args]
-		(return `((fm ~lambda_def) ~@args)))
+		(return `((hy.R._fptk_local.fm ~lambda_def) ~@args)))
 
     (defmacro mapm [one_shot_fm #* args]
-		(return `(map (fm ~one_shot_fm) ~@args)))
+		(return `(map (hy.R._fptk_local.fm ~one_shot_fm) ~@args)))
 
     (defmacro lmapm [one_shot_fm #* args]
-		(return `(list (map (fm ~one_shot_fm) ~@args))))
+		(return `(list (map (hy.R._fptk_local.fm ~one_shot_fm) ~@args))))
 
     (defmacro filterm [one_shot_fm iterable]
-		(return `(filter (fm ~one_shot_fm) ~iterable)))
+		(return `(filter (hy.R._fptk_local.fm ~one_shot_fm) ~iterable)))
 
     (defmacro lfilterm [one_shot_fm iterable]
-		(return `(list (filter (fm ~one_shot_fm) ~iterable))))
+		(return `(list (filter (hy.R._fptk_local.fm ~one_shot_fm) ~iterable))))
 
 ; ________________________________________________________________________/ }}}2
 ; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -1269,7 +1279,7 @@
 	(defmacro &+ [#* macro_args]
 		(setv lenses_ (butlast macro_args))
 		(setv func	 (get macro_args (- 1)))
-	   `(& ~@lenses_ (lns ~func)))
+	   `(& ~@lenses_ (hy.R._fptk_local.lns ~func)))
 
 	; compose lens, add setters/getters, apply
 
@@ -1277,19 +1287,19 @@
 		(setv variable (get macro_args 0))
 		(setv lenses   (butlast (rest macro_args)))
 		(setv func	   (get macro_args (- 1)))
-	   `((& ~@lenses (lns ~func)) ~variable))
+	   `((& ~@lenses (hy.R._fptk_local.lns ~func)) ~variable))
 
 	; construct lens, apply:
 
 	(defmacro l> [#* macro_args]
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `((lns ~@lenses_args) ~variable))
+	   `((hy.R._fptk_local.lns ~@lenses_args) ~variable))
 
 	(defmacro l>= [#* macro_args]
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
-	   `(&= ~variable (lns ~@lenses_args)))
+	   `(&= ~variable (hy.R._fptk_local.lns ~@lenses_args)))
 
 ; ________________________________________________________________________/ }}}2
 ; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2

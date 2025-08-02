@@ -1,21 +1,9 @@
 
-    ; this file relies on "asertm" and "gives_error_typeQ" macros imported from tested "fptk_macros.hy" file for testing,
-    ; if those macros are updated themselves, be sure that all testing is still working
+    ; this file relies on "asertm" and "gives_error_typeQ" macros imported from tested "fptk_macros.hy" file for testing;
+    ; so if those macros were to be updated themselves, be sure test procedure itself is not broken
 
-; Imports (tricks to import fptk from sibling folder) ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; 1) Load fptk_funcs.hy from sibling folder
-    (import sys)
-    (setv _cur_path (get sys.path 0))
-    (setv _cur_folder_removed (get (_cur_path.rsplit "\\tests" 1) 0))
-    (setv _fptk_path (+ _cur_folder_removed "\\fptk"))
-    (sys.path.append (+ _cur_folder_removed "\\fptk"))
-    (import fptk_funcs *)
-
-    ; 2) Load fptk_macros.hy from coppied file:
-    (require fptk_macros *)
-
-; _____________________________________________________________________________/ }}}1
+    (import fptk *)
+    (require fptk *)
 
 ; functions
 ; 0-Getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
