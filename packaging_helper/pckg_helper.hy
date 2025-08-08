@@ -60,14 +60,14 @@
     ; - hy.R.fptk.lns
     ; - hy.R.fptk.fm
     ; 
-    ; For them to work correctly in _fptk_local, it should be relinked to _fptk_local 
+    ; For them to work correctly in _fptk_local, it should be relinked 
 
     (defn #^ str
         relink_R_imports
         [ #^ str text
         ]
         (re_sub r"(hy\.R\.fptk\.)(lns|fm)" 
-                (fm (+ "hy.R._fptk_local." (%1.group 2)))
+                (fm (%1.group 2))
                 text))
 
 ; _____________________________________________________________________________/ }}}1
@@ -102,6 +102,9 @@
 
         (write_file (sconcat "\n" "; This is local version of github.com/rmnavr/fptk lib.\n"
                              "; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.\n"
+                             "; Due to how hy macros imports work, when you import macros that depend from\n"
+                             "; lns and fm (which are l>, f> and others) you need to also import lns and fm.\n"
+                             "; fptk lib itself doesn't have this issue.\n\n"
                              "; This file was generated from local git version: " version_in_setup_py 
                              "\n\n" fptk_funcs_code "\n" fptk_macros_code "\n\n")
                     "generated_fptk_local/_fptk_local.hy")
