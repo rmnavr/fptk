@@ -311,6 +311,8 @@ FROM: random          | rand01 (<-random)        :: rand01() -> float  ; generat
 
 === IO ===
 FROM: os.path         | file_existsQ (<-exists)  :: file_existsQ(filename)  ; also works on folders
+FROM: os.path         | fileQ (<-isfile)         ; fileQ(filename)
+FROM: os.path         | dirQ (<-isdir)           ; dirQ(filename)
 DEFN: fptk            | read_file                :: read_file(file_name, encoding='utf-8') -> str  ; returns whole file content
 DEFN: fptk            | write_file               :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
 

@@ -2,6 +2,7 @@
     ; this file relies on "asertm" and "gives_error_typeQ" macros imported from tested "fptk_macros.hy" file for testing;
     ; so if those macros were to be updated themselves, be sure test procedure itself is not broken
 
+    ; for test to perform, fptk need to be "pip install -e ." on system
     (import fptk *)
     (require fptk *)
 
@@ -489,4 +490,5 @@
 ; _____________________________________________________________________________/ }}}1
 
 ; ===========================================================
+
     (print "== TESTING COMPLETED (if there are no errors above, all is good) ==")

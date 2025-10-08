@@ -821,6 +821,8 @@
 ; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
+    (import os.path [isfile :as fileQ])        #_ "fileQ(filename)"
+    (import os.path [isdir  :as dirQ])         #_ "dirQ(filename)"
 
     #_ "read_file(file_name, encoding='utf-8') -> str | returns whole file content"
     (defn read_file

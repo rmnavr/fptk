@@ -1,5 +1,6 @@
 *.swp
 __pycache__/
+build/
 *.~$lock
 *swp.tmp
-*.egg-info
+*.egg-info/

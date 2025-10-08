@@ -5,7 +5,7 @@
 ; lns and fm (which are l>, f> and others) you need to also import lns and fm.
 ; fptk lib itself doesn't have this issue.
 
-; This file was generated from local git version: 0.2.4dev10
+; This file was generated from local git version: 0.2.4.dev12
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -831,6 +831,8 @@
 ; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
+    (import os.path [isfile :as fileQ])        #_ "fileQ(filename)"
+    (import os.path [isdir  :as dirQ])         #_ "dirQ(filename)"
 
     #_ "read_file(file_name, encoding='utf-8') -> str | returns whole file content"
     (defn read_file

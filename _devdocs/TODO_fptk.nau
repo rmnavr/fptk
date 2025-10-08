@@ -84,6 +84,9 @@
 
 	·······························
 
+	fptk: nth -> ath
+	_fptk_local issue: imports in macros may redefine funcs defs in funcs lol
+
 	New funcs:
 		- dataclass: replace (upd one field)
 		- enlengthen_list
