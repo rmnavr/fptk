@@ -77,7 +77,7 @@ Tested with:
 # Project status
 
 As of July 2025, full documentation and testing is implemented.
-However, stable release is not yet reached (small API-breaking changes can happen)
+However, stable release is not yet reached (API-breaking changes can happen)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -86,7 +86,7 @@ However, stable release is not yet reached (small API-breaking changes can happe
 
 The easiest way to install fptk is via command:
 ```
-pip install git+https://github.com/rmnavr/fptk.git@0.2.3
+pip install git+https://github.com/rmnavr/fptk.git@main
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
