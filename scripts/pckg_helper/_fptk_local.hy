@@ -1,14 +1,19 @@
 
 ; This is local version of github.com/rmnavr/fptk lib.
 ; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
-; This file was generated from local git version: 0.2.4dev1
+;
+; Due to how hy macros imports work, when you import macros that depend from
+; lns and fm (which are l>, f> and others) you need to also import lns and fm.
+; fptk lib itself doesn't have this issue.
+
+; This file was generated from local git version: 0.2.4.dev12
 
 ; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 ; Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (require hyrule [comment])
-    ; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
+    ;; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
 
 ; ________________________________________________________________________/ }}}2
 
@@ -49,6 +54,49 @@
     (import typing      [Callable])
     (import typing      [Literal])
     (import typing      [Type])
+    (import typing      [TypeVar])
+
+    ;; type checks:
+
+    (import funcy [isnone  :as noneQ])
+    (import funcy [notnone :as notnoneQ]) ;;
+
+    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
+    (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
+
+    #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
+    (defn intQ [x]
+        "checks literally if type(x) == int"
+        (= (type x) int))    
+
+    #_ "floatQ(x) | checks literally if type(x) == float, will also work with StrictFloat from pydantic"
+    (defn floatQ [x]
+        "checks literally if type(x) == float"
+        (= (type x) float))
+
+    #_ "numberQ(x) | checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic"
+    (defn numberQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
+
+    #_ "strQ(x) | checks literally if type(x) == str, will also work with StrictStr from pydantic"
+    (defn strQ [x]
+        "checks literally if type(x) == int or type(x) == float"
+        (= (type x) float))
+
+    #_ "dictQ(x) | checks literally if type(x) == dict"
+    (defn dictQ [x]
+        "checks literally if type(x) == dict"
+        (= (type x) dict))
+
+    (import funcy [is_list  :as listQ ])    #_ "listQ(value)     | checks if value is list"
+    (import funcy [is_tuple :as tupleQ])    #_ "tupleQ(value)    | checks if value is tuple"
+    (import funcy [is_set   :as setQ])      #_ "setQ(value)      | checks if value is set"
+    (import funcy [is_iter  :as iteratorQ]) #_ "iteratorQ(value) | checks if value is iterator"
+    (import funcy [iterable :as iterableQ]) #_ "iterableQ(value) | checks if value is iterable"
+
+; ________________________________________________________________________/ }}}2
+; [GROUP] Strict Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import pydantic    [BaseModel])
     (import pydantic    [StrictInt])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
@@ -56,16 +104,12 @@
     (import pydantic    [StrictFloat])     #_ "will be still of float type, but will perform strict typecheck when variable is created" ;;
 
     #_ "Union of StrictInt and StrictFloat"
-    (setv Number (of Union #(StrictInt StrictFloat))) ;;
+    (setv StrictNumber (of Union #(StrictInt StrictFloat))) ;;
 
     (import pydantic    [validate_call])   #_ "decorator for type-checking func args" ;;
 
     #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))
-
-    (import returns.result  [Result])   #_ "Result monad"
-    (import returns.result  [Success])  #_ "One of Result monad constructor"
-    (import returns.result  [Failure])  #_ "One of Result monad constructor"
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Buffed getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -100,10 +144,10 @@
     ;; list getters:
 
         #_ "rest(seq) -> List | drops 1st elem of list"
-        (defn rest [seq] "drops 1st elem of list" (get seq (slice 1 None)))
+        (defn rest [seq] "drops 1st elem of list" (cut seq 1 None))
 
         #_ "butlast(seq) -> List | drops last elem of list"
-        (defn butlast [seq] "drops last elem of list" (get seq (slice None -1)))
+        (defn butlast [seq] "drops last elem of list" (cut seq None -1))
 
         #_ "drop(n, seq) -> List | drops n>=0 elems from start of the list; when n<0, drops from end of the list"
         (defn drop [n seq]
@@ -119,7 +163,8 @@
         (defn pick [ns seq]
             " pics elems ns from seq,
               throws error if some of ns doesn't exist,
-              ns can be list of dicts keys"
+              ns can be list of dicts keys
+            "
             (lfor &n ns (get seq &n)))
 
         (import  funcy  [pluck])        #_ " pluck(key, mappings) -> generator | gets same key from every mapping, mappings can be list of lists, list of dicts, etc."
@@ -137,7 +182,8 @@
         " same as hy get macro, but with 1-based index,
           can also work with dict keys,
           will throw error for n=0,
-          will throw error if elem not found (just like hy get macro)"
+          will throw error if elem not found (just like hy get macro)
+        "
         (setv _ns_plus1 
             (lfor &n ns
                 (do (when (= &n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
@@ -150,7 +196,8 @@
     (defn nth_ [n seq] 
         " same as nth, but with 1-based index,
           will throw error for n=0,
-          will return None if elem not found (just like nth)"
+          will return None if elem not found (just like nth)
+        "
         (when (dictQ seq) (return (nth n seq)))
         (when (=  n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
         (when (>= n 1) (return (nth (dec n) seq)))
@@ -165,7 +212,8 @@
         " similar to py slice, but:
           - has 1-based index
           - won't take None for start and end arguments
-          - won't take 0 for start and end"
+          - won't take 0 for start and end
+        "
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
               (=  start 0) (raise (IndexError "start=0 can't be used with 1-based getter"))
@@ -181,7 +229,8 @@
     #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
     (defn cut_ [seq start end [step None]]
         " same as hy cut macro, but with 1-based index,
-          - won't take None or 0 for start and end arguments"
+          - won't take None or 0 for start and end arguments
+        "
         (get seq (slice_ start end step)))
 
 ; ________________________________________________________________________/ }}}2
@@ -224,39 +273,34 @@
     (defn pflip
         [f a]
         " flips arguments and partially applies,
-          example: pflip(f, a)(b) = f(b, a)"
+          example: pflip(f, a)(b) = f(b, a)
+        "
         (fn [%x] (f %x a)))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] FP: threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (comment "py | base | map || usage: map(func, *iterables) -> map object")
+    (comment "py | base | map | map(func, *iterables) -> map object |")
     (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
-    (import itertools [starmap])    #_ "starmap from itertools; usage: starmap(f, seq)" ;;
+    (import itertools [starmap])    #_ "starmap(function, iterable)" ;;
 
-    #_ "lstarmap(f, *seqs) -> List | literally just list(starmap(f, *seqs))"
-    (defn lstarmap [f #* seqs]
-        "literally just list(starmap(f, *seqs))"
-        (list (starmap f #* seqs)))
+    #_ "lstarmap(function, iterable) -> list | literally just list(starmap(function, iterable))"
+    (defn lstarmap [function iterable]
+        "literally just list(starmap(function, iterable))"
+        (list (starmap function iterable)))
 
-    (import functools [reduce])  #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
-    (import funcy [reductions])   #_ " reduction(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
-    (import funcy [lreductions])  #_ "lreduction(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
-    (import funcy [sums])   #_ " sums(seq [, acc]) -> generator | reductions with addition function"
-    (import funcy [lsums])  #_ "lsums(seq [, acc]) -> List |"
+    (import functools [reduce])             #_ "reduce(function, sequence[, initial]) -> value | theory: reduce + monoid = binary-function for free becomes n-arg-function"
+    (import funcy     [reductions])         #_ " reductions(f, seq [, acc]) -> generator | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy     [lreductions])        #_ "lreductions(f, seq [, acc]) -> List | returns sequence of intermetidate values of reduce(f, seq, acc)"
+    (import funcy     [sums])               #_ " sums(seq [, acc]) -> generator | reductions with addition function"
+    (import funcy     [lsums])              #_ "lsums(seq [, acc]) -> List |"
+    (import math      [prod :as product])   #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
     ;;
 
     (comment "py | base | zip | zip(*iterables) -> zip object |")
     
     #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
     (defn lzip [#* iterables] (list (zip #* iterables)))
-
-    #_ "(on f check x y #* args) | (on len eq xs ys zs) -> checks if len of xs/ys/zs is the same, check has to be func of 2+ args"
-    (defn on [f check x y #* args]
-        " inpired by Haskell's 'on' function,
-          applies f to x, y, and other args (if provided),
-          then applies reduce to them with check"
-        (reduce check (lmap f [x y #* args])))
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -267,7 +311,8 @@
     #_ "nested(n, f) | f(f(f(...f))), returns function"
     (defn nested [n f]
         " f(f(f(...f))), where nesting is n times deep,
-          returns function"
+          returns function
+        "
         (compose #* (list_n n f)))
 
     #_ "apply_n(n, f, *args, **kwargs) | f(f(f(...f(*args, **kwargs))"
@@ -275,7 +320,8 @@
         " applies f to args and kwargs,
           than applies f to result of prev application,
           and this is repeated in total for n times,
-          n=1 is simply f(args, kwargs)"
+          n=1 is simply f(args, kwargs)
+        "
         ((compose #* (list_n n f)) #* args #** kwargs))
 
 ; ________________________________________________________________________/ }}}2
@@ -285,6 +331,34 @@
     (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
     (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | list(filter(...)) from funcy"
     ;;
+
+    (import itertools [compress :as mask_sel]) #_ "mask_sel(data, selectors) -> iterator | selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'"
+
+    #_ "lmask_sel(data, selectors) -> list |"
+    (defn lmask_sel [data selectors]
+        "selects by mask: lmask_sel('abc', [1,0,1]) -> ['a', 'c']"
+        (list (mask_sel data selectors)))
+
+    #_ "mask2idxs(mask) -> list | mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]"
+    (defn mask2idxs [mask]
+        "mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]"
+        (setv idxs [])
+        (for [[&i &elem] (enumerate mask)]
+             (if &elem (idxs.append &i) "no action"))
+        (return idxs))
+
+    #_ "idxs2mask(idxs) -> list | idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]"
+    (defn idxs2mask [idxs [bools False]]
+        " idxs is non-sorted list of positive integers like [0 3 2], which will be converted to [1 0 1 1] ;
+          setting bools=True will output [True False True True] instead"
+        (when (= (len idxs) 0) (return []))
+        ;;
+        (setv mask_len (+ 1 (max idxs)))
+        (setv mask (list (funcy.repeat 0 mask_len)))
+        (for [&idx idxs] (assoc mask &idx 1))
+        ;;
+        (when bools (setv mask (lmap (fn [it] (= True it)) mask)))
+        (return mask))
 
     #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
     (defn fltr1st [function iterable]
@@ -317,7 +391,8 @@
     (defn lbisect_at [n seq]
         " splits seq to start and tail lists (returns tuple of lists),
           when n>=0, len of start will be = n (or less, when len(seq) < n),
-          when n<0, len of tail will be = n (or less, when len(seq) < abs(n))"
+          when n<0, len of tail will be = n (or less, when len(seq) < abs(n))
+        "
         (if (>= n 0)
             (funcy.lsplit_at n seq)
             (funcy.lsplit_at (max 0 (+ (len seq) n)) seq)))
@@ -327,12 +402,53 @@
     ;;
 
 ; ________________________________________________________________________/ }}}2
+; [GROUP] APL: iterators and looping ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (import itertools [islice])              #_ "islice(iterable, stop), islice(iterable, start, stop[, step]) |" 
+
+    (import itertools [count :as inf_range]) #_ "inf_range(start [, step]) | inf_range(10) -> 10, 11, 12, ..."
+    (import itertools [cycle])               #_ "cycle(p) | cycle('AB') -> A B A B ..."
+
+    #_ "lcycle(p, n) -> list | takes first n elems from cycle(p)"
+    (defn lcycle [p n] "takes first n elems from cycle(p)" (list (islice (cycle p) n)))
+
+    (import itertools [repeat])              #_ "repeat(elem [, n]) | repeat(10,3) -> 10 10 10" 
+
+    #_ "lrepeat(elem, n) -> list | unlike in repeat, n has to be provided"
+    (defn lrepeat [elem n] "literally just list(repeat(elem, n))" (list (repeat elem n)))
+
+    ;; ========================================
+
+    (import itertools [chain :as concat])    #_ "concat(*seqs) -> iterator |"
+
+    #_ "lconcat(*seqs) -> list | list(concat(*seqs))"
+    (defn lconcat [#* seqs] "literally just list(concat(*seqs))" (list (concat #* seqs)))
+
+    (import funcy     [cat])        #_ "cat(seqs)  | non-variadic version of concat"
+    (import funcy     [lcat])       #_ "lcat(seqs) | non-variadic version of concat"
+
+    (import funcy     [mapcat])     #_ "mapcat(f, *seqs)  | maps, then concatenates"
+    (import funcy     [lmapcat])    #_ "lmapcat(f, *seqs) | maps, then concatenates"
+
+    (import funcy     [pairwise])   #_ "pairwise(seq) -> iterator | supposed to be used in loops, will produce no elems for seq with len <= 1"
+    (import funcy     [with_prev])  #_ "with_prev(seq, fill=None) -> iterator | supposed to be used in loops"
+    (import funcy     [with_next])  #_ "with_next(seq, fill=None) -> iterator | supposed to be used in loops"
+
+; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [flatten])   #_ "flattens to the bottom" ;;
 
-    #_ "lprint(seq) | literally just list(map(print,seq))"
-    (defn lprint [seq] "literally just list(map(print,seq))" (lmap print seq) (return None))
+    #_ "lprint(seq, sep=None) | literally just list(map(print,seq))"
+    (defn lprint [seq [sep None]]
+          " essentially list(map(print, seq))
+
+            with sep='---' (or some other) will print sep between seq elems
+          "
+          (if (= sep None)
+              (lmap print seq)
+              (lmap print (funcy.interpose sep seq)))
+          (return None))
 
     (comment "py | base | reversed | reversed(sequence) -> iterator |") 
 
@@ -367,6 +483,63 @@
 
     (import funcy [group_by] #_ "group_by(f, seq) -> defaultdict(list) | groups elems of seq keyed by the result of f")
 
+    #_ "lmulticut_by(pred, seq, keep_border=True, merge_border=False) -> list | cut at pred(elem)==True elems"
+    (defn #^ (of List list)
+        lmulticut_by 
+        [ pred
+          #^ list seq
+          [keep_border  True ]
+          [merge_border False]
+        ]
+        " cuts at elems which give pred(elem)=True
+          #
+          keep_border =True  will keep elements with pred(elem)=True
+          merge_border=True  will cut only at first of a sequence of pred(elem)=True elems 
+          #
+          in the example below oddQ is function that gives True for odd numbers,
+          that is cuts will happen at elems=1
+          #
+                                                 #  keep_b merge_b
+                                                 #  ------ -------
+          lmulticut_by(oddQ, [1, 0, 1, 1, 0, 0, 1], True , True ) # -> [[1, 0], [1, 1, 0, 0], [1]]
+          lmulticut_by(oddQ, [1, 0, 1, 1, 0, 0, 1], True , False) # -> [[1, 0], [1], [1, 0, 0], [1]]
+          lmulticut_by(oddQ, [1, 0, 1, 1, 0, 0, 1], False, True ) # -> [[0], [0, 0]]
+          lmulticut_by(oddQ, [1, 0, 1, 1, 0, 0, 1], False, False) # -> [[0], [], [0, 0], []]
+        "
+        (when (= (len seq) 0) (return []))
+        (setv _newLists [])
+        ;;
+        (for [&elem seq]
+            (if (pred &elem)
+                (_newLists.append [&elem])
+                (if (= (len _newLists) 0)
+                    (_newLists.append [&elem])
+                    (. (last _newLists) (append &elem)))))
+        ;;
+        (when (not keep_border)
+              (setv _newLists (lmap (fn [it] (if (pred (get it 0))
+                                                 (cut it 1 None)
+                                                 it))
+                                    _newLists)))
+        ;;
+        (when merge_border
+              (if keep_border
+                  (do (setv single_borders_pos [])
+                      (for [&i (range 0 (len _newLists))]
+                           (setv cur_list (get _newLists &i))
+                           (when (and (= (len cur_list) 1)
+                                      (pred (get cur_list 0)))
+                                 (single_borders_pos.append &i)))
+                      (for [&i single_borders_pos]
+                           (when (< &i (dec (len _newLists)))
+                                 (setv (get _newLists (inc &i)) (+ (get _newLists &i) (get _newLists (inc &i))))))
+                      (setv others_pos (list (- (set (range 0 (len _newLists))) (set single_borders_pos))))
+                      (when (in (dec (len _newLists)) single_borders_pos)
+                            (others_pos.append (dec (len _newLists))))
+                      (setv _newLists (pick others_pos _newLists)))
+                  (setv _newLists (lwithout [[]] _newLists))))
+        (return _newLists))
+
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: counting ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
@@ -381,6 +554,7 @@
     (import hyrule    [dec])
     (import hyrule    [sign])
     (import operator  [neg])
+    ;;
 
     #_ "(half x) = (/ x 2)"
     (defn half       [x] "half(x) = x / 2" (/ x 2))
@@ -408,8 +582,6 @@
         (setv norm (hypot #* xs))
         (if (!= norm 0) (return (lmap (pflip div norm) xs)) (return xs)))
 
-    (import operator [truediv :as div]) #_ "div(a, b) |"
-    (import math     [prod :as product]) #_ "product(iterable, /, *, start=1) | product([2, 3, 5]) = 30"
     (import math     [exp]) #_ "exp(x) |"
 
     (import math     [log]) #_ "log(x, base=math.e)" ;;
@@ -418,6 +590,21 @@
     (defn ln [x] (log x))
 
     (import math [log10])  #_ "log10(x) |"
+
+    ;; checks:
+
+    (import funcy [even :as evenQ])
+    (import funcy [odd  :as oddQ])   
+
+    #_ "| checks directly via (= x 0)"
+    (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
+
+    #_ "| checks directly via (< x 0)"
+    (defn negativeQ [x] "checks literally if x < 0" (< x 0))
+
+    #_ "| checks directly via (> x 0)"
+    (defn positiveQ [x] "checks literally if x > 0" (> x 0))
+
 
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Trigonometry ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
@@ -436,16 +623,43 @@
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
+    (import operator [and_])                #_ "'and' as function"
+    (import operator [or_])                 #_ "'or' as function"
+    (import operator [not_])                #_ "'not' as function"
+    (import operator [is_])                 #_ "'is' as function"
+    (import operator [xor])                 
+
+    (import operator [eq])                  #_ "equal"
+    (import operator [ne :as neq])          #_ "non-equal"
+    (import operator [gt])                  #_ "greater than"
+    (import operator [lt])                  #_ "less than"
+    (import operator [ge :as geq])          #_ "greater or equal"
+    (import operator [le :as leq])          #_ "less or equal"
+
+    (import operator [matmul])              #_ "'@' as function"
+    (import operator [truediv :as div])     #_ "div(a, b) |"
+
     #_ "minus(x, y) = x - y |"
     (defn minus [x y] "minux(x, y) = x - y" (- x y))
 
-    ;; operator *
+    ;; =========================================================================
+    ;; dunders
+    ;; - python behaves like so:
+    ;; - (*) = 1, (* 3) = 3 
+    ;; - (+) = 0, (+ 3) = 3 
+    ;; - (+ "") = error, (+ []) = error
+        
+        #_ "dmul(*args) = arg1 + arg2 + ... | 'dunder mul', '*' operator as a function"
+        (defn dmul [#* args]
+            "dunder mul, '*' operator as a function"
+            (* #* args))
 
-        #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
-        (defn mul [#* args]
-            " multiplication as a monoid with identity = 1,
-              can be used with 0 or 1 arg"
-            (reduce operator.mul args 1))
+        #_ "dadd(*args) = arg1 + arg2 + ... | 'dunder add', '+' operator as a function"
+        (defn dadd [#* args]
+            "dunder add, '+' operator as a function"
+            (+ #* args))
+
+    ;; renames
 
         #_ "lmul(*args) = arg1 * arg2 * ... | rename of * operator, underlines usage for list"
         (defn lmul [#* args]
@@ -457,13 +671,18 @@
             "rename of * operator, can be used to underline usage on string"
             (* #* args))
 
-    ;; operator +
+    ;; monoids
+
+        #_ "mul(*args) | multiplication as a monoid (will not give error when used with 0 or 1 args)"
+        (defn mul [#* args]
+            " multiplication as a monoid with identity = 1,
+              can be used with 0 or 1 arg"
+            (reduce operator.mul args 1))
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
         (defn plus [#* args]
-            " plus as a monoid with identity = 0,
-              can be used with 0 or 1 arg"
-            (reduce operator.add args 0))
+            " plus as a monoid with identity = 0 "
+            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args 0))
 
         #_ "sconcat(*args) | string concantenation as a monoid (will not give error when used with 0 or 1 args)"
         (defn sconcat [#* args]
@@ -471,70 +690,49 @@
               can be used with 0 or 1 args"
             (reduce (fn [%s1 %s2] (+ %s1 %s2)) args ""))
 
-        #_ "lconcat(*args) | list concantenation as a monoid (will not give error when used with 0 or 1 args)"
-        (defn lconcat [#* args]
-            " lists concantenation as a monoid with identity = [],
-              can be used with 0 or 1 args"
-            (reduce (fn [%s1 %s2] (+ %s1 %s2)) args []))
+        ;; lconcat (list on itertools.chain) is a monoid on lists too
 
 ; ________________________________________________________________________/ }}}2
-; [GROUP] Logic and ChecksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; [GROUP] General checksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (import hyrule   [xor])
-
-    (import operator [eq])              #_ "equal"
-    (import operator [ne   :as neq])    #_ "non-equal"
-    (import funcy    [even :as evenQ])
-    (import funcy    [odd  :as oddQ])   
-
-    (import funcy [isnone  :as noneQ])
-    (import funcy [notnone :as notnoneQ]) ;;
-
-    #_ "| checks directly via (= x 0)"
-    (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
-
-    #_ "| checks directly via (< x 0)"
-    (defn negativeQ [x] "checks literally if x < 0" (< x 0))
-
-    #_ "| checks directly via (> x 0)"
-    (defn positiveQ [x] "checks literally if x > 0" (> x 0))
-
-    #_ "| checks literally if (= (len xs) 0)"
-    (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
-
-    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
-    (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
-
-    #_ "(oflenQ xs n) -> (= (len xs) n) |"
-    (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
-
-    #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
-    (defn intQ [x]
-        "checks literally if type(x) == int"
-        (= (type x) int))    
-
-    #_ "floatQ(x) | checks literally if type(x) == float, will also work with StrictFloat from pydantic"
-    (defn floatQ [x]
-        "checks literally if type(x) == float"
-        (= (type x) float))
-
-    #_ "numberQ(x) | checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic"
-    (defn numberQ [x]
-        "checks literally if type(x) == int or type(x) == float"
-        (= (type x) float))
-
-    #_ "dictQ(x) | checks literally if type(x) == dict"
-    (defn dictQ [x]
-        "checks literally if type(x) == dict"
-        (= (type x) dict))
-
-    (import funcy [is_list  :as listQ ])  #_ "listQ(seq)  | checks if seq is list"
-    (import funcy [is_tuple :as tupleQ])  #_ "tupleQ(seq) | checks if seq is tuple"
+    ;; my convenience funcs:
 
     #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
     (defn fnot [f #* args #** kwargs]
         "literally just not(f(*args, **kwrgs))"
         (not (f #* args #** kwargs)))
+
+    #_ "(eq_any x values) | (and (eq x value1) (eq x value2) ...)"
+    (defn eq_any [x values]
+        "essentially just or(eq(x, value1), eq(x, value2), ...)"
+        (or #* (lmap (fn [it] (= x it)) values)))
+
+    #_ "(on f check x y) | (on len eq xs ys) -> (eq (len xs) (len yx))"
+    (defn on [f check x y]
+        "inspired by Haskell's 'on' function, essentially is check(f(x), f(y)) "
+        (check (f x) (f y)))
+
+    #_ "all_fs(fs, *args, **kwargs) | checks if all f(*args, **kwargs) are True"
+    (defn all_fs [fs #* args #** kwargs]
+        "checks if all f(*args, **kwargs) are True"
+        (and #* (lfor &f fs (&f #* args #** kwargs))))
+
+    #_ "any_fs(fs, *args, **kwargs) | checks if any of f(*args, **kwargs) is True"
+    (defn any_fs [fs #* args #** kwargs]
+        "checks if any of f(*args, **kwargs) is True"
+        (or #* (lfor &f fs (&f #* args #** kwargs))))
+
+    #_ "| checks directly via (= x True)"
+    (defn trueQ [x] "checks literally if x == True" (= x True))
+
+    #_ "| checks directly via (= x False)"
+    (defn falseQ [x] "checks literally if x == False" (= x False))
+
+    #_ "(oflenQ xs n) -> (= (len xs) n) |"
+    (defn oflenQ [xs n] "checks literally if len(xs) == n" (= (len xs) n))
+
+    #_ "| checks literally if (= (len xs) 0)"
+    (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
 ; ________________________________________________________________________/ }}}2
 
@@ -552,20 +750,10 @@
             (funcy.str_join sep ss)
             (funcy.str_join ss)))
 
-    #_ "str_replace(string, old, new, count=-1) | str.replace method as a function"
-    (defn str_replace [string old new [count -1]]
-        "str.replace method as a function"
-        (string.replace old new count))
-
     #_ "lowercase(string) | str.lower method as a function"
     (defn #^ str lowercase [#^ str string]
         "str.lower method as a function"
         (string.lower))
-
-    #_ "endswith(string, suffix) -> bool | str.endswith method as a function (but can't take start/end params)"
-    (defn #^ bool endswith [#^ str string #^ str suffix]
-        "str.endswith method as a function (but can't take start/end params)"
-        (string.endswith suffix))
 
     #_ "strip(string, chars=None) | str.strip method as a function"
     (defn #^ str strip [#^ str string [chars None]]
@@ -583,21 +771,34 @@
         "str.rstrip method as a function"
         (string.rstrip chars))
 
-    #_ "enlengthen(string, target_len, char=' ', fill_tail=True) | adds char to string until target_len reached"
+    #_ "enlengthen(string, target_len, char=' ', on_tail=True) | adds char to string until target_len reached"
     (defn #^ str
         enlengthen
         [ #^ int  target_len
           #^ str  string
-          #^ str  [char " "]
-          #^ bool [fill_tail True]
+          #^ str  [char      " "]
+          #^ bool [on_tail   True]
+          #^ bool [force_len False]
         ]
-        " adds char to string until target_len reached,
-          if len(string) > target_len, will return string with no change,
-          with fill_tail=False will prepend chars rather than append"
+        " appends char to string until target_len reached
+
+          - if len(string) > target_len, will return string with no change
+          - with on_tail=False will prepend chars rather than append
+          - with force_len=True will cut string to target_len if required (taking on_tail option into account)
+          - when len(char)> 1 is given, repeats it's pattern, but still ensures target_len 
+        "
+        (when (< target_len 0) (raise (ValueError "target_len < 0 is not allowed")))
+        (when (= char "")      (raise (ValueError "empty char is not allowed")))
+        ;;
+        (when (and force_len 
+                   (> (len string) target_len))
+              (if on_tail (return (cut string target_len))
+                          (return (take (- target_len) string))))
+        ;;
         (setv n_required (max 0 (- target_len (len string))))
-		(if (= fill_tail True)
-			(setv outp (sconcat string (* char n_required)))
-			(setv outp (sconcat (* char n_required) string)))
+		(if on_tail
+			(setv outp (sconcat string (cut (* char n_required) 0 (- target_len (len string)))))
+			(setv outp (sconcat (cut (* char n_required) 0 (- target_len (len string))) string)))
 		(return outp))
 
 ; ________________________________________________________________________/ }}}2
@@ -631,6 +832,8 @@
 ; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
+    (import os.path [isfile :as fileQ])        #_ "fileQ(filename)"
+    (import os.path [isdir  :as dirQ])         #_ "dirQ(filename)"
 
     #_ "read_file(file_name, encoding='utf-8') -> str | returns whole file content"
     (defn read_file
@@ -692,7 +895,7 @@
         ;;
         (setv line_01       f"/ ({msg})")
         (setv line_02_time1 f"\\ {time_1 :.3f} {unit_str}")
-        (setv line_02_n     (str_replace f"average of {n :,} runs" "," "'"))
+        (setv line_02_n     (re_sub "," "'" f"average of {n :,} runs"))
         (setv line_02_timeN f"test duration: {seconds :.3f} s")
         ;;
         (setv _prompt (sconcat line_01 "\n"
@@ -709,9 +912,9 @@
         ]
         " on first run, starts the timer (and print message that it started)
           on subsequent runs prints how many time (in seconds) have passed since previous call
-
+          #
           call with fresh_run = True to reset timer
-
+          #
           last_T should not be touched by user!
           it is used for storing time of previous run between runs"
         (when fresh_run (assoc last_T 0 None))
@@ -733,13 +936,14 @@
 
 ; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-	(require hyrule [-> of])
-    (import  funcy [partial rcompose])
+    (import  hyrule [rest butlast])
+	(require hyrule [-> ->> of])
     (import  operator)
 
 ; ________________________________________________________________________/ }}}2
 
-; === Helpers ===
+
+; === Helpers (precompiled functions) ===
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; (- 1)
@@ -885,6 +1089,17 @@
 ; ________________________________________________________________________/ }}}2
 
 ; === Macros ===
+
+    ; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
+    ; 
+    ; -> fm               -> ✗ does not work in dev file
+    ;                                  ✓ works from outside projs (it is essentially call to installed lib)
+    ;                                  ✓ this is how it is done in hyrule (I think this is due to their hy_init.hy importing everything)
+    ;                                        
+    ;    fm                         -> [✓ ✗] works from dev file
+    ;    hy.R.fptk_macros.fm        -> [✓ ✗] works from dev file
+    ;    hy.R.fptk.fptk_macros.fm   -> [✗ ✗] does not work anywhere
+
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro f:: [#* macro_args]
@@ -919,27 +1134,24 @@
 	; operator.neg		; [. operator neg]		; _idDottetAccess checks for: [. smth _]
 	; (operator.add 3)	; [[. operator add] 3]
 
-    (defn _flip [f a b] (f b a))                   ; (flip lmap [1 2 3] sqrt)
-
 	(defmacro p: [#* args]
-		;
 		(setv pargs [])
 		(for [&arg args]
 			  (cond ; .x  -> (partial flip getattr "x")
 					(_isDottedAttr &arg)
-					(pargs.append `(partial _flip getattr ~(str (_extractDottedAttr &arg))))
+					(pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr ~(str (_extractDottedAttr &arg))))
 					; operator.neg
 					(_isDottedAccess &arg)
-					(pargs.append `(partial ~&arg))
+					(pargs.append `(hy.I.funcy.partial ~&arg))
 					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
 					(_isDottedMth &arg)
-					(do (pargs.append `(partial _flip getattr
+					(do (pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
-						(pargs.append `(partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
+						(pargs.append `(hy.I.funcy.partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
 												[~@(get (_extractDottedMth &arg) "args")])))
 					; abs -> (partial abs)
 					(= (type &arg) hy.models.Symbol)
-					(pargs.append `(partial ~&arg))
+					(pargs.append `(hy.I.funcy.partial ~&arg))
 	                ; (fn/fm ...) -> no change
                     (or (_isExprWithHeadSymbol &arg "fn")
                         (_isExprWithHeadSymbol &arg "fm")
@@ -948,22 +1160,26 @@
 					; (func 1 2) -> (partial func 1 2)
 					; (operator.add 3) -> (partial operator.add 3)
 					(= (type &arg) hy.models.Expression)
-					(pargs.append `(partial ~@(cut &arg 0 None)))
+					(pargs.append `(hy.I.funcy.partial ~@(cut &arg 0 None)))
 					; (etc ...) -> (partial etc ...)
 					True
-					(pargs.append `(partial ~&arg))))
-	   `(rcompose ~@pargs))
+					(pargs.append `(hy.I.funcy.partial ~&arg))))
+	   `(hy.I.funcy.rcompose ~@pargs))
 
 ; ________________________________________________________________________/ }}}2
-; pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; (l)pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro pluckm [indx iterable]
 		(cond ; .attr -> "attr"
 			  (_isDottedAttr indx)
-			  (return `(lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  (return `(hy.I.funcy.pluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
 			  ;
 			  True
-			  (return `(lpluck ~indx ~iterable))))
+			  (return `(hy.I.funcy.pluck ~indx ~iterable))))
+
+	(defmacro lpluckm [indx iterable]
+		(cond (_isDottedAttr indx) (return `(hy.I.funcy.lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  True                 (return `(hy.I.funcy.lpluck ~indx ~iterable))))
 
 	(defmacro getattrm [iterable #* args] ; first arg is «indx», second - is «default» (may be absent)
         (setv indx (get args 0))
@@ -984,43 +1200,51 @@
                   (return `(getattr ~iterable ~indx ~default)))))
 
 ; ________________________________________________________________________/ }}}2
-; fm, f>, lmapm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-	; recognizes %1..%9 as arguments
+	; recognizes "it" as solo-arg
+    ; or %1..%9 as multi args
+    ; 
+	; "it" cannot be used together with %i
+	; 
 	; nested fm calls will probably not work as intended
 
 	(defmacro fm [expr]
 		(import hyrule [flatten thru])
 		;
-		(setv models (flatten expr))
-		(setv args (filter (fn [%x] (= (type %x) hy.models.Symbol)) models))	; Symbols
-		(setv args (filter (fn [%x] (and (= (get %x 0) "%")						; "%_"
-										 (= (len %x) 2)))
-									args))
-		(setv args (filter (fn [%x] (and (.isdigit (get %x 1))					; "%1..%9"
-										 (!= "0" (get %x 1))))
-									args))
-		(setv args (sorted args))
+        (setv args (->> expr
+                        flatten
+                        (filter (fn [%x] (or (= %x 'it)
+                                             (= %x '%1) (= %x '%2) (= %x '%3)
+                                             (= %x '%4) (= %x '%5) (= %x '%6)
+                                             (= %x '%7) (= %x '%8) (= %x '%9))))
+                        sorted))    ; example: [hy.models.Symbol('%1'), hy.models.Symbol('%2')]
+        (when (in 'it args) (return `(fn [it] ~expr)))
 		(if (= (len args) 0)
 			(setv maxN 0)
-			(setv maxN (int (get args -1 -1))))
-		;
+			(setv maxN (int (get args -1 -1)))) 
 		(setv inputs (lfor n (thru 1 maxN) (hy.models.Symbol f"%{n}")))
-		; (print (hy.repr `(fn [~@inputs] ~expr)))
 		(return `(fn [~@inputs] ~expr)))
 
 	(defmacro f> [lambda_def #* args]
 		(return `((fm ~lambda_def) ~@args)))
 
+    (defmacro mapm [one_shot_fm #* args]
+		(return `(map (fm ~one_shot_fm) ~@args)))
+
     (defmacro lmapm [one_shot_fm #* args]
 		(return `(list (map (fm ~one_shot_fm) ~@args))))
 
+    (defmacro filterm [one_shot_fm iterable]
+		(return `(filter (fm ~one_shot_fm) ~iterable)))
+
+    (defmacro lfilterm [one_shot_fm iterable]
+		(return `(list (filter (fm ~one_shot_fm) ~iterable))))
 
 ; ________________________________________________________________________/ }}}2
 ; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro lns [#* macro_args]
-		(import hyrule [rest])
 		;
 		(setv args (list macro_args)) ; for mutations
 		(for [[&i &arg] (enumerate args)]
@@ -1055,22 +1279,18 @@
 			 `(. lens ~@args)))
 
 ; ________________________________________________________________________/ }}}2
-; &+, &+>, l>, l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; &+ &+> l> l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; compose lens, add setters/getters
 
 	(defmacro &+ [#* macro_args]
-		(import hyrule [rest butlast])
-		;
-		(setv lenses (butlast macro_args))
+		(setv lenses_ (butlast macro_args))
 		(setv func	 (get macro_args (- 1)))
-	   `(& ~@lenses (lns ~func)))
+	   `(& ~@lenses_ (lns ~func)))
 
 	; compose lens, add setters/getters, apply
 
 	(defmacro &+> [#* macro_args]
-		(import hyrule [rest butlast])
-		;
 		(setv variable (get macro_args 0))
 		(setv lenses   (butlast (rest macro_args)))
 		(setv func	   (get macro_args (- 1)))
@@ -1079,21 +1299,17 @@
 	; construct lens, apply:
 
 	(defmacro l> [#* macro_args]
-		(import hyrule [rest])
-		;
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
 	   `((lns ~@lenses_args) ~variable))
 
 	(defmacro l>= [#* macro_args]
-		(import  hyrule [rest])
-		;
 		(setv variable	  (get macro_args 0))
 		(setv lenses_args (rest macro_args))
 	   `(&= ~variable (lns ~@lenses_args)))
 
 ; ________________________________________________________________________/ }}}2
-; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro assertm [op arg1 arg2]
         (setv to_test `(~op ~arg1 ~arg2))
@@ -1115,6 +1331,7 @@
                           (print ">>" ~_arg2 "=" ~arg2)
                           (except [e2 Exception]
                                   (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                                  (print)
                      eFull )))
 
 	(defmacro gives_error_typeQ [expr error_type]

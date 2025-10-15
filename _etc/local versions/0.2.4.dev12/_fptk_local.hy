@@ -1,12 +1,23 @@
 
-; Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; This is local version of github.com/rmnavr/fptk lib.
+; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.
+;
+; Due to how hy macros imports work, when you import macros that depend from
+; lns and fm (which are l>, f> and others) you need to also import lns and fm.
+; fptk lib itself doesn't have this issue.
+
+; This file was generated from local git version: 0.2.4.dev12
+
+; functions and modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+; Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (require hyrule [comment])
     ;; DOC SYNTAX: map(f, *, y, *xs) = (map f * y #* xs)
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Import Full Modules ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import sys)                #_ "py base module"
     (import os)                 #_ "py base module"
@@ -25,8 +36,8 @@
     (import funcy)              #_ "3rd party module (FP related)"
     (import lenses [lens])      #_ "3rd party module (for working with immutable structures)"
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (require hyrule [of])  #_ "| (of List int) -> List[int]"
 
@@ -84,8 +95,8 @@
     (import funcy [is_iter  :as iteratorQ]) #_ "iteratorQ(value) | checks if value is iterator"
     (import funcy [iterable :as iterableQ]) #_ "iterableQ(value) | checks if value is iterable"
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Strict Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Strict Typing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import pydantic    [BaseModel])
     (import pydantic    [StrictInt])       #_ "will be still of int type, but will perform strict typecheck when variable is created"
@@ -100,8 +111,8 @@
     #_ "same as validate_call but with option validate_return=True set (thus validating args and return type)"
     (setv validateF (validate_call :validate_return True))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Buffed getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Buffed getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     ;; dub basics:
 
@@ -161,8 +172,8 @@
         (import  funcy  [pluck_attr])   #_ " pluck_attr(attr, objects) -> generator | " ;;
         (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr, objects) -> list | " ;;
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] index-1-based getters ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [thru :as range_])      #_ "range_(start, end, step) -> List | same as range, but with 1-based index"
 
@@ -222,9 +233,9 @@
         "
         (get seq (slice_ start end step)))
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] Control flow ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Control flow ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "hy | base | if   | (if check true false)          | ")
     (comment "hy | base | cond | (cond check1 do1 ... true doT) | ")
@@ -234,9 +245,9 @@
     (require hyrule [unless])
     (require hyrule [lif])
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] FP: composition ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] FP: composition ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [constantly])    #_ "(setv answer (constantly 42)) (answer 1 :x 2) -> 42"
     (import funcy  [identity])      #_ "identity(30) -> 30"
@@ -266,8 +277,8 @@
         "
         (fn [%x] (f %x a)))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] FP: threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] FP: threading ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | map | map(func, *iterables) -> map object |")
     (import funcy     [lmap])       #_ "lmap(f, *seqs) -> List |"
@@ -291,8 +302,8 @@
     #_ "lzip(*iterables) -> List | literally just list(zip(*iterables))"
     (defn lzip [#* iterables] (list (zip #* iterables)))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] FP: n-applicators ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (require hyrule [do_n])     #_ "(do_n   n #* body) -> None |"
     (require hyrule [list_n])   #_ "(list_n n #* body) -> List |"
@@ -313,9 +324,9 @@
         "
         ((compose #* (list_n n f)) #* args #** kwargs))
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] APL: filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] APL: filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
     (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | list(filter(...)) from funcy"
@@ -390,8 +401,8 @@
     (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
     ;;
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: iterators and looping ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] APL: iterators and looping ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import itertools [islice])              #_ "islice(iterable, stop), islice(iterable, start, stop[, step]) |" 
 
@@ -423,8 +434,8 @@
     (import funcy     [with_prev])  #_ "with_prev(seq, fill=None) -> iterator | supposed to be used in loops"
     (import funcy     [with_next])  #_ "with_next(seq, fill=None) -> iterator | supposed to be used in loops"
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [flatten])   #_ "flattens to the bottom" ;;
 
@@ -529,15 +540,15 @@
                   (setv _newLists (lwithout [[]] _newLists))))
         (return _newLists))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] APL: counting ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] APL: counting ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     #_ "count_occurrences(elem, seq) -> int | rename of list.count method"
     (defn count_occurrences [elem seq] (seq.count elem))
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] General Math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] General Math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule    [inc])
     (import hyrule    [dec])
@@ -595,8 +606,8 @@
     (defn positiveQ [x] "checks literally if x > 0" (> x 0))
 
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Trigonometry ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Trigonometry ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import math [pi])      #_ "| literally just float pi=3.14..."
     (import math [sin])     #_ "sin(x) | x is in radians"
@@ -609,8 +620,8 @@
     (import math [atan])    #_ "asin(x) | x is in radians, result is between -pi/2 and pi/2"
     (import math [atan2])   #_ "atan2(y, x) | both signs are considered"
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import operator [and_])                #_ "'and' as function"
     (import operator [or_])                 #_ "'or' as function"
@@ -681,8 +692,8 @@
 
         ;; lconcat (list on itertools.chain) is a monoid on lists too
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] General checksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] General checksQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     ;; my convenience funcs:
 
@@ -723,9 +734,9 @@
     #_ "| checks literally if (= (len xs) 0)"
     (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Strings ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     #_ "strlen(text) | rename of len, underlines usage on strings"
     (defn strlen [text]
@@ -790,8 +801,8 @@
 			(setv outp (sconcat (cut (* char n_required) 0 (- target_len (len string))) string)))
 		(return outp))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     ;; Theory:
     ;;      re: match, search, findall, finditer, split, compile, fullmatch, escape
@@ -806,8 +817,8 @@
     (import funcy     [re_test])                #_ "re_test(rpattern, string, ...) -> bool | tests if string has match (not neccessarily whole string)"
     (import funcy     [re_all])                 #_ "re_all(rpattern, string, ...) -> List |"
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import random    [choice])                 #_ "choice(seq) -> Elem | throws error for empty list"
     (import random    [randint])                #_ "randint(a, b) -> int | returns random integer in range [a, b] including both end points" 
@@ -816,9 +827,9 @@
 
     ;; shuffle — is mutating
 
-; _____________________________________________________________________________/ }}}1
+; ________________________________________________________________________/ }}}2
 
-; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] IO ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import os.path [exists :as file_existsQ]) #_ "file_existsQ(filename) | also works on folders" ;;
     (import os.path [isfile :as fileQ])        #_ "fileQ(filename)"
@@ -847,8 +858,8 @@
           - 'x' - exclusive creation"
         (with [file (open file_name mode :encoding encoding)] (file.write text)))
 
-; _____________________________________________________________________________/ }}}1
-; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; ________________________________________________________________________/ }}}2
+; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     #_ "w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result | f_result is from 1st function execution"
     (defn #^ (of Tuple float str Any)
@@ -916,6 +927,421 @@
             (do (setv dT (- curT (get last_T 0)))
                 (assoc last_T 0 curT)
                 (print f"[dT = {dT :.6f} s]" #* args))))
+
+; ________________________________________________________________________/ }}}2
+
+
+; _____________________________________________________________________________/ }}}1
+; macros ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    (import  hyrule [rest butlast])
+	(require hyrule [-> ->> of])
+    (import  operator)
+
+; ________________________________________________________________________/ }}}2
+
+
+; === Helpers (precompiled functions) ===
+; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; (- 1)
+	(-> (defn _isNegIntegerExpr
+			[ arg
+			]
+			(and (= (type arg) hy.models.Expression)
+				 (= (get arg 0) (hy.models.Symbol "-"))
+				 (= (len arg) 2)
+				 (= (type (get arg 1)) hy.models.Integer)))
+		eval_and_compile)
+
+	; (_isNegIntegerExpr '(- 3))
+
+; ________________________________________________________________________/ }}}2
+; expr with head symbol ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; (head ...)
+	(-> (defn _isExprWithHeadSymbol
+			[ #^ hy.models.Expression arg
+			  #^ str head
+			]
+			(and (= (type arg) hy.models.Expression)
+				 (= (get arg 0) (hy.models.Symbol head))))
+		eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+;
+; DEVDOC: Dot Macro Expressions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+(when False
+
+	;in normal code:
+		'obj.attr				; / access attr (no call)  ; [. obj attr]
+		'(. obj attr)			; \
+		'(. obj (mth arg1))		; access mth (and call)    ; [. obj [mth arg1]]
+		'(.mth obj arg1)		; access mth (and call)    ; [[. None mth] obj arg1]
+		'(obj.mth 3)			; access mth (and call)    ; [[. obj mth] 3]
+
+	;in hyrule -> macro:
+		'(-> obj func1 .attr)			; will give error, since can't call
+		'(-> obj func1 (. obj2 mth 1))	; will give error, since can't parse to correct place
+		;
+		'(-> obj obj2.mth)				; will expand to: (obj2.mth obj)
+		'(-> obj (obj2.mth 2))			; will expand to: (obj2.mth obj 2)
+		'(-> obj func1 .method)			; will expand to: (. (func1 obj) (method))
+		'(-> obj func1 (.method 1))		; will expand to: (. (func1 obj) (method 1))
+		'(-> obj func1 (. obj2 mth))	; will expand to: (obj2.mth (func1 obj))
+
+	; used in my p> macro:
+		'.attr					; dottedAttr	; [. None attr]			; ~ get attr
+		'operator.neg			; dottedAccess	; [. operator neg]		; (partial operator.neg)
+		'(operator.add 3)		; dottedCall	; [[. operator add] 3]	; (partial operator.add 3)
+		'(.mth)					; dottedMth		; [[. None mth]]		; ~(partial obj.mth 1 2)
+		'(.mth 1 2)				; dottedMth		; [[. None mth] 1 2]	; ~(partial obj.mth 1 2)
+
+)
+; ________________________________________________________________________/ }}}2
+; .dottedAttr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; .x
+	(-> (defn _isDottedAttr
+			[ arg
+			]
+			(and (= (type arg) hy.models.Expression)
+				 (= (get arg 0) (hy.models.Symbol "."))
+				 (= (get arg 1) (hy.models.Symbol "None"))))
+		eval_and_compile)
+
+	; hy.models.Symbol[x]
+	(-> (defn #^ hy.models.Symbol
+			_extractDottedAttr
+			[ arg
+			]
+			(get arg 2))
+		eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+; .dottedAccess ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; operator.add
+	(-> (defn _isDottedAccess
+			[ arg
+			]
+			(and (= (type arg) hy.models.Expression)
+				 (= (get arg 0) (hy.models.Symbol "."))
+				 (= (type (get arg 1)) hy.models.Symbol)
+				 (!= (get arg 1) (hy.models.Symbol "None"))))
+		eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+; .dottedMth ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; (.mth obj 1 2)
+	;  ---- -------
+	;  head  args
+	(-> (defn _isDottedMth
+			[ arg
+			]
+			(and (= (type arg) hy.models.Expression)
+				 (_isDottedAttr (get arg 0))))
+		eval_and_compile)
+
+	(-> (defn _extractDottedMth
+			[ arg
+			]
+			(dict :head (get arg 0 2)
+				  :args (cut arg 1 None)))
+		eval_and_compile)
+
+	 ; (_isDottedMth '(.obj obj 1 2))
+	 ; (_extractDottedCall '(.obj obj 1 2))
+
+; ________________________________________________________________________/ }}}2
+; [ARCHIVE] :attr: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; leftover from lns macro:
+	;
+	;(_isAttrAccess &arg)
+	;(setv (get args &i) (hy.models.Symbol (_extractAttrName &arg)))
+
+	; leftover from pluckm macro:
+	;
+	; (_isAttrAccess indx)
+	; (return `(lpluck_attr ~(_extractAttrName indx) ~iterable)))
+
+	(-> (defn #^ bool
+			_isAttrAccess
+			[ arg
+			]
+			(setv arg_str (str arg))
+			(and (= (type arg) hy.models.Keyword)
+				 (> (len arg_str) 2)
+				 (= (get arg_str (- 1)) ":")))
+		eval_and_compile)
+
+	(-> (defn #^ str
+			_extractAttrName
+			[ arg
+			]
+			(cut (str arg) 1 (- 1)))
+		eval_and_compile)
+
+; ________________________________________________________________________/ }}}2
+
+; === Macros ===
+
+    ; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
+    ; 
+    ; -> fm               -> ✗ does not work in dev file
+    ;                                  ✓ works from outside projs (it is essentially call to installed lib)
+    ;                                  ✓ this is how it is done in hyrule (I think this is due to their hy_init.hy importing everything)
+    ;                                        
+    ;    fm                         -> [✓ ✗] works from dev file
+    ;    hy.R.fptk_macros.fm        -> [✓ ✗] works from dev file
+    ;    hy.R.fptk.fptk_macros.fm   -> [✗ ✗] does not work anywhere
+
+; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	(defmacro f:: [#* macro_args]
+		;
+		(setv fInputsOutputs (get macro_args (slice None None 2)))
+		(setv fInputs (get fInputsOutputs (slice 0 (- 1))))
+		(setv fOutput (get fInputsOutputs (- 1)))
+		`(of Callable ~fInputs ~fOutput))
+
+; ________________________________________________________________________/ }}}2
+; p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+; ■ comment on (.mth 3 4) deconstruction ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{3
+
+	; this is how (.mth 3 4) works:
+
+	;	(defclass [dataclass] Point []
+	;		(#^ int x)
+	;		(#^ int y)
+	;		(defn getXscaled [self scale1 scale2] (* scale1 scale2 self.x)))
+	;	
+	;	; will be assembled to: Point(7,2).getXscaled(3,4)
+	;	(	(rcompose (partial Point 7)
+	;				  (partial flip getattr "getXscaled")					; \
+	;				  (partial (fn [%args %mth] (%mth #* %args)) [3 4]))	; /
+	;		2)
+
+; ___________________________________________________________________/ }}}3
+
+	; .attr				; [. None attr]			; _isDottedAttr   checks for: [. None _]
+	; (.mth 1 2)		; [[. None mth] 1 2]	; _isDottedMth	  checks for: [[. None _] _]
+	; operator.neg		; [. operator neg]		; _idDottetAccess checks for: [. smth _]
+	; (operator.add 3)	; [[. operator add] 3]
+
+	(defmacro p: [#* args]
+		(setv pargs [])
+		(for [&arg args]
+			  (cond ; .x  -> (partial flip getattr "x")
+					(_isDottedAttr &arg)
+					(pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr ~(str (_extractDottedAttr &arg))))
+					; operator.neg
+					(_isDottedAccess &arg)
+					(pargs.append `(hy.I.funcy.partial ~&arg))
+					; (. mth 2 3) -> essentially (. SLOT mth 2 3)
+					(_isDottedMth &arg)
+					(do (pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr
+											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
+						(pargs.append `(hy.I.funcy.partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
+												[~@(get (_extractDottedMth &arg) "args")])))
+					; abs -> (partial abs)
+					(= (type &arg) hy.models.Symbol)
+					(pargs.append `(hy.I.funcy.partial ~&arg))
+	                ; (fn/fm ...) -> no change
+                    (or (_isExprWithHeadSymbol &arg "fn")
+                        (_isExprWithHeadSymbol &arg "fm")
+                        (_isExprWithHeadSymbol &arg "f>"))
+                    (pargs.append &arg)
+					; (func 1 2) -> (partial func 1 2)
+					; (operator.add 3) -> (partial operator.add 3)
+					(= (type &arg) hy.models.Expression)
+					(pargs.append `(hy.I.funcy.partial ~@(cut &arg 0 None)))
+					; (etc ...) -> (partial etc ...)
+					True
+					(pargs.append `(hy.I.funcy.partial ~&arg))))
+	   `(hy.I.funcy.rcompose ~@pargs))
+
+; ________________________________________________________________________/ }}}2
+; (l)pluckm, getattrm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	(defmacro pluckm [indx iterable]
+		(cond ; .attr -> "attr"
+			  (_isDottedAttr indx)
+			  (return `(hy.I.funcy.pluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  ;
+			  True
+			  (return `(hy.I.funcy.pluck ~indx ~iterable))))
+
+	(defmacro lpluckm [indx iterable]
+		(cond (_isDottedAttr indx) (return `(hy.I.funcy.lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
+			  True                 (return `(hy.I.funcy.lpluck ~indx ~iterable))))
+
+	(defmacro getattrm [iterable #* args] ; first arg is «indx», second - is «default» (may be absent)
+        (setv indx (get args 0))
+        (cond (= (len args) 1)
+              (setv default_not_given True)
+              (= (len args) 2)
+              (do (setv default (get args 1))
+                  (setv default_not_given False)))
+		(cond ; .attr -> "attr"
+			  (_isDottedAttr indx)
+              (if default_not_given
+                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx))))
+                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx)) ~default)))
+			  ;
+			  True
+			  (if default_not_given
+                  (return `(getattr ~iterable ~indx))
+                  (return `(getattr ~iterable ~indx ~default)))))
+
+; ________________________________________________________________________/ }}}2
+; fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; recognizes "it" as solo-arg
+    ; or %1..%9 as multi args
+    ; 
+	; "it" cannot be used together with %i
+	; 
+	; nested fm calls will probably not work as intended
+
+	(defmacro fm [expr]
+		(import hyrule [flatten thru])
+		;
+        (setv args (->> expr
+                        flatten
+                        (filter (fn [%x] (or (= %x 'it)
+                                             (= %x '%1) (= %x '%2) (= %x '%3)
+                                             (= %x '%4) (= %x '%5) (= %x '%6)
+                                             (= %x '%7) (= %x '%8) (= %x '%9))))
+                        sorted))    ; example: [hy.models.Symbol('%1'), hy.models.Symbol('%2')]
+        (when (in 'it args) (return `(fn [it] ~expr)))
+		(if (= (len args) 0)
+			(setv maxN 0)
+			(setv maxN (int (get args -1 -1)))) 
+		(setv inputs (lfor n (thru 1 maxN) (hy.models.Symbol f"%{n}")))
+		(return `(fn [~@inputs] ~expr)))
+
+	(defmacro f> [lambda_def #* args]
+		(return `((fm ~lambda_def) ~@args)))
+
+    (defmacro mapm [one_shot_fm #* args]
+		(return `(map (fm ~one_shot_fm) ~@args)))
+
+    (defmacro lmapm [one_shot_fm #* args]
+		(return `(list (map (fm ~one_shot_fm) ~@args))))
+
+    (defmacro filterm [one_shot_fm iterable]
+		(return `(filter (fm ~one_shot_fm) ~iterable)))
+
+    (defmacro lfilterm [one_shot_fm iterable]
+		(return `(list (filter (fm ~one_shot_fm) ~iterable))))
+
+; ________________________________________________________________________/ }}}2
+; lns ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	(defmacro lns [#* macro_args]
+		;
+		(setv args (list macro_args)) ; for mutations
+		(for [[&i &arg] (enumerate args)]
+			(cond ; Integer/String/Symbol
+				  (or (= (type &arg) hy.models.Integer)  ; 1 -> [1]
+					  (= (type &arg) hy.models.String)	 ; "str" -> ["str"]
+					  (= (type &arg) hy.models.Symbol))  ; vrbl -> [vrbl]
+				  (setv (get args &i) [&arg])
+				  ; .attr -> attr
+				  (_isDottedAttr &arg)
+				  (setv (get args &i) (_extractDottedAttr &arg))
+				  ; (-1) -> [(- 1)]
+				  (_isNegIntegerExpr &arg)
+				  (setv (get args &i) [&arg])
+				  ; (mth> f 1) -> (call "f" 1)
+				  (_isExprWithHeadSymbol &arg "mth>")
+				  (setv (get args &i) `(call ~(str (_extractDottedAttr (get &arg 1)))
+											~@(get &arg (slice 2 None))))
+				  ; (mut> f 1) -> (call_mut "f" 1)
+				  (_isExprWithHeadSymbol &arg "mut>")
+				  (setv (get args &i) `(call_mut ~(str (_extractDottedAttr (get &arg 1)))
+												~@(get &arg (slice 2 None))))))
+		; process (dndr> ...):
+		(setv last_arg (get args (- 1)))
+		(cond (_isExprWithHeadSymbol last_arg "dndr>")
+			 `(->  (. lens ~@(get args (slice 0 (- 1))))
+				  ~(get last_arg (slice 1 None)))
+			  (_isExprWithHeadSymbol last_arg "dndr>>")
+			 `(->> (. lens ~@(get args (slice 0 (- 1))))
+				  ~(get last_arg (slice 1 None)))
+			  True
+			 `(. lens ~@args)))
+
+; ________________________________________________________________________/ }}}2
+; &+ &+> l> l>= ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	; compose lens, add setters/getters
+
+	(defmacro &+ [#* macro_args]
+		(setv lenses_ (butlast macro_args))
+		(setv func	 (get macro_args (- 1)))
+	   `(& ~@lenses_ (lns ~func)))
+
+	; compose lens, add setters/getters, apply
+
+	(defmacro &+> [#* macro_args]
+		(setv variable (get macro_args 0))
+		(setv lenses   (butlast (rest macro_args)))
+		(setv func	   (get macro_args (- 1)))
+	   `((& ~@lenses (lns ~func)) ~variable))
+
+	; construct lens, apply:
+
+	(defmacro l> [#* macro_args]
+		(setv variable	  (get macro_args 0))
+		(setv lenses_args (rest macro_args))
+	   `((lns ~@lenses_args) ~variable))
+
+	(defmacro l>= [#* macro_args]
+		(setv variable	  (get macro_args 0))
+		(setv lenses_args (rest macro_args))
+	   `(&= ~variable (lns ~@lenses_args)))
+
+; ________________________________________________________________________/ }}}2
+; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+	(defmacro assertm [op arg1 arg2]
+        (setv to_test `(~op ~arg1 ~arg2))
+        (setv _test_expr (hy.repr `(~op ~arg1 ~arg2)))
+        (setv _arg1 (hy.repr arg1))
+        (setv _arg2 (hy.repr arg2))
+        ;
+        (setv _full_expr_result True)
+       `(try (assert ~to_test False)
+             True ; return
+             (except [eFull Exception]
+                     (print "Error in" ~_test_expr "|" (type eFull) ":" eFull)
+                     (setv _outp eFull)
+                     (try ~arg1
+                          (print ">>" ~_arg1 "=" ~arg1)
+                          (except [e1 Exception]
+                                  (print ">> Can't calc" ~_arg1 "|" (type e1) ":" e1)))
+                     (try ~arg2
+                          (print ">>" ~_arg2 "=" ~arg2)
+                          (except [e2 Exception]
+                                  (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                                  (print)
+                     eFull )))
+
+	(defmacro gives_error_typeQ [expr error_type]
+       `(try ~expr
+             False
+             (except [e Exception]
+                     (= ~error_type (type e)))))
+
+; ________________________________________________________________________/ }}}2
+
 
 ; _____________________________________________________________________________/ }}}1
 

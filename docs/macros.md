@@ -4,6 +4,7 @@ fptk functions, macroses and imported modules:
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. You are here -> [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md)
 ---
 
 <!-- Intro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

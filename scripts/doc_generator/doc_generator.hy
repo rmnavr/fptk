@@ -7,8 +7,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; PARSER:
-
+; PARSER:
 ; CLASSES ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; used for creating DEFINED_FUNC as parent module name
@@ -134,7 +133,6 @@
 
 
 ; _____________________________________________________________________________/ }}}1
-
 ; split descr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ; [t]oken [o]riginal [r]esult [n]ame
@@ -178,7 +176,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; lmap everywhere is honestly not required, since normally only 1 elem is expected (but hey)
+; lmap everywhere is honestly not required, since normally only 1 elem is expected (but hey)
 ; find import_module ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv FPTK_IM (+ LPAR "import"
@@ -341,7 +339,6 @@
         (lmap pipe _DFs))
 
 ; _____________________________________________________________________________/ }}}1
-
 ; find all ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv FPTK_ALL (| (t_orn "_IM"   FPTK_IM  )
@@ -370,8 +367,7 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-    ; PRINTER: 
-
+; PRINTER:
 ; md file header str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv $HEADER
@@ -416,7 +412,7 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 
 ; _____________________________________________________________________________/ }}}1
-; entity to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; entity to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str build_prefix [ #^ FEntity fe ]
         (setv signature (if (= fe.signature "")
@@ -442,47 +438,53 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
               FEntityKind.IMPORT_FROM_MODULE_AS
               (sconcat "FROM: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " (<-" fe.org_name ")")) (build_prefix fe))
               ;
-              FEntityKind.REQUIRE_MACRO 
+              FEntityKind.REQUIRE_MACRO
               (sconcat "MACR: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))
               ;
-              FEntityKind.NON_IMPORT_INFO 
+              FEntityKind.NON_IMPORT_INFO
               (sconcat "INFO: " (pad1 fe.parent_module) " | " (pad2 (sconcat fe.name " /" fe.kind_str "/")) (build_prefix fe))
               ;
-              FEntityKind.DEFINED_SETV 
+              FEntityKind.DEFINED_SETV
               (sconcat "SETV: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))
               FEntityKind.DEFINED_FUNC
               (sconcat "DEFN: " (pad1 fe.parent_module) " | " (pad2 fe.name) (build_prefix fe))))
 
 ; _____________________________________________________________________________/ }}}1
-; group to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; group to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ (of List str)
         group2str_list [ #^ FGroup fgroup ]
         (flatten [ (sconcat "=== " fgroup.name " ===")
                    (lmap (p: entity2str
                              rstrip) ; rstrip removes possible spaces on the right (to not invoke «next line» in *.md)
-                         (find_all fgroup)) 
+                         (find_all fgroup))
                    "" ]))
 
 ; _____________________________________________________________________________/ }}}1
-; printers ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; printers ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn gprint
         [ #^ FGroup fgroup ]
         (lprint (group2str_list fgroup)))
 
-    (defn generate_and_write_doc
+    (defn #^ str generate_table
         [ #^ str source_file
-          #^ str output_file
-          #^ str [printQ False] #_ "will also print table of functions (without header) into stdout"
         ]
         (setv _code       (read_file source_file))
         (setv _groups     (find_fgroups _code))
         (setv _outp_table (->> _groups (lmap group2str_list)
                                      flatten
                                      (str_join :sep "\n")
+                                     (flip sconcat "\n")
                                      ))
-        (setv _outp_all   (sconcat $HEADER "\n```hy\n" _outp_table "```"))
+        (return _outp_table))
+
+    (defn write_doc
+        [ #^ str table
+          #^ str output_file
+          #^ str [printQ False] #_ "will also print table of functions (without header) into stdout"
+        ]
+        (setv _outp_all   (sconcat $HEADER "\n```hy\n" table "```"))
         (write_file _outp_all output_file)
         ;
         (print "File" output_file "written!")
@@ -490,7 +492,26 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ; _____________________________________________________________________________/ }}}1
 
-    (setv $SOURCE "../../src/fptk/fptk_funcs.hy")
+; CONFIG ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (setv $SOURCES [ "../../src/fptk/flow.hy"
+                     "../../src/fptk/apl.hy"
+                     "../../src/fptk/getters.hy"
+                     "../../src/fptk/typing.hy"
+                     "../../src/fptk/mathnlogic.hy"
+                     "../../src/fptk/strings.hy"
+                     "../../src/fptk/IO.hy"
+                     "../../src/fptk/lens.hy"
+                     "../../src/fptk/benchmark.hy"
+                     "../../src/fptk/testing.hy"
+                   ])
+
     (setv $OUTPUT "../../docs/functions.md")
-    (generate_and_write_doc $SOURCE $OUTPUT :printQ False)
+
+; _____________________________________________________________________________/ }}}1
+
+    (setv files_contents (lmap (fn [it] (generate_table it)) $SOURCES))
+    (setv all_files_content (sconcat #* files_contents))
+
+    (write_doc all_files_content $OUTPUT :printQ False)
 

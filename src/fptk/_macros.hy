@@ -7,7 +7,6 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-
 ; === Helpers (precompiled functions) ===
 ; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -155,6 +154,8 @@
 
 ; === Macros ===
 
+; Info ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     ; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
     ; 
     ; -> hy.R.fptk.fm               -> ✗ does not work in dev file
@@ -164,6 +165,8 @@
     ;    fm                         -> [✓ ✗] works from dev file
     ;    hy.R.fptk_macros.fm        -> [✓ ✗] works from dev file
     ;    hy.R.fptk.fptk_macros.fm   -> [✗ ✗] does not work anywhere
+
+; _____________________________________________________________________________/ }}}1
 
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -374,7 +377,7 @@
 	   `(&= ~variable (hy.R.fptk.lns ~@lenses_args)))
 
 ; _____________________________________________________________________________/ }}}1
-; assertm, errortypeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; assertm, gives_error_typeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro assertm [op arg1 arg2]
         (setv to_test `(~op ~arg1 ~arg2))

@@ -1,6 +1,9 @@
 
 // Log ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+	11 Oct 2025
+		+ refactored to submodules
+
 	30 Jul 2025
 		+ added many iterator funcs and also tests for them
 
@@ -76,6 +79,10 @@
 	+ juxt_apply(fs, *xi)
 
 // ____________________________________________________________________________/ }}}1
+// Inbox 1 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    ; add code coverage?
+    ; add funcy.interpose
 
 	Polishing:
 	- check every function: iterator/sequence, truly lazy
@@ -135,3 +142,13 @@
 		+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
 
 
+
+// ____________________________________________________________________________/ }}}1
+
+	- macros mini-descriptions
+	- fm (print '(f"123{it}123"))
+	- add dataclass updaters
+
+	- ljuxt [list]		variadic or list? apply or applicator?
+	- compose [list]
+	- apply [list]

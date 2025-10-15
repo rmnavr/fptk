@@ -37,99 +37,16 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 ## List of fptk entities
 
 ```hy
-=== Import Full Modules ===
-FULL MODULE           | sys                      ; py base module
-FULL MODULE           | os                       ; py base module
-FULL MODULE           | math                     ; py base module
-FULL MODULE           | operator                 ; py base module
-FULL MODULE           | random                   ; py base module
-FULL MODULE           | re                       ; py base module
-FULL MODULE           | itertools                ; py base module
-FULL MODULE           | functools                ; py base module
-FROM: pprint          | pprint
-FULL MODULE           | hyrule                   ; hy base module
-FULL MODULE           | funcy                    ; 3rd party module (FP related)
-FROM: lenses          | lens                     ; 3rd party module (for working with immutable structures)
-
-=== Typing ===
-MACR: hyrule          | of                       ; (of List int) -> List[int]
-FROM: dataclasses     | dataclass
-FROM: enum            | Enum
-FROM: typing          | List
-FROM: typing          | Tuple
-FROM: typing          | TypedDict
-FROM: typing          | Dict
-FROM: typing          | Union
-FROM: typing          | Generator
-FROM: typing          | Any
-FROM: typing          | Optional
-FROM: typing          | Callable
-FROM: typing          | Literal
-FROM: typing          | Type
-FROM: typing          | TypeVar
-FROM: funcy           | noneQ (<-isnone)
-FROM: funcy           | notnoneQ (<-notnone)
-DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
-DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
-DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
-DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
-DEFN: fptk            | strQ                     :: strQ(x)  ; checks literally if type(x) == str, will also work with StrictStr from pydantic
-DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
-FROM: funcy           | listQ (<-is_list)        :: listQ(value)  ; checks if value is list
-FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(value)  ; checks if value is tuple
-FROM: funcy           | setQ (<-is_set)          :: setQ(value)  ; checks if value is set
-FROM: funcy           | iteratorQ (<-is_iter)    :: iteratorQ(value)  ; checks if value is iterator
-FROM: funcy           | iterableQ (<-iterable)   :: iterableQ(value)  ; checks if value is iterable
-
-=== Strict Typing ===
-FROM: pydantic        | BaseModel
-FROM: pydantic        | StrictInt                ; will be still of int type, but will perform strict typecheck when variable is created
-FROM: pydantic        | StrictStr                ; will be still of str type, but will perform strict typecheck when variable is created
-FROM: pydantic        | StrictFloat              ; will be still of float type, but will perform strict typecheck when variable is created
-SETV: fptk            | StrictNumber             ; Union of StrictInt and StrictFloat
-FROM: pydantic        | validate_call            ; decorator for type-checking func args
-SETV: fptk            | validateF                ; same as validate_call but with option validate_return=True set (thus validating args and return type)
-
-=== Buffed getters ===
-INFO: hy              | . /macro/                :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
-INFO: hy              | get /macro/              :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
-FROM: funcy           | nth                      :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
-INFO: py              | slice /base/             :: (slice start end step)
-INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
-FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
-MACR: hyrule          | ncut
-FROM: funcy           | first                    :: first(seq) -> Optional elem
-FROM: funcy           | second                   :: second(seq) -> Optional elem
-DEFN: fptk            | third                    :: third(seq) -> Optional elem
-DEFN: fptk            | fourth                   :: fourth(seq) -> Optional elem
-DEFN: fptk            | beforelast               :: beforelast(seq) -> Optional elem
-FROM: funcy           | last                     :: last(seq) -> Optional elem
-DEFN: fptk            | rest                     :: rest(seq) -> List  ; drops 1st elem of list
-DEFN: fptk            | butlast                  :: butlast(seq) -> List  ; drops last elem of list
-DEFN: fptk            | drop                     :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
-DEFN: fptk            | take                     :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
-DEFN: fptk            | pick                     :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
-FROM: funcy           | pluck                    :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
-FROM: funcy           | lpluck                   :: lpluck(key, mappings) -> list
-FROM: funcy           | pluck_attr               :: pluck_attr(attr, objects) -> generator
-FROM: funcy           | lpluck_attr              :: lpluck_attr(attr, objects) -> list
-
-=== index-1-based getters ===
-FROM: hyrule          | range_ (<-thru)          :: range_(start, end, step) -> List  ; same as range, but with 1-based index
-DEFN: fptk            | get_                     :: get_(seq, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
-DEFN: fptk            | nth_                     :: nth_(n, seq) -> Optional elem  ; same as nth, but with 1-based index (will throw error for n=0)
-DEFN: fptk            | slice_                   :: slice_(start, end, step)  ; similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)
-DEFN: fptk            | cut_                     :: cut_(seq, start, end, step) -> List  ; same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)
-
-=== Control flow ===
+=== FP: Control flow ===
 INFO: hy              | if /base/                :: (if check true false)
 INFO: hy              | cond /base/              :: (cond check1 do1 ... true doT)
 MACR: hyrule          | case
 MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
+MACR: fptk._macros    | p:                       ; pipe of partials
 
-=== FP: composition ===
+=== FP: Composition ===
 FROM: hyrule          | constantly               ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
 FROM: funcy           | identity                 ; identity(30) -> 30
 MACR: hyrule          | as->
@@ -147,6 +64,10 @@ DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; e
 DEFN: fptk            | pflip                    :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
 
 === FP: threading ===
+MACR: fptk._macros    | fm                       ; anonymous function that accepts 'it' or '%1', '%2', ... args
+MACR: fptk._macros    | f>                       ; same as fm, but with immediate application
+MACR: fptk._macros    | mapm                     ; same as map, but expects fm-syntax for func
+MACR: fptk._macros    | lmapm                    ; same as lmap, but expects fm-syntax for func
 INFO: py              | map /base/               :: map(func, *iterables) -> map object
 FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List
 FROM: itertools       | starmap                  ; starmap(function, iterable)
@@ -167,6 +88,8 @@ DEFN: fptk            | nested                   :: nested(n, f)  ; f(f(f(...f))
 DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
 === APL: filtering ===
+MACR: fptk._macros    | filterm                  ; same as filter, but expects fm-syntax for func
+MACR: fptk._macros    | lfilterm                 ; same as lfilter, but expects fm-syntax for func
 INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
 FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
 FROM: itertools       | mask_sel (<-compress)    :: mask_sel(data, selectors) -> iterator  ; selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'
@@ -218,7 +141,75 @@ DEFN: fptk            | lmulticut_by             :: lmulticut_by(pred, seq, keep
 === APL: counting ===
 DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 
-=== General Math ===
+=== Getters: buffed ===
+INFO: hy              | . /macro/                :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
+INFO: hy              | get /macro/              :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
+FROM: funcy           | nth                      :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
+INFO: py              | slice /base/             :: (slice start end step)
+INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
+FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+MACR: hyrule          | ncut
+MACR: fptk._macros    | pluckm                   ; same as pluck, but accepts .arg syntax
+MACR: fptk._macros    | lpluckm                  ; same as lpluck, but accepts .arg syntax
+MACR: fptk._macros    | getattrm                 ; same as getattr, but accepts .arg syntax
+FROM: funcy           | first                    :: first(seq) -> Optional elem
+FROM: funcy           | second                   :: second(seq) -> Optional elem
+DEFN: fptk            | third                    :: third(seq) -> Optional elem
+DEFN: fptk            | fourth                   :: fourth(seq) -> Optional elem
+DEFN: fptk            | beforelast               :: beforelast(seq) -> Optional elem
+FROM: funcy           | last                     :: last(seq) -> Optional elem
+DEFN: fptk            | rest                     :: rest(seq) -> List  ; drops 1st elem of list
+DEFN: fptk            | butlast                  :: butlast(seq) -> List  ; drops last elem of list
+DEFN: fptk            | drop                     :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
+DEFN: fptk            | take                     :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
+DEFN: fptk            | pick                     :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
+FROM: funcy           | pluck                    :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
+FROM: funcy           | lpluck                   :: lpluck(key, mappings) -> list
+FROM: funcy           | pluck_attr               :: pluck_attr(attr, objects) -> generator
+FROM: funcy           | lpluck_attr              :: lpluck_attr(attr, objects) -> list
+
+=== Typing: Base ===
+MACR: hyrule          | of                       ; (of List int) -> List[int]
+MACR: fptk._macros    | f::                      ; (f:: int -> int -> (of Tuple int str))
+FROM: dataclasses     | dataclass
+FROM: enum            | Enum
+FROM: typing          | List
+FROM: typing          | Tuple
+FROM: typing          | TypedDict
+FROM: typing          | Dict
+FROM: typing          | Union
+FROM: typing          | Generator
+FROM: typing          | Any
+FROM: typing          | Optional
+FROM: typing          | Callable
+FROM: typing          | Literal
+FROM: typing          | Type
+FROM: typing          | TypeVar
+FROM: typing          | Generic
+FROM: funcy           | noneQ (<-isnone)
+FROM: funcy           | notnoneQ (<-notnone)
+DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
+DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
+DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
+DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
+DEFN: fptk            | strQ                     :: strQ(x)  ; checks literally if type(x) == str, will also work with StrictStr from pydantic
+DEFN: fptk            | dictQ                    :: dictQ(x)  ; checks literally if type(x) == dict
+FROM: funcy           | listQ (<-is_list)        :: listQ(value)  ; checks if value is list
+FROM: funcy           | tupleQ (<-is_tuple)      :: tupleQ(value)  ; checks if value is tuple
+FROM: funcy           | setQ (<-is_set)          :: setQ(value)  ; checks if value is set
+FROM: funcy           | iteratorQ (<-is_iter)    :: iteratorQ(value)  ; checks if value is iterator
+FROM: funcy           | iterableQ (<-iterable)   :: iterableQ(value)  ; checks if value is iterable
+
+=== Typing: Strict ===
+FROM: pydantic        | BaseModel
+FROM: pydantic        | StrictInt                ; will be still of int type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictStr                ; will be still of str type, but will perform strict typecheck when variable is created
+FROM: pydantic        | StrictFloat              ; will be still of float type, but will perform strict typecheck when variable is created
+SETV: fptk            | StrictNumber             ; Union of StrictInt and StrictFloat
+FROM: pydantic        | validate_call            ; decorator for type-checking func args
+SETV: fptk            | validateF                ; same as validate_call but with option validate_return=True set (thus validating args and return type)
+
+=== Math and logic: Basic math ===
 FROM: hyrule          | inc
 FROM: hyrule          | dec
 FROM: hyrule          | sign
@@ -241,7 +232,7 @@ DEFN: fptk            | zeroQ
 DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
 
-=== Trigonometry ===
+=== Math and logic: Trigonometry ===
 FROM: math            | pi                       ; literally just float pi=3.14...
 FROM: math            | sin                      :: sin(x)  ; x is in radians
 FROM: math            | cos                      :: cos(x)  ; x is in radians
@@ -253,7 +244,7 @@ FROM: math            | asin                     :: asin(x)  ; x is in radians, 
 FROM: math            | atan                     :: asin(x)  ; x is in radians, result is between -pi/2 and pi/2
 FROM: math            | atan2                    :: atan2(y, x)  ; both signs are considered
 
-=== Base operators to functions ===
+=== Math and logic: Base operators to functions ===
 FROM: operator        | and_                     ; 'and' as function
 FROM: operator        | or_                      ; 'or' as function
 FROM: operator        | not_                     ; 'not' as function
@@ -276,7 +267,7 @@ DEFN: fptk            | mul                      :: mul(*args)  ; multiplication
 DEFN: fptk            | plus                     :: plus(*args)  ; addition as a monoid (will not give error when used with 0 or 1 args)
 DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
 
-=== General checksQ ===
+=== Math and logic: Logic checks ===
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
 DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
 DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
@@ -287,7 +278,13 @@ DEFN: fptk            | falseQ                   ; checks directly via (= x Fals
 DEFN: fptk            | oflenQ                   :: (oflenQ xs n) -> (= (len xs) n)
 DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
 
-=== Strings ===
+=== Math and logic: Random ===
+FROM: random          | choice                   :: choice(seq) -> Elem  ; throws error for empty list
+FROM: random          | randint                  :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
+FROM: random          | randfloat (<-uniform)    :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
+FROM: random          | rand01 (<-random)        :: rand01() -> float  ; generates random number in interval [0, 1)
+
+=== Strings: Basics ===
 DEFN: fptk            | strlen                   :: strlen(text)  ; rename of len, underlines usage on strings
 DEFN: fptk            | str_join                 :: str_join(ss, sep='')  ; rearrangement of funcy.str_join, ss is seq of strings
 DEFN: fptk            | lowercase                :: lowercase(string)  ; str.lower method as a function
@@ -296,27 +293,34 @@ DEFN: fptk            | lstrip                   :: lstrip(string, chars=None)  
 DEFN: fptk            | rstrip                   :: rstrip(string, chars=None)  ; str.rstrip method as a function
 DEFN: fptk            | enlengthen               :: enlengthen(string, target_len, char=' ', on_tail=True)  ; adds char to string until target_len reached
 
-=== Regex ===
+=== Strings: Regex ===
 FROM: re              | re_sub (<-sub)           :: re_sub(rpattern, replacement, string, count=0, flags=0)
 FROM: re              | re_split (<-split)       :: re_split(rpattern, string)
 FROM: funcy           | re_find                  :: re_find(rpattern, string, flags=0) -> str  ; returns first found
 FROM: funcy           | re_test                  :: re_test(rpattern, string, ...) -> bool  ; tests if string has match (not neccessarily whole string)
 FROM: funcy           | re_all                   :: re_all(rpattern, string, ...) -> List
 
-=== Random ===
-FROM: random          | choice                   :: choice(seq) -> Elem  ; throws error for empty list
-FROM: random          | randint                  :: randint(a, b) -> int  ; returns random integer in range [a, b] including both end points
-FROM: random          | randfloat (<-uniform)    :: randfloat(a, b) -> float  ; range is [a, b) or [a, b] depending on rounding
-FROM: random          | rand01 (<-random)        :: rand01() -> float  ; generates random number in interval [0, 1)
-
 === IO ===
 FROM: os.path         | file_existsQ (<-exists)  :: file_existsQ(filename)  ; also works on folders
 FROM: os.path         | fileQ (<-isfile)         ; fileQ(filename)
 FROM: os.path         | dirQ (<-isdir)           ; dirQ(filename)
 DEFN: fptk            | read_file                :: read_file(file_name, encoding='utf-8') -> str  ; returns whole file content
-DEFN: fptk            | write_file               :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
+DEFN: fptk            | write_to_file            :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
+
+=== Lens ===
+FROM: lenses          | lens                     ; 3rd party module (for working with immutable structures)
+MACR: fptk._macros    | lns
+MACR: fptk._macros    | &+
+MACR: fptk._macros    | &+>
+MACR: fptk._macros    | l>
+MACR: fptk._macros    | l>=
 
 === Benchmarking ===
 DEFN: fptk            | with_execution_time      :: w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
 DEFN: fptk            | dt_print                 :: dt_printer(* args, fresh_run=False)  ; starts timer on fresh run, prints time passed since previous call
+
+=== Testing ===
+MACR: fptk._macros    | assertm                  :: (assertm op arg1 arg2)  ; tests if (op arg1 arg2), for example (= 1 1)
+MACR: fptk._macros    | gives_error_typeQ        ; (assertm gives_error_typeQ (get [1] 2) IndexError)
+
 ```

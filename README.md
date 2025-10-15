@@ -26,29 +26,32 @@ import fptk *
 
 # Topics that fptk covers
 
-fptk aims to unite and bring following things into main scope.
+fptk is general purpose functional programming language extension for hy-lang.
 
-Basics:
-- Full basic modules that are math and FP-relevant (`math`, `operator`, `itertools`, etc.)
+Main parts of FPTK are:
+
+Basic operations in FP-style:
 - Math, logic and checks (most checks in fptk end with "Q": like `intQ`, `zerolenQ`, etc.)
-- Strings manipulation and regexes
-- Convenience functions for basic IO (like `read_file` and `file_existsQ`)
+- String manipulation and regexes
+- Basic IO (functions like `read_file` and `file_existsQ`)
 - Basic benchmarking and debugging
 
-Typing:
-- Basic types like `Any`, `Optional`, etc.
-- Strict type checking via [pydantic](https://github.com/pydantic/pydantic)
-
-APL-like functionality (heavily based on [funcy](https://github.com/Suor/funcy/) lib):
-> fptk follows funcy approach of providing both generator and list version of most functions (like `map` and `lmap`).
+Curated list of APL-like functions (heavily inspired by [funcy](https://github.com/Suor/funcy/) lib):
+> fptk follows funcy approach of providing both generator
+> and list version of most functions (like `map` and `lmap`).
 > Also, most functions do not mutate data.
 - Buffed getters (first, second, last, rest, ...)
 - Functional composition, piping, partial application and currying
 - Mapping, filtering and partitioning of sequences
 
+Typing:
+- Reimport of basic types like `Any`, `Optional`, etc.
+- Dynamic type checking to an extent that is offered by [pydantic](https://github.com/pydantic/pydantic)
+
 Other quirky things:
 - 1-based index variants of basic getters (don't worry, fptk does not force using them)
 - macros for lenses ([lenses](https://github.com/ingolemo/python-lenses) is Haskell-ish approach for manipulating deeply nested immutable data)
+- Generic Result type (inspired by Haskell's Either monad) that can be type-checked by pydantic
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Dependencies ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
@@ -68,8 +71,9 @@ Tested with:
 ## Documentation
 
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md) — auto-generated table with concise description for each entity
-2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md) — every fptk macro except lens-related macros
+2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md) — detailed description of every fptk macro (except lens-related macros)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md) — macros that simplify lens definition/application/composition
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md) — Result monad API
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Project status ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

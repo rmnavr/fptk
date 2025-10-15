@@ -1,6 +1,24 @@
     
-    (import  fptk.fptk_funcs *)            ; imports fptk functions, libs, classes
-    (require fptk.fptk_funcs *)            ; used solely for importing hyrule's ->, ->> and such
+    (import  fptk.apl        *)
+    (import  fptk.benchmark  *)
+    (import  fptk.flow       *)
+    (import  fptk.getters    *)
+    (import  fptk.IO         *)
+    (import  fptk.lens       *)
+    (import  fptk.mathnlogic *)
+    (import  fptk.strings    *)
+    (import  fptk.testing    *)
+    (import  fptk.typing     *)
 
-    (require fptk.fptk_macros *)           ; imports fptk macroses
+    (require fptk.apl        *)
+    (require fptk.benchmark  *)
+    (require fptk.flow       *)
+    (require fptk.getters    *)
+    (require fptk.IO         *)
+    (require fptk.lens       *)
+    (require fptk.mathnlogic *)
+    (require fptk.strings    *)
+    (require fptk.testing    *)
+    (require fptk.typing     *)
 
+    (import  fptk.monads.resultM *)

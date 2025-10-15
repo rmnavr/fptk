@@ -44,8 +44,15 @@
 	(l> data   1  2)
 	(p> data  f1 f2)
 
-	(f params vrbl) // good for p> and ->> macro
-	(f vrbl params) // good for -> macro
+	(f params vrbl)		// good for p: and ->> macro
+						// PREFFERED becase (partial f params) is now possible
+
+	(f vrbl params)		// good for -> macro
+	(f vrbl * params)	// will also work with ->> macro, which is good
 
 // ____________________________________________________________________________/ }}}1
+
+    fptk syntax idea:
+    - .x = attr or func without call (which is the same in Python)
+    - (.x) = func
 

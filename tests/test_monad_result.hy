@@ -1,0 +1,78 @@
+
+    (import fptk *) (require fptk *)
+    (import pydantic [ConfigDict])
+
+; test 01 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (print "RUNNING TEST #01 :" "\n")
+
+    (defn [validateF] #^ (of Result float str)
+        safe_divide [#^ float x #^ float y]
+        (if (neq y 0)
+             (return (Success (div x y)))
+             (return (Failure f"{x}/{y}, div by 0, bruh"))))
+
+    (print (with_execution_time (fm (safe_divide 3 0 ))))
+    (print (safe_divide 1 2))
+    (print (safe_divide 1 0))
+    (print (failureQ (safe_divide 1 2 )))
+    (print (failureQ (safe_divide 1 0 )))
+    (print (successQ (Success 3 )))
+    (print (successQ (Failure "bubr" )))
+
+    (print (mapR (safe_divide 1 2) double (partial mul 7)))
+    (print (mapR (safe_divide 1 0) double (partial mul 7)))
+    (assertm gives_error_typeQ (mapR 3 double (partial mul 7)) ValueError)
+    (print (bindR (Success 8) (pflip safe_divide 4) (pflip safe_divide 4)))
+    (print (mapR (Success 8) (pflip div 4) (pflip div 4)))
+
+    (setv x (bindR (Success 8) (pflip safe_divide 4) (pflip safe_divide 4)))
+
+; _____________________________________________________________________________/ }}}1
+; test 02 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (print "\n")
+    (print "RUNNING TEST #02 :" "\n")
+
+    (defclass AppError [BaseModel]
+        #^ StrictInt n
+        #^ Exception e
+        (setv model_config (ConfigDict :arbitrary_types_allowed True))
+        (defn __init__ [self #^ StrictInt n #^ Exception e]
+            (-> (super) (.__init__ :n n :e e)))
+        (defn __str__ [self] (sconcat "<" (str self.n) ": " (str self.e) ">"))
+        (defn __repr__ [self] (self.__str__)))
+
+    (defn [validateF] #^ (of Result float AppError)
+        safe_divide2 [x y]
+        (if (neq y 0)
+             (return (Success (div x y )))
+             (return (Failure (AppError 1 (ValueError f"{x}/{y} is dividing over 0, wtf" ))))))
+
+    (print (safe_divide2 1 2))
+    (print (safe_divide2 1 0))
+
+; _____________________________________________________________________________/ }}}1
+; test 03 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (print "\n")
+    (print "RUNNING TEST #03 :" "\n")
+
+    (setv x (Success 14))
+    (setv y (Failure "get some err, punk"))
+
+    (print x "|" x.result "|" x.value)
+    (print x "|" x.result "|" y.value)
+
+    (setv x (Success 3))
+    (setv y (Failure "some_err"))
+
+    (print x.value)
+    (print y.value)
+    (print (unwrapR x))
+    (print (unwrapE y))
+    (print (unwrapE_or x "def_err"))
+    (print (unwrapR_or y 0))
+
+; _____________________________________________________________________________/ }}}1
+

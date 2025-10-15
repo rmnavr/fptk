@@ -1,7 +1,7 @@
     
-    (import os)
-    (import subprocess)
-    (import _fptk_local *)
+    (import  os)
+    (import  subprocess)
+    (import  _fptk_local *)
     (require _fptk_local *)
 
 ; [F] run shell command ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -21,110 +21,79 @@
             (print result.stderr)))
 
 ; _____________________________________________________________________________/ }}}1
-; [F] vim cells ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; these are given in such form, because VimCells messes with {({ and such (this is Vim issue)
-    (setv $OP3 (smul "{" 3))
-    (setv $CL3 (smul "}" 3))
-
-    (defn #^ str
-        increase_all_vimcells_depth
-        [ #^ str code
-        ]
-        "changes all (((N and )))N to (((N+1 and )))N+1, also making cells headers shorter"
-        (re_sub (sconcat r"(‾‾‾‾‾\\ " $OP3 r"|_____/ " $CL3 r")(\d)")
-                (fm (sconcat (drop 5 (%1.group 1)) (str (inc (int (%1.group 2))))))
-                code))
-
-    (defn #^ str
-        wrap_in_new_vimcell
-        [ #^ str cell_header
-          #^ str code
-        ]
-        "adds vimcell opener and closer around string"
-        (setv opener 
-              (sconcat "; " cell_header " "
-                       (smul "‾" (- 76 (strlen cell_header)))
-                       "\\ "
-                       (smul "{" 3)
-                       "1"))
-        (setv closer (sconcat "; _____________________________________________________________________________/ " $CL3 "1"))
-        (sconcat opener "\n"
-                 (increase_all_vimcells_depth code)
-                 "\n" closer))
-
-; _____________________________________________________________________________/ }}}1
-; [F] relink R imports ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; fptk_macros.hy has calls like:
-    ; - hy.R.fptk.lns
-    ; - hy.R.fptk.fm
-    ; 
-    ; For them to work correctly in _fptk_local, it should be relinked 
-
-    (defn #^ str
-        relink_R_imports
-        [ #^ str text
-        ]
-        (re_sub r"(hy\.R\.fptk\.)(lns|fm)" 
-                (fm (%1.group 2))
-                text))
-
-; _____________________________________________________________________________/ }}}1
 ; [F] get version in setup.py ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str
-        extract_version_from_setup_py 
+        extract_version
         [ #^ str version_header
-          #^ str setup_py_content
+          #^ str file_content
         ]
         (re_find (sconcat version_header r"\s*=\s*'(.*?)'")
-                 setup_py_content
+                 file_content
                  re.DOTALL))
 
 ; _____________________________________________________________________________/ }}}1
 
-    (print "\n" "=== FPTK PCKG HELPER =======================================" "\n")
+
+; CONFIG ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv $HYCMD          "hy")
     (setv $FPTK_TESTS_DIR "../../tests")
-    (setv $FPTK_TESTS     "test_fptk.hy")
+    (setv $FPTK_TESTS     ["test_macros_import.hy" "tests_main.hy" "test_monad_result.hy"])
     (setv $DOCGEN_DIR     "../doc_generator")
     (setv $DOCGEN         "doc_generator.hy")
-    (setv $FPTK_FUNCS     "../../src/fptk/fptk_funcs.hy")
-    (setv $FPTK_MACROS    "../../src/fptk/fptk_macros.hy")
-    (setv $FPTK_LOCAL     "../_generated_fptk_local/_fptk_local.hy")
-    (setv $TIMESTAMP      "../_generated_fptk_local/_fptk_ver_")
+    (setv $FPTK_DIR       "../../src/fptk")
+    (setv $TIMESTAMP      "_fptk_ver_")
 
     (setv $VERSION_HEADER "proj_version")
     (setv $SETUP_PY       "../../setup.py")
 
-    (dt_print "[Step 1/3] Performing tests:")
+; _____________________________________________________________________________/ }}}1
+; Utils ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-        (run_shell_command f"cd {$FPTK_TESTS_DIR} && {$HYCMD} {$FPTK_TESTS}")
-        ; && chains cmd commands (2nd is run only if 1st was successful)
+    ; 7 = inverse, 4 = underline, 1 = bold
+    (defn colorize [n string] (sconcat "[" (str n) "m" string "[0m"))
 
-    (dt_print "[Step 2/3] Doc generation for functions:")
+    ; && chains cmd commands (2nd is run only if 1st was successful)
 
-        (run_shell_command f"cd {$DOCGEN_DIR} && {$HYCMD} {$DOCGEN}")
+    (defn run_testN [n]
+        (try (run_shell_command f"cd {$FPTK_TESTS_DIR} && {$HYCMD} {(get $FPTK_TESTS n)}")
+             (print (colorize 4 (sconcat "Test #" (str (inc n)) " - finished")))
+             (except [Exception]
+                     (print "ERROR: failed trying to run test" (str (inc n)))
+                     (sys.exit 1))))
 
-    (dt_print "[Step 3/3] Generating _fptk_local.hy:")
+; _____________________________________________________________________________/ }}}1
+    
+    ; STEP 1 (tests)
 
-        (setv fptk_funcs_code     (->> (read_file $FPTK_FUNCS)  (wrap_in_new_vimcell "functions and modules")))
-        (setv fptk_macros_code    (->> (read_file $FPTK_MACROS) (wrap_in_new_vimcell "macros") relink_R_imports))
-        (setv version_in_setup_py (extract_version_from_setup_py $VERSION_HEADER (read_file $SETUP_PY)))
+        (print (colorize 7 "[Step 1/3] Running tests:"))
+        (run_testN 0) (run_testN 1) (run_testN 2)
 
-        (write_file (sconcat "\n" "; This is local version of github.com/rmnavr/fptk lib.\n"
-                             "; It's purpose is to have stable fptk inside other projects until fptk reaches stable version.\n"
-                             "; Due to how hy macros imports work, when you import macros that depend from\n"
-                             "; lns and fm (which are l>, f> and others) you need to also import lns and fm.\n"
-                             "; fptk lib itself doesn't have this issue.\n\n"
-                            f"; This file was generated from local git version: {version_in_setup_py}"
-                            f"\n\n{fptk_funcs_code}\n{fptk_macros_code}\n\n")
-                    $FPTK_LOCAL)
-        (write_file "" (sconcat $TIMESTAMP version_in_setup_py))
-        (print f"File {$FPTK_LOCAL} written!")
-        (print f"(marked as version {version_in_setup_py} as found in setup.py)")
+    ; STEP 2 (docgen)
 
-    (print "\n" "=== ALL DONE ===============================================" "\n")
+        (print "")
+        (print (colorize 7 "[Step 2/3] Doc generation for functions:"))
+
+        (try (run_shell_command f"cd {$DOCGEN_DIR} && {$HYCMD} {$DOCGEN}")
+             (print (colorize 4 "Docgen - finished"))
+             (except [Exception] (print "ERROR: failed trying to run docgen")
+                                 (sys.exit 1)))
+
+    ; STEP3 (adding version marker)
+
+        (print "")
+        (print (colorize 7 "[Step 3/3] Generating version marker file in fptk dir (and removing previous)"))
+
+        (setv found_prev (lfilter (fm (re_test $TIMESTAMP it))
+                                  (os.listdir $FPTK_DIR)))
+        (setv found_prev (lmap (partial sconcat $FPTK_DIR "/") found_prev))
+        (when (fnot zerolenQ found_prev)
+              (print "found prev:" found_prev)
+              (lmap os.remove found_prev))
+
+        (setv version (extract_version $VERSION_HEADER (read_file $SETUP_PY)))
+        (setv filename (sconcat $FPTK_DIR "/" $TIMESTAMP version))
+        (print "writing new:" filename)
+        (write_file "" filename)
 
