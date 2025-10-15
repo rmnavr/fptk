@@ -75,10 +75,10 @@ Tested with:
 # Project status
 
 As of October 2025:
-[x] full documentation is done
-[x] testing suite is written
-[ ] some functions require polishing (mostly on adding proper error messsaging)
-[ ] stable release is not yet reached (API-breaking changes can happen)
+- [x] full documentation is done
+- [x] testing suite is written
+- [ ] some functions require polishing (mostly on adding proper error messsaging)
+- [ ] stable release is not yet reached (API-breaking changes can happen)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
