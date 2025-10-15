@@ -67,15 +67,18 @@ Tested with:
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md) — auto-generated table with concise description for each entity
 2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md) — detailed description of every fptk macro (except lens-related macros)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md) — macros that simplify lens definition/application/composition
-4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md) — Result monad API
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md) — API of fptk implementation of Result type
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Project status ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # Project status
 
-As of July 2025, full documentation and testing is implemented.
-However, stable release is not yet reached (API-breaking changes can happen)
+As of October 2025:
+[x] full documentation is done
+[x] testing suite is written
+[ ] some functions require polishing (mostly on adding proper error messsaging)
+[ ] stable release is not yet reached (API-breaking changes can happen)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Installation ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
