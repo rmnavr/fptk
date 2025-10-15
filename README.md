@@ -3,21 +3,17 @@
 
 # **fptk** — functional toolkit for hy-lang
 
-fptk is curated list of math and FP-related modules/classes/functions/macroses,
+fptk is general purpose functional programming language extension for hy-lang.
+
+It is implemented as a curated list of FP-related types/classes, functions and macroses,
 that are supposed to be imported into main scope altogether to always have them at your fingertips.
 > Having high amount of functions available in main context is inspired by Wolfram Language,
 > in which all (yes, ALL) standard functions are always in the main context.
 
 Intended usage of fptk in hy is:
 ```hy
-(import fptk *)     ; import modules, functions and classes
+(import fptk *)     ; import modules, functions and types/classes
 (require fptk *)    ; import macros
-```
-
-You can also use fptk in python, but you won't be able to access macros,
-since macros are hy-only feature (even without macros, fptk functions can be of interest):
-```python
-import fptk *
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -25,8 +21,6 @@ import fptk *
 <!-- Topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 # Topics that fptk covers
-
-fptk is general purpose functional programming language extension for hy-lang.
 
 Main parts of FPTK are:
 
@@ -36,7 +30,7 @@ Basic operations in FP-style:
 - Basic IO (functions like `read_file` and `file_existsQ`)
 - Basic benchmarking and debugging
 
-Curated list of APL-like functions (heavily inspired by [funcy](https://github.com/Suor/funcy/) lib):
+APL-like functions (heavily inspired by [funcy](https://github.com/Suor/funcy/) lib):
 > fptk follows funcy approach of providing both generator
 > and list version of most functions (like `map` and `lmap`).
 > Also, most functions do not mutate data.
