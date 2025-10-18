@@ -50,7 +50,7 @@
     (import  funcy  [autocurry])
     (import  funcy  [partial])
     (import  funcy  [rpartial])
-    (import  funcy  [compose])  
+    (import  funcy  [compose])      #_ "applicator"
     (import  funcy  [rcompose]) 
 
     (import  funcy  [ljuxt]) #_ "ljuxt(*fs) = [f1, f2, ...] applicator |" ;;

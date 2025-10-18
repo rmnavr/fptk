@@ -12,11 +12,11 @@
 
     (import lenses [lens])      #_ "3rd party module (for working with immutable structures)"
 
-    (require fptk._macros [lns])
-    (require fptk._macros [&+])
-    (require fptk._macros [&+>])
-    (require fptk._macros [l>])
-    (require fptk._macros [l>=])
+    (require fptk._macros [lns])   #_ "macros for working with lens, see lens macros docs for details"
+    (require fptk._macros [&+])    #_ "macros for working with lens, see lens macros docs for details"
+    (require fptk._macros [&+>])   #_ "macros for working with lens, see lens macros docs for details"
+    (require fptk._macros [l>])    #_ "macros for working with lens, see lens macros docs for details"
+    (require fptk._macros [l>=])   #_ "macros for working with lens, see lens macros docs for details"
 
 ; _____________________________________________________________________________/ }}}1
 

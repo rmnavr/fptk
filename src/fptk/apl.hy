@@ -252,10 +252,3 @@
 
 ; _____________________________________________________________________________/ }}}1
 
-
-    (defn _tmp_pick [ns seq]
-        " pics elems ns from seq,
-          throws error if some of ns doesn't exist,
-          ns can be list of dicts keys
-        "
-        )

@@ -1,26 +1,4 @@
 
-; Doc ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    ; This is minilib implementing Result monad
-    ; that is compatible with pydantic Generics typecheck
-
-    ; User is exposed to following objects:
-    ; 
-    ; - (Success val) — factory function (not class!)
-    ; - (Failure val) — factory function (not class!)
-    ; - Result — class, needed for correct type annotation/validation
-    ; - successQ/failureQ -> bool
-    ;
-    ; - (mapR  resultM pureF1 pureF2 ...)
-    ; - (bindR resultM monadicF1 monadicF2 ...)
-    ; 
-    ; - unwrapR    — throws error when not Success
-    ; - unwrapR_or — falls back to default when not Success
-    ; - same for unwrapE/unwrapE_or
-    ; - resultM.result — access contained Failure or Success object (they are both stored in .result attribute
-    ; - resultM.value — access value in Failure or Success object (they both have .value attribute — this is deliberate design decision)
-
-; _____________________________________________________________________________/ }}}1
 ; Import/Export ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	import  typing   [TypeVar Generic Union]

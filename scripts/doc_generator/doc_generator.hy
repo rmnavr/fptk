@@ -373,10 +373,11 @@
     (setv $HEADER
 "
 ---
-fptk functions, macroses and imported modules:
+fptk docs:
 1. You are here -> [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md)
 ---
 
 # Auto-generated full list of FPTK entities (except macros)

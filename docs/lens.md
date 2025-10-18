@@ -1,6 +1,6 @@
 
 ---
-fptk functions, macroses and imported modules:
+fptk docs:
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. You are here -> [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)

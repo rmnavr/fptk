@@ -1,6 +1,6 @@
 
 ---
-fptk functions, macroses and imported modules:
+fptk docs:
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
@@ -12,12 +12,12 @@ fptk functions, macroses and imported modules:
 > Usage of Result type (or Either monad) pattern is best described in:
 > [F#-lang: Railway Oriented Programming](https://fsharpforfunandprofit.com/rop/)
 
-Terminology:
+Terminology used in fptk implementation of Result type:
 - Result — main type
 - Container — Success or Failure type
 - Value — Value wrapped in Success or Failure type
 
-Result type implementation in fptk aims to be compatible with pydantic typecheck.
+Result in fptk aims to be compatible with pydantic typecheck.
 
 > **Dev note**:
 > fptk implementation of Result type contains some tricks
@@ -25,8 +25,7 @@ Result type implementation in fptk aims to be compatible with pydantic typecheck
 > 
 > Most notable thing is that `Success` and `Failure` are
 > implemented as factory functions, not as classes (despite the fact that they start with a capital letter).
-> 
-> Actual types are called `_Success` and `_Failure` (which are not exposed to user).
+> And actual types are called `_Success` and `_Failure` (which are not exposed to user).
 
 # User API
 

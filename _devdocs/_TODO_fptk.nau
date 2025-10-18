@@ -152,3 +152,5 @@
 	- ljuxt [list]		variadic or list? apply or applicator?
 	- compose [list]
 	- apply [list]
+
+	lmapm/lfilterm -> when no it/%1 found, fall-back to map/filter?

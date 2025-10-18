@@ -1,56 +1,27 @@
 
-// DESIGN GUIDELINES ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+	Getters: return on no such elem?
+	- Default/None
+	- Throw Error
 
-	Edge cases:
-	- fptk list funcs must work with empty lists ?
+  	Variadic f(x1, x2, ...) vs f(xs)
 
-	·······························
+	Arg order:
+	- priority for -> 
+	- priority for ->>, partial/flip
+	- (f vrbl * params) — works with both -> and ->>
 
-	What if getter founds no elem?
-  	- None
-  	- Error
+	Composers:
+	- omly construct function?      f
+	- construct and apply function? (f x)
 
-  	variadic f(x1, x2, ...) vs f(xs)
+	? Handle wrong types?
 
-  	polymorphic?
-  	- yes
-  	- no
+	······························
 
-  	arg order?
-  	- for: p> ->>
-  	- for: ->
-
-	base on partial funcs, or on full func?
-	- isa(str, xs)
-	- isa(str)
-	- consider simultaneous isa and p_isa ?
-
-  	wrong type handling? oddQ("str")?
-  	- Error
-
-  	Full/short name?
-  	- fst
-  	- first
-
-  	use special symbols in names
-  	- funcs - no
-  	- macros - yes
-
-// ____________________________________________________________________________/ }}}1
-// Composition order, Arguments order ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	(rcompose f1 f2)
-	(-> data  f1 f2)
-	(l> data   1  2)
-	(p> data  f1 f2)
-
-	(f params vrbl)		// good for p: and ->> macro
-						// PREFFERED becase (partial f params) is now possible
-
-	(f vrbl params)		// good for -> macro
-	(f vrbl * params)	// will also work with ->> macro, which is good
-
-// ____________________________________________________________________________/ }}}1
+	Accesses:
+	- index access			[1]
+	- dict access			["x"]
+	- attr/method access	.x (.x)
 
     fptk syntax idea:
     - .x = attr or func without call (which is the same in Python)

@@ -1,0 +1,38 @@
+
+    import fptk * , require fptk *
+
+    defclass [dataclass] Point []
+        #^ float x #^ float y
+        defn getX [self] : return self.x
+
+    ; flip and partial will only work with ->>
+
+    ; .getX is always a method call, not arg-get
+    ->  3 (Point 4)  .getX  print
+    ->> 4 (Point 3) (.getX) print
+    ->> 3 (mul 4) (flip div 7) print
+
+    ; anonymous functions:
+    ->> 3 ((fn [it] (mul it 3))) print
+    ->> 3 ((fm (mul it 3))) print
+    ->> 3 (f> (mul it 3)) print
+
+    ; lmap/partial:
+    ->> [3 4 5] : lmap  (partial mul 3) :: print
+    ->> [3 4 5] : lmapm (mul it 3)      :: print
+
+    ; pipe of partials:
+    setv pipe
+        (p: neg
+            (fn [x] x)
+            (fm it)
+            (abs)
+            (plus 4)
+            str
+            (.__contains__ "8") ; method call
+            .__class__)         ; attr access
+
+    ->> [3 4 5] : lmap pipe         :: print
+    ->> [3 4 5] : lmapm (pipe it)   :: print
+    ->> [3 4 5] : lmap (p: abs neg) :: print
+

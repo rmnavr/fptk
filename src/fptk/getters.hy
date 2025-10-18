@@ -5,9 +5,7 @@
                        drop take pick
                        pluck lpluck pluck_attr lpluck_attr
                        ;
-                       range_ lrange_
-                       get_ nth_
-                       slice_ cut_
+                       range_ lrange_ get_ nth_ slice_ cut_
                      ]
             :macros  [ ncut
                        pluckm    ; fptk macros
@@ -17,7 +15,6 @@
 
     (require hyrule [comment])
     (import  hyrule [dec inc])
-    (import  funcy  [nth])
 
 ; [GROUP] Getters: buffed ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 

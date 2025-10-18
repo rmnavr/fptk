@@ -1,6 +1,6 @@
 
 ---
-fptk functions, macroses and imported modules:
+fptk docs:
 1. [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. You are here -> [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
@@ -88,16 +88,16 @@ Example:
 (setv x 4)
                                      ; after application to x will produce at each step:
 (setv pipe (p: operator.neg          ; -4
-               (fn [x] x)            ; -4    // fn can be used with p:
-               (fm it)               ; -4    // fm-macro can be used with p:
+               (fn [x] x)            ; -4     // fn can be used with p:
+               (fm it)               ; -4     // fm-macro can be used with p:
                (abs)                 ; 4
                (operator.add 4)      ; 8
                str                   ; '8'
-               (.__contains__ "8")   ; True  // demonstration of method call
-               .__class__            ; 'str' // demonstration of attribute access
+               (.__contains__ "8")   ; True   // demonstration of method call
+               .__class__            ; 'bool' // demonstration of attribute access
                ))
 
-(print (pipe x))                     ; returns <class 'str'>
+(print (pipe x))                     ; returns <class 'bool'>
 ```
 
 Notice that unlike in `->` macro, `.attr` is seen as attribute access rather than method call.
