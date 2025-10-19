@@ -1,9 +1,10 @@
 
 ---
-fptk functions, macroses and imported modules:
+fptk docs:
 1. You are here -> [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
 2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
 3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md)
 ---
 
 # Auto-generated full list of FPTK entities (except macros)
@@ -44,78 +45,61 @@ MACR: hyrule          | case
 MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
-MACR: fptk._macros    | p:                       ; pipe of partials
-
-=== FP: Composition ===
-FROM: hyrule          | constantly               ; (setv answer (constantly 42)) (answer 1 :x 2) -> 42
-FROM: funcy           | identity                 ; identity(30) -> 30
-MACR: hyrule          | as->
-MACR: hyrule          | ->
-MACR: hyrule          | ->>
-MACR: hyrule          | doto
-FROM: funcy           | curry
-FROM: funcy           | autocurry
-FROM: funcy           | partial
-FROM: funcy           | rpartial
-FROM: funcy           | compose
-FROM: funcy           | rcompose
-FROM: funcy           | ljuxt                    :: ljuxt(*fs) = [f1, f2, ...] applicator
-DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; example: (flip lmap [1 2 3] sqrt)
-DEFN: fptk            | pflip                    :: pflip(f, a)  ; partial applicator with flipped args, works like: pflip(f, a)(b) = f(b, a), example: (lmap (pflip div 0.1) (thru 1 3))
 
 === FP: threading ===
-MACR: fptk._macros    | fm                       ; anonymous function that accepts 'it' or '%1', '%2', ... args
-MACR: fptk._macros    | f>                       ; same as fm, but with immediate application
-MACR: fptk._macros    | mapm                     ; same as map, but expects fm-syntax for func
-MACR: fptk._macros    | lmapm                    ; same as lmap, but expects fm-syntax for func
-INFO: py              | map /base/               :: map(func, *iterables) -> map object
-FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List
-FROM: itertools       | starmap                  ; starmap(function, iterable)
-DEFN: fptk            | lstarmap                 :: lstarmap(function, iterable) -> list  ; literally just list(starmap(function, iterable))
-FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
-FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
-FROM: funcy           | lreductions              :: lreductions(f, seq [, acc]) -> List  ; returns sequence of intermetidate values of reduce(f, seq, acc)
-FROM: funcy           | sums                     :: sums(seq [, acc]) -> generator  ; reductions with addition function
-FROM: funcy           | lsums                    :: lsums(seq [, acc]) -> List
-FROM: math            | product (<-prod)         :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
+MACR: fptk._macros    | fm                       :: (fm (* it 3))  ; anonymous function that accepts args in form of 'it' or '%1', '%2', ... '%9'
+MACR: fptk._macros    | f>                       :: (f> (* %1 %2) 3 4)  ; calculate anonymous function (with fm-syntax)
 INFO: py              | zip /base/               :: zip(*iterables) -> zip object
 DEFN: fptk            | lzip                     :: lzip(*iterables) -> List  ; literally just list(zip(*iterables))
+INFO: py              | map /base/               :: map(func, *iterables) -> map object
+FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List  ; list version of map
+MACR: fptk._macros    | mapm                     ; same as map, but expects fm-syntax for func
+MACR: fptk._macros    | lmapm                    ; same as lmap, but expects fm-syntax for func
+FROM: itertools       | starmap                  ; starmap(function, iterable)
+DEFN: fptk            | lstarmap                 :: lstarmap(function, iterable) -> list  ; list version of starmap
+FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
+FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
+FROM: funcy           | lreductions              :: lreductions(f, seq [, acc]) -> list  ; list version of reductions
+FROM: funcy           | sums                     :: sums(seq [, acc]) -> generator  ; reductions with addition function
+FROM: funcy           | lsums                    :: lsums(seq [, acc]) -> list  ; list version of sums
+FROM: math            | product (<-prod)         :: product(iterable, /, *, start=1)  ; product([2, 3, 5]) = 30
 
 === FP: n-applicators ===
-MACR: hyrule          | do_n                     :: (do_n   n #* body) -> None
+MACR: hyrule          | do_n                     :: (do_n   n #* body) -> None  ; expands to ~ (do body body body ...)
 MACR: hyrule          | list_n                   :: (list_n n #* body) -> List
-DEFN: fptk            | nested                   :: nested(n, f)  ; f(f(f(...f))), returns function
+DEFN: fptk            | nested                   :: nested(n, f)  ; applicator f(...(f(***)))
 DEFN: fptk            | apply_n                  :: apply_n(n, f, *args, **kwargs)  ; f(f(f(...f(*args, **kwargs))
 
 === APL: filtering ===
-MACR: fptk._macros    | filterm                  ; same as filter, but expects fm-syntax for func
-MACR: fptk._macros    | lfilterm                 ; same as lfilter, but expects fm-syntax for func
 INFO: py              | filter /base/            :: filter(function or None, iterable) -> filter object  ; when f=None, checks if elems are True
-FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; list(filter(...)) from funcy
-FROM: itertools       | mask_sel (<-compress)    :: mask_sel(data, selectors) -> iterator  ; selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'
-DEFN: fptk            | lmask_sel                :: lmask_sel(data, selectors) -> list
-DEFN: fptk            | mask2idxs                :: mask2idxs(mask) -> list  ; mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]
-DEFN: fptk            | idxs2mask                :: idxs2mask(idxs) -> list  ; idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]
+FROM: funcy           | lfilter                  :: lfilter(pred, seq) -> List  ; funcy list version of extended filter
+MACR: fptk._macros    | filterm                  :: (filterm f xs)  ; same as filter, but expects fm-syntax for func
+MACR: fptk._macros    | lfilterm                 :: (lfilterm f xs)  ; list version of lfilterm
 DEFN: fptk            | fltr1st                  :: fltr1st(f, seq) -> Optional elem  ; returns first found element (or None)
 FROM: funcy           | reject (<-remove)        :: reject(pred, seq)-> iterator  ; same as filter, but checks for False
-FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list(reject(...))
-DEFN: fptk            | without                  :: without(items, seq) -> generator  ; returns seq without each item in items
-DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list(without(...))
+FROM: funcy           | lreject (<-lremove)      :: lreject(pred, seq) -> List  ; list version of reject
+DEFN: fptk            | without                  :: without(items, seq) -> generator  ; subtracts items from seq (as a sets)
+DEFN: fptk            | lwithout                 :: lwithout(items, seq) -> list  ; list version of reject
 FROM: funcy           | takewhile                :: takewhile([pred, ] seq)  ; yields elems of seq as long as they pass pred
 FROM: funcy           | dropwhile                :: dropwhile([pred, ] seq)  ; mirror of dropwhile
 FROM: funcy           | filter_split (<-split)   :: filter_split(pred, seq) -> passed, rejected
-FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list(filter_split(...))
+FROM: funcy           | lfilter_split (<-lsplit) :: lfilter_split(pred,seq) -> passed, rejected  ; list version of filter_split
 FROM: funcy           | bisect_at (<-split_at)   :: bisect_at(n, seq) -> start, tail  ; len of start will = n, works only with n>=0
 DEFN: fptk            | lbisect_at               :: lbisect_at(n, seq) -> start, tail  ; list version of bisect_at, but also for n<0, abs(n) will be len of tail
 FROM: funcy           | bisect_by (<-split_by)   :: bisect_by(pred, seq) -> taken, dropped  ; similar to (takewhile, dropwhile)
 FROM: funcy           | lbisect_by (<-lsplit_by) :: lbisect_by(pred, seq) -> taken, dropped  ; list version of lbisect
+FROM: itertools       | mask_sel (<-compress)    :: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'
+DEFN: fptk            | lmask_sel                :: lmask_sel(data, selectors) -> list
+DEFN: fptk            | mask2idxs                :: mask2idxs(mask) -> list  ; mask is list like [1 0 1 0] or [True False True False], which will be converted to [0 2]
+DEFN: fptk            | idxs2mask                :: idxs2mask(idxs) -> list  ; idxs is non-sorted list of integers like [0 3 2], which will be converted to [1 0 1 1]
 
 === APL: iterators and looping ===
-FROM: itertools       | islice                   :: islice(iterable, stop), islice(iterable, start, stop[, step])
-FROM: itertools       | inf_range (<-count)      :: inf_range(start [, step])  ; inf_range(10) -> 10, 11, 12, ...
+FROM: itertools       | islice                   :: islice(iterable, stop), islice(iterable, start, stop[, step])  ; list(islice(inf_range(10), 2)) == [10, 11]
+FROM: itertools       | inf_range (<-count)      :: inf_range(start [, step])  ; inf_range(10) -> generator: 10, 11, 12, ...
 FROM: itertools       | cycle                    :: cycle(p)  ; cycle('AB') -> A B A B ...
-DEFN: fptk            | lcycle                   :: lcycle(p, n) -> list  ; takes first n elems from cycle(p)
 FROM: itertools       | repeat                   :: repeat(elem [, n])  ; repeat(10,3) -> 10 10 10
+DEFN: fptk            | lislice                  ; list version of islice: lislice
+DEFN: fptk            | lcycle                   :: lcycle(p, n) -> list  ; takes first n elems from cycle(p)
 DEFN: fptk            | lrepeat                  :: lrepeat(elem, n) -> list  ; unlike in repeat, n has to be provided
 FROM: itertools       | concat (<-chain)         :: concat(*seqs) -> iterator
 DEFN: fptk            | lconcat                  :: lconcat(*seqs) -> list  ; list(concat(*seqs))
@@ -128,10 +112,10 @@ FROM: funcy           | with_prev                :: with_prev(seq, fill=None) ->
 FROM: funcy           | with_next                :: with_next(seq, fill=None) -> iterator  ; supposed to be used in loops
 
 === APL: working with lists ===
-FROM: hyrule          | flatten                  ; flattens to the bottom
-DEFN: fptk            | lprint                   :: lprint(seq, sep=None)  ; literally just list(map(print,seq))
+FROM: hyrule          | flatten                  ; flattens to the bottom, non-mutating
+DEFN: fptk            | lprint                   :: lprint(seq, sep=None)  ; prints every elem of seq on new line
 INFO: py              | reversed /base/          :: reversed(sequence) -> iterator
-DEFN: fptk            | lreversed                :: lreversed(sequence) = list(reversed(seq))
+DEFN: fptk            | lreversed                :: lreversed(sequence)  ; list version of reversed
 DEFN: fptk            | partition                :: partition(n, seq, *, step=None, tail=False) -> generator  ; splits seq to lists of len n, tail=True will allow including fewer than n items
 DEFN: fptk            | lpartition               :: lpartition(n, seq, *, step=None, tail=False) -> List  ; simply list(partition(...))
 FROM: funcy           | partition_by             :: partition_by(f, seq) -> iterator of iterators  ; splits when f(item) change
@@ -141,17 +125,14 @@ DEFN: fptk            | lmulticut_by             :: lmulticut_by(pred, seq, keep
 === APL: counting ===
 DEFN: fptk            | count_occurrences        :: count_occurrences(elem, seq) -> int  ; rename of list.count method
 
-=== Getters: buffed ===
+=== Getters: idxs and keys ===
 INFO: hy              | . /macro/                :: (. xs [n1] [n2] ...) -> xs[n1][n2]...  ; throws error when not found
 INFO: hy              | get /macro/              :: (get xs n #* keys) -> xs[n][key1]...  ; throws error when not found
 FROM: funcy           | nth                      :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
-INFO: py              | slice /base/             :: (slice start end step)
-INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; gives empty list when none found
-FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+INFO: py              | slice /base/             :: (slice start end step)  ; returns empty list when not found
+INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; returns empty list when none found
+FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) ~ (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
 MACR: hyrule          | ncut
-MACR: fptk._macros    | pluckm                   ; same as pluck, but accepts .arg syntax
-MACR: fptk._macros    | lpluckm                  ; same as lpluck, but accepts .arg syntax
-MACR: fptk._macros    | getattrm                 ; same as getattr, but accepts .arg syntax
 FROM: funcy           | first                    :: first(seq) -> Optional elem
 FROM: funcy           | second                   :: second(seq) -> Optional elem
 DEFN: fptk            | third                    :: third(seq) -> Optional elem
@@ -163,10 +144,16 @@ DEFN: fptk            | butlast                  :: butlast(seq) -> List  ; drop
 DEFN: fptk            | drop                     :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
 DEFN: fptk            | take                     :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
 DEFN: fptk            | pick                     :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
-FROM: funcy           | pluck                    :: pluck(key, mappings) -> generator  ; gets same key from every mapping, mappings can be list of lists, list of dicts, etc.
+
+=== Getters: keys and attrs ===
+INFO: py              | getattr /base/           :: getattr(object, name[, default]) -> value  ; arg name should be given as str
+MACR: fptk._macros    | getattrm                 :: (getattrm Object 'attr') (getattrm Object .attr)  ; accepts fptk-style .attr syntax
+FROM: funcy           | pluck                    :: pluck(key, mappings) -> generator  ; gets same key (or idx) from every mapping, mappings can be lists of lists/dicts/etc.
 FROM: funcy           | lpluck                   :: lpluck(key, mappings) -> list
-FROM: funcy           | pluck_attr               :: pluck_attr(attr, objects) -> generator
-FROM: funcy           | lpluck_attr              :: lpluck_attr(attr, objects) -> list
+FROM: funcy           | pluck_attr               :: pluck_attr(attr, objects) -> generator  ; attr should be given as str
+FROM: funcy           | lpluck_attr              :: lpluck_attr(attr, objects) -> list  ; list version of pluck_attr
+MACR: fptk._macros    | pluckm                   :: (pluckm n xs) (pluckm key ys) (pluckm .attr zs)  ; accepts fptk-style .arg syntax
+MACR: fptk._macros    | lpluckm                  ; list version of pluckm
 
 === Typing: Base ===
 MACR: hyrule          | of                       ; (of List int) -> List[int]
@@ -217,11 +204,11 @@ FROM: operator        | neg
 DEFN: fptk            | half                     ; (half x) = (/ x 2)
 DEFN: fptk            | double                   ; (double x) = (* x 2)
 DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
-DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally
+DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally  ; throws error for x=0
 FROM: math            | sqrt
 FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
 FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
-DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; returns same vector xs if it's norm=0
+DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; when norm(xs)==0 will throw error
 FROM: math            | exp                      :: exp(x)
 FROM: math            | log                      ; log(x, base=math.e)
 DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
@@ -309,14 +296,14 @@ DEFN: fptk            | write_to_file            :: write_file(text, file_name, 
 
 === Lens ===
 FROM: lenses          | lens                     ; 3rd party module (for working with immutable structures)
-MACR: fptk._macros    | lns
-MACR: fptk._macros    | &+
-MACR: fptk._macros    | &+>
-MACR: fptk._macros    | l>
-MACR: fptk._macros    | l>=
+MACR: fptk._macros    | lns                      ; macros for working with lens, see lens macros docs for details
+MACR: fptk._macros    | &+                       ; macros for working with lens, see lens macros docs for details
+MACR: fptk._macros    | &+>                      ; macros for working with lens, see lens macros docs for details
+MACR: fptk._macros    | l>                       ; macros for working with lens, see lens macros docs for details
+MACR: fptk._macros    | l>=                      ; macros for working with lens, see lens macros docs for details
 
 === Benchmarking ===
-DEFN: fptk            | with_execution_time      :: w_e_t(f, *, n=1, tUnit='ns', msg='') -> avrg_time_of_1_run_in_seconds, pretty_string, f_result  ; f_result is from 1st function execution
+DEFN: fptk            | timing                   :: timing(f, *args, **kwargs) -> (float, Any)  ; returns tuple of execution time (in s) and result of f(*args, **kwargs)
 DEFN: fptk            | dt_print                 :: dt_printer(* args, fresh_run=False)  ; starts timer on fresh run, prints time passed since previous call
 
 === Testing ===

@@ -12,7 +12,7 @@
              (return (Success (div x y)))
              (return (Failure f"{x}/{y}, div by 0, bruh"))))
 
-    (print (with_execution_time (fm (safe_divide 3 0 ))))
+    (print (timing (fm (safe_divide 3 0 ))))
     (print (safe_divide 1 2))
     (print (safe_divide 1 0))
     (print (failureQ (safe_divide 1 2 )))
