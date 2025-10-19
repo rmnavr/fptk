@@ -1,4 +1,6 @@
 
+; Import and Export ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (export :objects [ nth assoc
                        first second third fourth
                        beforelast last rest butlast
@@ -16,22 +18,29 @@
     (require hyrule [comment])
     (import  hyrule [dec inc])
 
-; [GROUP] Getters: buffed ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; _____________________________________________________________________________/ }}}1
+
+    ;; idxs
+    ;; keys
+    ;; attrs
+
+; [GROUP] Getters: idxs and keys ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     ;; dub basics:
 
+        ;; idxs, keys, attrs:
         (comment "hy     | macro | .     | (. xs [n1] [n2] ...) -> xs[n1][n2]... | throws error when not found")
+
+        ;; idxs, keys:
         (comment "hy     | macro | get   | (get xs n #* keys) -> xs[n][key1]... | throws error when not found")
+
+        ;; idxs:
         (import funcy [nth])        #_ "nth(n, seq) -> Optional elem | 0-based index; works also with dicts"
-        (comment "py     | base  | slice | (slice start end step) | ")
-        (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | gives empty list when none found")
+        (comment "py     | base  | slice | (slice start end step) | returns empty list when not found ")
+        (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | returns empty list when none found")
 
-        (import  hyrule [assoc])  #_ "(assoc xs k1 v1 k2 v2 ...) -> (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
+        (import  hyrule [assoc])  #_ "(assoc xs k1 v1 k2 v2 ...) ~ (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
         (require hyrule [ncut])   
-
-        (require fptk._macros [pluckm])    #_ "| same as pluck, but accepts .arg syntax"
-        (require fptk._macros [lpluckm])   #_ "| same as lpluck, but accepts .arg syntax"
-        (require fptk._macros [getattrm])  #_ "| same as getattr, but accepts .arg syntax"
 
     ;; one elem getters:
 
@@ -75,17 +84,12 @@
             "
             (lfor &n ns (get seq &n)))
 
-        (import  funcy  [pluck])        #_ " pluck(key, mappings) -> generator | gets same key from every mapping, mappings can be list of lists, list of dicts, etc."
-        (import  funcy  [lpluck])       #_ "lpluck(key, mappings) -> list | "
-        (import  funcy  [pluck_attr])   #_ " pluck_attr(attr, objects) -> generator | " ;;
-        (import  funcy  [lpluck_attr])  #_ "lpluck_attr(attr, objects) -> list | " ;;
-
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] Getters: 1-based-index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Getters: 1-based-index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [thru :as range_])      #_ "range_(start, end=None, step=1) -> List | same as range, but with 1-based index"
 
-    #_ "lrange_(start, end=None, step=1) -> List | literally list(range_(...))"
+    #_ "lrange_(start, end=None, step=1) -> List | list version of range_"
     (defn lrange_ [start [end None] [step 1]]
         (list (range_ start end step)))
 
@@ -104,18 +108,18 @@
                         &n)))) ;; this line covers both &n<0 and &n=dict_key        
         (return (get seq #* _ns_plus1)))
 
-    #_ "nth_(n, seq) -> Optional elem | same as nth, but with 1-based index (will throw error for n=0)"
+    #_ "nth_(n, seq) -> Optional elem | same as nth, but with 1-based index; will return None for n=0"
     (defn nth_ [n seq] 
         " same as nth, but with 1-based index,
           will throw error for n=0,
           will return None if elem not found (just like nth)
         "
         (when (= (type seq) dict) (return (nth n seq)))
-        (when (=  n 0) (raise (IndexError "n=0 can't be used with 1-based getter")))
+        (when (=  n 0) (return None))
         (when (>= n 1) (return (nth (dec n) seq)))
         (return (nth n seq))) ;; this line covers both n<0 and n=dict_key
 
-    #_ "slice_(start, end, step) | similar to slice, but with 1-based index (also it doesn't understand None and 0 for start and end arguments)"
+    #_ "slice_(start, end, step=None) | similar to slice, but with 1-based index; will throw error for start=0 or end=0"
     (defn slice_
         [ start
           end
@@ -123,8 +127,7 @@
         ]
         " similar to py slice, but:
           - has 1-based index
-          - won't take None for start and end arguments
-          - won't take 0 for start and end
+          - will throw error when start=0 or end=0
         "
         (cond (>= start 1) (setv _start (dec start))
               (<  start 0) (setv _start start)
@@ -138,14 +141,31 @@
               True        (raise (IndexError "end in 1-based getter is probably not an integer")))
         (return (slice _start _end step)))
 
-    #_ "cut_(seq, start, end, step) -> List | same as cut, but with 1-based index (it doesn't understand None and 0 for start and end arguments)"
+    #_ "cut_(seq, start, end, step=None) -> List | similar to cut, but with 1-based index; will throw error for start=0 or end=0"
     (defn cut_ [seq start end [step None]]
-        " same as hy cut macro, but with 1-based index,
-          - won't take None or 0 for start and end arguments
+        " same as hy cut macro, but with 1-based index:
+          - will throw error when start=0 or end=0
         "
         (get seq (slice_ start end step)))
 
 ; _____________________________________________________________________________/ }}}1
+; [GROUP] Getters: keys and attrs ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+    ;; attrs
+    (comment "py | base | getattr | getattr(object, name[, default]) -> value | arg name should be given as str")
+    (require fptk._macros [getattrm])   #_ "(getattrm Object 'attr') (getattrm Object .attr) | accepts fptk-style .attr syntax"
 
+    ;; idxs, keys
+    (import  funcy  [pluck])            #_ "pluck(key, mappings) -> generator | gets same key (or idx) from every mapping, mappings can be lists of lists/dicts/etc."
+    (import  funcy  [lpluck])           #_ "lpluck(key, mappings) -> list | "
+
+    ;; attrs
+    (import  funcy  [pluck_attr])       #_ "pluck_attr(attr, objects) -> generator | attr should be given as str" ;;
+    (import  funcy  [lpluck_attr])      #_ "lpluck_attr(attr, objects) -> list | list version of pluck_attr" ;;
+
+    ;; idxs, keys and attrs
+    (require fptk._macros [pluckm])     #_ "(pluckm n xs) (pluckm key ys) (pluckm .attr zs) | accepts fptk-style .arg syntax"
+    (require fptk._macros [lpluckm])    #_ "| list version of pluckm"
+
+; _____________________________________________________________________________/ }}}1
 

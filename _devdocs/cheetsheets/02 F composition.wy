@@ -1,11 +1,12 @@
 
     import fptk * , require fptk *
 
+    ; INFO:
+    ; flip and partial will only work with ->>
+
     defclass [dataclass] Point []
         #^ float x #^ float y
         defn getX [self] : return self.x
-
-    ; flip and partial will only work with ->>
 
     ; .getX is always a method call, not arg-get
     ->  3 (Point 4)  .getX  print

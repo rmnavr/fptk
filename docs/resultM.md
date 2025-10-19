@@ -15,7 +15,7 @@ fptk docs:
 Terminology used in fptk implementation of Result type:
 - Result — main type
 - Container — Success or Failure type
-- Value — Value wrapped in Success or Failure type
+- Value — value wrapped in Success or Failure type
 
 Result in fptk aims to be compatible with pydantic typecheck.
 

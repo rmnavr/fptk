@@ -43,8 +43,10 @@
     (assertm = (lbisect_at 0 [1 2 3 4 5 6 7]) (tuple [[] [1 2 3 4 5 6 7]]))
     (assertm = (lbisect_by (partial gt 3) [1 2 3 4 5 6 7]) #([1 2] [3 4 5 6 7]))
 
-    ; islice
-    ; inf_range
+    (assertm = (lislice (inf_range 10) 3) [10 11 12])
+    (assertm = (lislice (cycle "ab") 3) ["a" "b" "a"])
+    (assertm = (lcycle "abc" 4) ["a" "b" "c" "a"])
+    (assertm = (lrepeat 1 3) [1 1 1])
     (assertm = (lcycle [1 2 3] 4) [1 2 3 1])
     (assertm = (lcycle [1 2] 5) [1 2 1 2 1])
     (assertm = (lcycle [] 5) [])
@@ -211,10 +213,11 @@
 
     (setv $F1 "_1.txt")
 
-    (assertm = (second (with_execution_time (fn [] (+ 3 4)) :n 300 :tUnit "ms" :msg "ololo")) 7)
-    (assertm = (dt_print "Timer start") None)
-    (assertm = (dt_print "Timer +1") None)
-    (assertm = (dt_print "Timer +2") None)
+    (assertm = (type (first (timing apply_n 500 math.sqrt 1E10))) float)
+    
+    ; (assertm = (dt_print "Timer start") None)
+    ; (assertm = (dt_print "Timer +1") None)
+    ; (assertm = (dt_print "Timer +2") None)
 
 ; _____________________________________________________________________________/ }}}1
 ; flow.hy       | MACROS: p: fm f> mapm lmapm filter lfilterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
@@ -330,7 +333,7 @@
     (assertm = (nth_ -1 [[1 2] [1 3]]) [1 3])
     (assertm = (nth_ -3 [[1 2] [1 3]]) None)
     (assertm = (nth_ 3 [[1 2] [1 3]]) None)
-    (assertm gives_error_typeQ (nth_ 0 [1 2 3]) IndexError)
+    (assertm = (nth_ 0 [1 2 3]) None)
 
     (assertm = (get [1 2 3 4 5 6 7] (slice_ 1 3)) [1 2 3])
     (assertm = (get [1 2 3 4 5 6 7] (slice_ -3 -1)) [5 6 7])
@@ -437,6 +440,7 @@
     (assertm = (hypot 3 4) 5)
     (assertm = (normalize [0 4]) [0 1])
     (assertm = (normalize [3 0 0]) [1 0 0])
+    (assertm gives_error_typeQ (normalize [0 0 0]) ValueError)
     (setv _norm (py "math.sqrt(1+4+4)"))
     (assertm = (normalize [1 2 2]) (list (map (fn [x] (operator.truediv x _norm)) [1 2 2])))
 

@@ -1,4 +1,6 @@
 
+; Import and Export ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (export :objects [ inc dec sign neg
                        half double squared reciprocal
                        sqrt dist hypot normalize
@@ -22,7 +24,9 @@
 
 
     (import functools [reduce])
-    (import operator)
+    (import operator [mul :as operator_mul])
+
+; _____________________________________________________________________________/ }}}1
 
 ; [GROUP] Math and logic: Basic math ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
@@ -41,24 +45,24 @@
     #_ "(squared x) = (pow x 2)"
     (defn squared    [x] "squared(x) = pow(x, 2)" (pow x 2))
 
-    #_ "reciprocal(x) = 1/x literally |"
+    #_ "reciprocal(x) = 1/x literally | throws error for x=0"
     (defn reciprocal [x] "reciprocal(x) = 1 / x" (/ 1 x))
 
     (import math [sqrt])
     (import math [dist])    #_ "dist(p, q) -> float | ≈ √((px-qx)² + (py-qy)² ...)"
     (import math [hypot])   #_ "hypot(*coordinates) | = √(x² + y² + ...)" ;;
 
-    #_ "normalize(xs) -> xs | returns same vector xs if it's norm=0"
+    #_ "normalize(xs) -> xs | when norm(xs)==0 will throw error"
     (defn normalize [xs]
         " devides each coord of vector to vectors norm,
           example: norm of [1, 2, 3] = sqrt(1 + 4 + 9) = sqrt(14) ~= 3.74,
           so will return [1/3.74, 2/3.74, 3/3.74]
           ---
-          will return same vector when norm == 0"
+          will throw error for norm == 0"
         (setv norm (hypot #* xs))
         (if (!= norm 0)
             (return (list (map (fn [%1] (div %1 norm)) xs)))
-            (return xs)))
+            (raise (ValueError "Can't normalize zero vector"))))
 
     (import math [exp]) #_ "exp(x) |"
 
@@ -98,7 +102,6 @@
     (import math [atan2])   #_ "atan2(y, x) | both signs are considered"
 
 ; _____________________________________________________________________________/ }}}1
-
 ; [GROUP] Math and logic: Base operators to functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import operator [and_])                #_ "'and' as function"
@@ -155,7 +158,7 @@
         (defn mul [#* args]
             " multiplication as a monoid with identity = 1,
               can be used with 0 or 1 arg"
-            (reduce operator.mul args 1))
+            (reduce operator_mul args 1))
 
         #_ "plus(*args) | addition as a monoid (will not give error when used with 0 or 1 args)"
         (defn plus [#* args]
@@ -212,7 +215,6 @@
     (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
 ; _____________________________________________________________________________/ }}}1
-
 ; [GROUP] Math and logic: Random ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import random    [choice])                 #_ "choice(seq) -> Elem | throws error for empty list"
@@ -223,3 +225,4 @@
     ;; shuffle — is mutating
 
 ; _____________________________________________________________________________/ }}}1
+

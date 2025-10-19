@@ -5,12 +5,11 @@
         #^ float x #^ float y
         defn getX [self] : return self.x
 
-    ; get     -> lists, dict
-    ; .       -> lists, dict, attrs/methods
+    ; get     -> idxs, keys
+    ; .       -> idxs, keys, attrs/methods
     ; getattr -> attrs/methods
 
-    ; - «get» is macro and connot be flipped
-    ; - «->» combines bad with partial/flip
+    ; - «get» is macro and cannot be flipped
 
     print : get [1 2 3] -1
     print : nth  -1 [1 2 3]

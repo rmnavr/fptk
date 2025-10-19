@@ -29,7 +29,9 @@
           modes:
           - 'w' - (over)write
           - 'a' - append
-          - 'x' - exclusive creation"
+          - 'x' - exclusive creation
+          - ...
+          - see more at help(open)"
         (with [file (open file_name mode :encoding encoding)] (file.write text)))
 
 ; _____________________________________________________________________________/ }}}1

@@ -1,4 +1,6 @@
 
+; Import/Export ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
     (export :objects [
         ;; filtering:
         lfilter fltr1st filter_split lfilter_split 
@@ -6,7 +8,7 @@
         without lwithout takewhile dropwhile
         bisect_at lbisect_at bisect_by lbisect_by
         ;; iterators/looping: 
-        islice inf_range cycle lcycle repeat lrepeat
+        islice lislice inf_range cycle lcycle repeat lrepeat
         concat lconcat cat lcat mapcat lmapcat
         pairwise with_prev with_next
         ;; working with lists:
@@ -28,16 +30,56 @@
     (import  funcy  [chunks    :as funcy_chunks])
     (import  funcy  [last lmap])
 
+; _____________________________________________________________________________/ }}}1
+
 ; [GROUP] APL: filtering ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (require fptk._macros [filterm])  #_ "| same as filter, but expects fm-syntax for func"
-    (require fptk._macros [lfilterm]) #_ "| same as lfilter, but expects fm-syntax for func"
-
     (comment "py | base | filter | filter(function or None, iterable) -> filter object | when f=None, checks if elems are True")
-    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | list(filter(...)) from funcy"
-    ;;
+    (import funcy [lfilter]) #_ "lfilter(pred, seq) -> List | funcy list version of extended filter"
+    (require fptk._macros [filterm])  #_ "(filterm f xs) | same as filter, but expects fm-syntax for func"
+    (require fptk._macros [lfilterm]) #_ "(lfilterm f xs) | list version of lfilterm"
 
-    (import itertools [compress :as mask_sel]) #_ "mask_sel(data, selectors) -> iterator | selects by mask: mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c'"
+    #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
+    (defn fltr1st [function iterable]
+        "returns first found element (via function criteria), returns None if not found"
+        (next (gfor &x iterable :if (function &x) &x) None))
+
+    (import funcy [remove  :as reject])   #_ "reject(pred, seq)-> iterator | same as filter, but checks for False"
+    (import funcy [lremove :as lreject]) #_ "lreject(pred, seq) -> List | list version of reject"
+
+    #_ "without(items, seq) -> generator | subtracts items from seq (as a sets)"
+    (defn without [items seq]
+        "returns generator for seq with each item in items removed (does not mutate seq)"
+        (funcy_without seq #* items))
+
+    #_ "lwithout(items, seq) -> list | list version of reject"
+    (defn lwithout [items seq]
+        "returns seq with each item in items removed (does not mutate seq)"
+        (funcy_lwithout seq #* items))
+
+    (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
+    (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
+
+    (import funcy [split      :as filter_split])  #_ "filter_split(pred, seq) -> passed, rejected |"
+    (import funcy [lsplit     :as lfilter_split]) #_ "lfilter_split(pred,seq) -> passed, rejected | list version of filter_split"
+    (import funcy [split_at   :as bisect_at])     #_ "bisect_at(n, seq) -> start, tail | len of start will = n, works only with n>=0"
+
+    #_ "lbisect_at(n, seq) -> start, tail | list version of bisect_at, but also for n<0, abs(n) will be len of tail"
+    (defn lbisect_at [n seq]
+        " splits seq to start and tail lists (returns tuple of lists),
+          when n>=0, len of start will be = n (or less, when len(seq) < n),
+          when n<0, len of tail will be = n (or less, when len(seq) < abs(n))
+        "
+        (if (>= n 0)
+            (funcy_lsplit_at n seq)
+            (funcy_lsplit_at (max 0 (+ (len seq) n)) seq)))
+
+    (import funcy [split_by   :as bisect_by])     #_ " bisect_by(pred, seq) -> taken, dropped | similar to (takewhile, dropwhile)"
+    (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
+
+    ;; MASK SELECTION:
+
+    (import itertools [compress :as mask_sel]) #_ "mask_sel('abc', [1,0,1]) -> iterator: 'a', 'c' | "
 
     #_ "lmask_sel(data, selectors) -> list |"
     (defn lmask_sel [data selectors]
@@ -65,59 +107,19 @@
         (when bools (setv mask (lmap (fn [it] (= True it)) mask)))
         (return mask))
 
-    #_ "fltr1st(f, seq) -> Optional elem | returns first found element (or None)"
-    (defn fltr1st [function iterable]
-        "returns first found element (via function criteria), returns None if not found"
-        (next (gfor &x iterable :if (function &x) &x) None))
-
-    (import funcy [remove :as reject])   #_ "reject(pred, seq)-> iterator | same as filter, but checks for False"
-    (import funcy [lremove :as lreject]) #_ "lreject(pred, seq) -> List | list(reject(...))"
-    ;;
-
-    #_ "without(items, seq) -> generator | returns seq without each item in items"
-    (defn without [items seq]
-        "returns generator for seq with each item in items removed (does not mutate seq)"
-        (funcy_without seq #* items))
-
-    #_ "lwithout(items, seq) -> list | list(without(...))"
-    (defn lwithout [items seq]
-        "returns seq with each item in items removed (does not mutate seq)"
-        (funcy_lwithout seq #* items))
-
-    (import funcy [takewhile]) #_ "takewhile([pred, ] seq) | yields elems of seq as long as they pass pred"
-    (import funcy [dropwhile]) #_ "dropwhile([pred, ] seq) | mirror of dropwhile"
-
-    (import funcy [split      :as filter_split])  #_ "filter_split(pred, seq) -> passed, rejected |"
-    (import funcy [lsplit     :as lfilter_split]) #_ "lfilter_split(pred,seq) -> passed, rejected | list(filter_split(...))"
-    (import funcy [split_at   :as bisect_at])     #_ "bisect_at(n, seq) -> start, tail | len of start will = n, works only with n>=0"
-    ;;
-
-    #_ "lbisect_at(n, seq) -> start, tail | list version of bisect_at, but also for n<0, abs(n) will be len of tail"
-    (defn lbisect_at [n seq]
-        " splits seq to start and tail lists (returns tuple of lists),
-          when n>=0, len of start will be = n (or less, when len(seq) < n),
-          when n<0, len of tail will be = n (or less, when len(seq) < abs(n))
-        "
-        (if (>= n 0)
-            (funcy_lsplit_at n seq)
-            (funcy_lsplit_at (max 0 (+ (len seq) n)) seq)))
-
-    (import funcy [split_by   :as bisect_by])     #_ " bisect_by(pred, seq) -> taken, dropped | similar to (takewhile, dropwhile)"
-    (import funcy [lsplit_by  :as lbisect_by])    #_ "lbisect_by(pred, seq) -> taken, dropped | list version of lbisect"
-    ;;
-
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL: iterators and looping ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import itertools [islice])              #_ "islice(iterable, stop), islice(iterable, start, stop[, step]) |" 
-
-    (import itertools [count :as inf_range]) #_ "inf_range(start [, step]) | inf_range(10) -> 10, 11, 12, ..."
+    (import itertools [islice])              #_ "islice(iterable, stop), islice(iterable, start, stop[, step]) | list(islice(inf_range(10), 2)) == [10, 11]"  
+    (import itertools [count :as inf_range]) #_ "inf_range(start [, step]) | inf_range(10) -> generator: 10, 11, 12, ..."
     (import itertools [cycle])               #_ "cycle(p) | cycle('AB') -> A B A B ..."
+    (import itertools [repeat])              #_ "repeat(elem [, n]) | repeat(10,3) -> 10 10 10" 
+
+    #_ "| list version of islice: lislice"
+    (defn lislice [#* kwargs] "literally just list(lislice(...))" (list (islice #* kwargs)))
 
     #_ "lcycle(p, n) -> list | takes first n elems from cycle(p)"
-    (defn lcycle [p n] "takes first n elems from cycle(p)" (list (islice (cycle p) n)))
-
-    (import itertools [repeat])              #_ "repeat(elem [, n]) | repeat(10,3) -> 10 10 10" 
+    (defn lcycle [p n] "takes first n elems from cycle(p)" (lislice (cycle p) n))
 
     #_ "lrepeat(elem, n) -> list | unlike in repeat, n has to be provided"
     (defn lrepeat [elem n] "literally just list(repeat(elem, n))" (list (repeat elem n)))
@@ -142,9 +144,9 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import hyrule [flatten])   #_ "flattens to the bottom" ;;
+    (import hyrule [flatten])   #_ "flattens to the bottom, non-mutating" ;;
 
-    #_ "lprint(seq, sep=None) | literally just list(map(print,seq))"
+    #_ "lprint(seq, sep=None) | prints every elem of seq on new line"
     (defn lprint [seq [sep None]]
           " essentially list(map(print, seq)) ;
             with sep='---' (or some other) will print sep between seq elems
@@ -156,7 +158,7 @@
 
     (comment "py | base | reversed | reversed(sequence) -> iterator |") 
 
-    #_ "lreversed(sequence) = list(reversed(seq)) |"
+    #_ "lreversed(sequence) | list version of reversed"
     (defn lreversed [sequence] (list (reversed sequence)))
 
     #_ "partition(n, seq, *, step=None, tail=False) -> generator | splits seq to lists of len n, tail=True will allow including fewer than n items"
@@ -212,20 +214,17 @@
         "
         (when (= (len seq) 0) (return []))
         (setv _newLists [])
-        ;;
         (for [&elem seq]
             (if (pred &elem)
                 (_newLists.append [&elem])
                 (if (= (len _newLists) 0)
                     (_newLists.append [&elem])
                     (. (last _newLists) (append &elem)))))
-        ;;
         (when (not keep_border)
               (setv _newLists (lmap (fn [it] (if (pred (get it 0))
                                                  (cut it 1 None)
                                                  it))
                                     _newLists)))
-        ;;
         (when merge_border
               (if keep_border
                   (do (setv single_borders_pos [])
