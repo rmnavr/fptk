@@ -1,7 +1,7 @@
 from setuptools                 import setup, find_packages
 from setuptools.command.install import install 
 
-proj_version = '0.3.3.dev2'
+proj_version = '0.3.3.dev3'
 
 libs_required = [
     'hy >= 1',
