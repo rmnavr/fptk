@@ -1,16 +1,14 @@
-
 from setuptools                 import setup, find_packages
 from setuptools.command.install import install 
 
-proj_version = '0.3.3.dev1'
+proj_version = '0.3.3.dev2'
 
 libs_required = [
     'hy >= 1',
     'hyrule >= 1', 
-    'pyparsing >= 3', 
     'pydantic >= 2', 
     'lenses >= 1.2.0',
-    'funcy >= 2.0'
+    'funcy >= 2.0',
 ]
 
 # install class ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1

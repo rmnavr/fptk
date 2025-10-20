@@ -21,4 +21,5 @@
     (require fptk.testing    *)
     (require fptk.typing     *)
 
-    (import  fptk.monads.resultM *)
+    (import fptk.monads.resultM *)
+

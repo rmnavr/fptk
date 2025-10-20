@@ -197,25 +197,25 @@ FROM: pydantic        | validate_call            ; decorator for type-checking f
 SETV: fptk            | validateF                ; same as validate_call but with option validate_return=True set (thus validating args and return type)
 
 === Math and logic: Basic math ===
-FROM: hyrule          | inc
-FROM: hyrule          | dec
-FROM: hyrule          | sign
-FROM: operator        | neg
+FROM: hyrule          | inc                      :: inc(n)  ; = n + 1
+FROM: hyrule          | dec                      :: dec(n)  ; = n - 1
+FROM: hyrule          | sign                     :: sign(n)  ; will give 0 for n=0
+FROM: operator        | neg                      :: neg(n)  ; = -1 * n
 DEFN: fptk            | half                     ; (half x) = (/ x 2)
 DEFN: fptk            | double                   ; (double x) = (* x 2)
 DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
 DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally  ; throws error for x=0
-FROM: math            | sqrt
+FROM: math            | sqrt                     :: sqrt(n)  ; = √n
 FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
 FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
-DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; when norm(xs)==0 will throw error
+DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; will throw error for zero-len vector
 FROM: math            | exp                      :: exp(x)
 FROM: math            | log                      ; log(x, base=math.e)
 DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
 FROM: math            | log10                    :: log10(x)
-FROM: funcy           | evenQ (<-even)
-FROM: funcy           | oddQ (<-odd)             ; checks directly via (= x 0)
-DEFN: fptk            | zeroQ
+FROM: funcy           | evenQ (<-even)           :: evenQ(x)
+FROM: funcy           | oddQ (<-odd)             :: oddQ(x)
+DEFN: fptk            | zeroQ                    ; checks directly via (= x 0)
 DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
 DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
 
@@ -256,13 +256,13 @@ DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string con
 
 === Math and logic: Logic checks ===
 DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
-DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (and (eq x value1) (eq x value2) ...)
+DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (or (eq x value1) (eq x value2) ...)
 DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
 DEFN: fptk            | all_fs                   :: all_fs(fs, *args, **kwargs)  ; checks if all f(*args, **kwargs) are True
 DEFN: fptk            | any_fs                   :: any_fs(fs, *args, **kwargs)  ; checks if any of f(*args, **kwargs) is True
 DEFN: fptk            | trueQ                    ; checks directly via (= x True)
 DEFN: fptk            | falseQ                   ; checks directly via (= x False)
-DEFN: fptk            | oflenQ                   :: (oflenQ xs n) -> (= (len xs) n)
+DEFN: fptk            | oflenQ                   :: oflenQ(n, xs) -> (= (len xs) n)
 DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
 
 === Math and logic: Random ===

@@ -368,51 +368,6 @@
 ; _____________________________________________________________________________/ }}}1
 
 ; PRINTER:
-; md file header str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-    (setv $HEADER
-"
----
-fptk docs:
-1. You are here -> [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
-2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
-3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
-4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md)
----
-
-# Auto-generated full list of FPTK entities (except macros)
-
-## Legend
-
-List below has format:
-```hy
-=== Group name 1 ===
-TYPE source_lib | func_or_class_name :: signature ; description
-TYPE source_lib | func_or_class_name :: signature ; description
-
-=== Group name 2 ===
-...
-```
-
-Column `TYPE` shows if things are simple imports/reimports: ...
-```hy
-FULL MODULE  | sys          ; (import sys)
-FROM: math   | ln (<-log)   ; (import math [log :as ln])
-MACR: hyrule | of           ; (require hyrule [of])
-INFO: hy     | cut /macro/  ; shows info on hy/py functions/macro (which are already always in main context); given just for big picture
-```
-
-... or fptk-defined entities:
-```hy
-SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
-DEFN: fptk   | third        ; entity defined internally via (defn ...)
-```
-
-## List of fptk entities
-")
-
-
-; _____________________________________________________________________________/ }}}1
 ; entity to str ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (defn #^ str build_prefix [ #^ FEntity fe ]
@@ -493,6 +448,51 @@ DEFN: fptk   | third        ; entity defined internally via (defn ...)
 
 ; _____________________________________________________________________________/ }}}1
 
+; MD FILE HEADER STR ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+    (setv $HEADER
+"
+---
+fptk docs:
+1. You are here -> [Functions and modules](https://github.com/rmnavr/fptk/blob/main/docs/functions.md)
+2. [Basic macros](https://github.com/rmnavr/fptk/blob/main/docs/macros.md)
+3. [Lens related macros](https://github.com/rmnavr/fptk/blob/main/docs/lens.md)
+4. [Result type](https://github.com/rmnavr/fptk/blob/main/docs/resultM.md)
+---
+
+# Auto-generated full list of FPTK entities (except macros)
+
+## Legend
+
+List below has format:
+```hy
+=== Group name 1 ===
+TYPE source_lib | func_or_class_name :: signature ; description
+TYPE source_lib | func_or_class_name :: signature ; description
+
+=== Group name 2 ===
+...
+```
+
+Column `TYPE` shows if things are simple imports/reimports: ...
+```hy
+FULL MODULE  | sys          ; (import sys)
+FROM: math   | ln (<-log)   ; (import math [log :as ln])
+MACR: hyrule | of           ; (require hyrule [of])
+INFO: hy     | cut /macro/  ; shows info on hy/py functions/macro (which are already always in main context); given just for big picture
+```
+
+... or fptk-defined entities:
+```hy
+SETV: fptk   | StrictNumber ; entity defined internally via (setv ...)
+DEFN: fptk   | third        ; entity defined internally via (defn ...)
+```
+
+## List of fptk entities
+")
+
+
+; _____________________________________________________________________________/ }}}1
 ; CONFIG ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (setv $SOURCES [ "../../src/fptk/flow.hy"

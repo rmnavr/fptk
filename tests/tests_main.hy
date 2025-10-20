@@ -514,12 +514,12 @@
     (assertm = (any_fs [evenQ trueQ] True) True)
     (assertm = (any_fs [falseQ] False) True)
 
-    (assertm = (oflenQ "123" 3) True)
-    (assertm = (oflenQ "123" -3) False)
-    (assertm = (oflenQ "" 0) True)
-    (assertm = (oflenQ [1 2 3] 3) True)
-    (assertm = (oflenQ [1 2 3] -3) False)
-    (assertm = (oflenQ [] 0) True)
+    (assertm = (oflenQ 3 "123") True)
+    (assertm = (oflenQ -3 "123") False)
+    (assertm = (oflenQ 0 "") True)
+    (assertm = (oflenQ 3 [1 2 3]) True)
+    (assertm = (oflenQ -3 [1 2 3]) False)
+    (assertm = (oflenQ 0 []) True)
 
     (assertm = (zerolenQ "") True)
     (assertm = (zerolenQ []) True)
