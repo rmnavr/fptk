@@ -55,7 +55,7 @@ INFO: py              | map /base/               :: map(func, *iterables) -> map
 FROM: funcy           | lmap                     :: lmap(f, *seqs) -> List  ; list version of map
 MACR: fptk._macros    | mapm                     ; same as map, but expects fm-syntax for func
 MACR: fptk._macros    | lmapm                    ; same as lmap, but expects fm-syntax for func
-FROM: itertools       | starmap                  ; starmap(function, iterable)
+FROM: itertools       | starmap                  :: starmap(function, iterable)
 DEFN: fptk            | lstarmap                 :: lstarmap(function, iterable) -> list  ; list version of starmap
 FROM: functools       | reduce                   :: reduce(function, sequence[, initial]) -> value  ; theory: reduce + monoid = binary-function for free becomes n-arg-function
 FROM: funcy           | reductions               :: reductions(f, seq [, acc]) -> generator  ; returns sequence of intermetidate values of reduce(f, seq, acc)
@@ -201,17 +201,17 @@ FROM: hyrule          | inc                      :: inc(n)  ; = n + 1
 FROM: hyrule          | dec                      :: dec(n)  ; = n - 1
 FROM: hyrule          | sign                     :: sign(n)  ; will give 0 for n=0
 FROM: operator        | neg                      :: neg(n)  ; = -1 * n
-DEFN: fptk            | half                     ; (half x) = (/ x 2)
-DEFN: fptk            | double                   ; (double x) = (* x 2)
-DEFN: fptk            | squared                  ; (squared x) = (pow x 2)
-DEFN: fptk            | reciprocal               :: reciprocal(x) = 1/x literally  ; throws error for x=0
+DEFN: fptk            | half                     :: half(x)  ; = x/2
+DEFN: fptk            | double                   :: double(x)  ; = x*2
+DEFN: fptk            | squared                  :: squared(x)  ; = pow(x,2)
+DEFN: fptk            | reciprocal               :: reciprocal(x)  ; = 1/x ; throws error for x=0
 FROM: math            | sqrt                     :: sqrt(n)  ; = √n
 FROM: math            | dist                     :: dist(p, q) -> float  ; ≈ √((px-qx)² + (py-qy)² ...)
 FROM: math            | hypot                    :: hypot(*coordinates)  ; = √(x² + y² + ...)
 DEFN: fptk            | normalize                :: normalize(xs) -> xs  ; will throw error for zero-len vector
 FROM: math            | exp                      :: exp(x)
-FROM: math            | log                      ; log(x, base=math.e)
-DEFN: fptk            | ln                       :: ln(x) = math.log(x, math.e)  ; coexists with log for clarity
+FROM: math            | log                      :: log(x, base=math.e)
+DEFN: fptk            | ln                       :: ln(x)  ; = math.log(x, math.e) ; coexists with log for clarity
 FROM: math            | log10                    :: log10(x)
 FROM: funcy           | evenQ (<-even)           :: evenQ(x)
 FROM: funcy           | oddQ (<-odd)             :: oddQ(x)
@@ -255,15 +255,15 @@ DEFN: fptk            | plus                     :: plus(*args)  ; addition as a
 DEFN: fptk            | sconcat                  :: sconcat(*args)  ; string concantenation as a monoid (will not give error when used with 0 or 1 args)
 
 === Math and logic: Logic checks ===
-DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs) = not(f(*args, **kwargs))
-DEFN: fptk            | eq_any                   :: (eq_any x values)  ; (or (eq x value1) (eq x value2) ...)
-DEFN: fptk            | on                       :: (on f check x y)  ; (on len eq xs ys) -> (eq (len xs) (len yx))
+DEFN: fptk            | fnot                     :: fnot(f, *args, **kwargs)  ; = not(f(*args, **kwargs))
+DEFN: fptk            | eq_any                   :: eq_any(x, values)  ; = (or (eq x value1) (eq x value2) ...)
+DEFN: fptk            | on                       :: on(f, check, x, y)  ; example: (on len eq xs ys) -> (eq (len xs) (len yx))
 DEFN: fptk            | all_fs                   :: all_fs(fs, *args, **kwargs)  ; checks if all f(*args, **kwargs) are True
 DEFN: fptk            | any_fs                   :: any_fs(fs, *args, **kwargs)  ; checks if any of f(*args, **kwargs) is True
-DEFN: fptk            | trueQ                    ; checks directly via (= x True)
-DEFN: fptk            | falseQ                   ; checks directly via (= x False)
-DEFN: fptk            | oflenQ                   :: oflenQ(n, xs) -> (= (len xs) n)
-DEFN: fptk            | zerolenQ                 ; checks literally if (= (len xs) 0)
+DEFN: fptk            | trueQ                    :: trueQ(x)  ; checks directly via (= x True)
+DEFN: fptk            | falseQ                   :: falseQ(x)  ; checks directly via (= x False)
+DEFN: fptk            | oflenQ                   :: oflenQ(n, xs)  ; checks directly via (= (len xs) n)
+DEFN: fptk            | zerolenQ                 :: zerolenQ(xs)  ; checks directly via (= (len xs) 0)
 
 === Math and logic: Random ===
 FROM: random          | choice                   :: choice(seq) -> Elem  ; throws error for empty list
@@ -289,13 +289,13 @@ FROM: funcy           | re_all                   :: re_all(rpattern, string, ...
 
 === IO ===
 FROM: os.path         | file_existsQ (<-exists)  :: file_existsQ(filename)  ; also works on folders
-FROM: os.path         | fileQ (<-isfile)         ; fileQ(filename)
-FROM: os.path         | dirQ (<-isdir)           ; dirQ(filename)
+FROM: os.path         | fileQ (<-isfile)         :: fileQ(filename)
+FROM: os.path         | dirQ (<-isdir)           :: dirQ(filename)
 DEFN: fptk            | read_file                :: read_file(file_name, encoding='utf-8') -> str  ; returns whole file content
 DEFN: fptk            | write_to_file            :: write_file(text, file_name, mode='w', encoding='utf-8')  ; modes: 'w' - (over)write, 'a' - append, 'x' - exclusive creation
 
 === Lens ===
-FROM: lenses          | lens                     ; 3rd party module (for working with immutable structures)
+FROM: lenses          | lens                     ; main object of lenses library (for working with immutable structures)
 MACR: fptk._macros    | lns                      ; macros for working with lens, see lens macros docs for details
 MACR: fptk._macros    | &+                       ; macros for working with lens, see lens macros docs for details
 MACR: fptk._macros    | &+>                      ; macros for working with lens, see lens macros docs for details
@@ -308,6 +308,6 @@ DEFN: fptk            | dt_print                 :: dt_printer(* args, fresh_run
 
 === Testing ===
 MACR: fptk._macros    | assertm                  :: (assertm op arg1 arg2)  ; tests if (op arg1 arg2), for example (= 1 1)
-MACR: fptk._macros    | gives_error_typeQ        ; (assertm gives_error_typeQ (get [1] 2) IndexError)
+MACR: fptk._macros    | gives_error_typeQ        ; example: (assertm gives_error_typeQ (get [1] 2) IndexError)
 
 ```
