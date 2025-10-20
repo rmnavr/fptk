@@ -15,8 +15,8 @@
 
 ; [GROUP] Typing: Base ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (require hyrule [of])         #_ "| (of List int) -> List[int]"
-    (require fptk._macros [f::])  #_ "| (f:: int -> int -> (of Tuple int str))"
+    (require hyrule [of])         #_ "| example: (of List int) which is equiv to py-code: List[int]"
+    (require fptk._macros [f::])  #_ "| example: (f:: int -> int -> (of Tuple int str))"
 
     (import dataclasses [dataclass])
     (import enum        [Enum])
@@ -39,7 +39,7 @@
     (import funcy [isnone  :as noneQ])
     (import funcy [notnone :as notnoneQ]) ;;
 
-    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
+    #_ "oftypeQ(tp, x) | checks directly via (= (type x) tp)"
     (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
 
     #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"

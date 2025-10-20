@@ -144,7 +144,7 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import hyrule [flatten])   #_ "flattens to the bottom, non-mutating" ;;
+    (import hyrule [flatten])   #_ "flatten(coll) | flattens to the bottom, non-mutating" ;;
 
     #_ "lprint(seq, sep=None) | prints every elem of seq on new line"
     (defn lprint [seq [sep None]]

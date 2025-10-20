@@ -78,13 +78,13 @@
     (import funcy [even :as evenQ]) #_ "evenQ(x) |"
     (import funcy [odd  :as oddQ])  #_ "oddQ(x)  |"
 
-    #_ "| checks directly via (= x 0)"
+    #_ "zeroQ(x) | checks directly via (= x 0)"
     (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
 
-    #_ "| checks directly via (< x 0)"
+    #_ "negativeQ(x) | checks directly via (< x 0)"
     (defn negativeQ [x] "checks literally if x < 0" (< x 0))
 
-    #_ "| checks directly via (> x 0)"
+    #_ "positiveQ(x) | checks directly via (> x 0)"
     (defn positiveQ [x] "checks literally if x > 0" (> x 0))
 
 ; _____________________________________________________________________________/ }}}1

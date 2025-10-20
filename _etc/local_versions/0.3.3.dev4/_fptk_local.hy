@@ -34,8 +34,8 @@
     (require hyrule [as->])
     (require hyrule [doto])         #_ "| mutating "
 
-    ; (import  funcy  [curry])
-    ; (import  funcy  [autocurry])
+    ;; (import  funcy  [curry])
+    ;; (import  funcy  [autocurry])
     (import  funcy  [partial])      #_ "| applicator"
     (import  funcy  [rpartial])     #_ "| applicator"
     ; ///fptk_local: removed import of fptk._macros///     #_ "| aplicator, pipe of partials"
@@ -246,7 +246,7 @@
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] APL: working with lists ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (import hyrule [flatten])   #_ "flattens to the bottom, non-mutating" ;;
+    (import hyrule [flatten])   #_ "flatten(coll) | flattens to the bottom, non-mutating" ;;
 
     #_ "lprint(seq, sep=None) | prints every elem of seq on new line"
     (defn lprint [seq [sep None]]
@@ -385,7 +385,7 @@
         (comment "py     | base  | slice | (slice start end step) | returns empty list when not found ")
         (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | returns empty list when none found")
 
-        (import  hyrule [assoc])  #_ "(assoc xs k1 v1 k2 v2 ...) ~ (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
+        (import  hyrule [assoc])  #_ "assoc(xs, k1, v1, k2, v2, ...) -> None | ≈ (setv (get xs k1) v1 (get xs k2) v2) ; also possible: (assoc xs :x 1)"
         (require hyrule [ncut])   
 
     ;; one elem getters:
@@ -523,8 +523,8 @@
 
 ; [GROUP] Typing: Base ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (require hyrule [of])         #_ "| (of List int) -> List[int]"
-    ; ///fptk_local: removed import of fptk._macros///  #_ "| (f:: int -> int -> (of Tuple int str))"
+    (require hyrule [of])         #_ "| example: (of List int) which is equiv to py-code: List[int]"
+    ; ///fptk_local: removed import of fptk._macros///  #_ "| example: (f:: int -> int -> (of Tuple int str))"
 
     (import dataclasses [dataclass])
     (import enum        [Enum])
@@ -547,7 +547,7 @@
     (import funcy [isnone  :as noneQ])
     (import funcy [notnone :as notnoneQ]) ;;
 
-    #_ "(oftypeQ tp x) -> (= (type x) tp) |"
+    #_ "oftypeQ(tp, x) | checks directly via (= (type x) tp)"
     (defn oftypeQ [tp x] "checks literally if type(x) == tp" (= (type x) tp))
 
     #_ "intQ(x) | checks literally if type(x) == int, will also work with StrictInt from pydantic"
@@ -663,13 +663,13 @@
     (import funcy [even :as evenQ]) #_ "evenQ(x) |"
     (import funcy [odd  :as oddQ])  #_ "oddQ(x)  |"
 
-    #_ "| checks directly via (= x 0)"
+    #_ "zeroQ(x) | checks directly via (= x 0)"
     (defn zeroQ     [x] "checks literally if x == 0" (= x 0))
 
-    #_ "| checks directly via (< x 0)"
+    #_ "negativeQ(x) | checks directly via (< x 0)"
     (defn negativeQ [x] "checks literally if x < 0" (< x 0))
 
-    #_ "| checks directly via (> x 0)"
+    #_ "positiveQ(x) | checks directly via (> x 0)"
     (defn positiveQ [x] "checks literally if x > 0" (> x 0))
 
 ; ________________________________________________________________________/ }}}2

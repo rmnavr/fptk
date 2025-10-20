@@ -39,7 +39,7 @@
         (comment "py     | base  | slice | (slice start end step) | returns empty list when not found ")
         (comment "hy     | macro | cut   | (cut xs start end step) -> (get xs (slice start end step)) -> List | returns empty list when none found")
 
-        (import  hyrule [assoc])  #_ "(assoc xs k1 v1 k2 v2 ...) ~ (setv (get xs k1) v1 (get xs k2) v2) -> None | also possible: (assoc xs :x 1)"
+        (import  hyrule [assoc])  #_ "assoc(xs, k1, v1, k2, v2, ...) -> None | ≈ (setv (get xs k1) v1 (get xs k2) v2) ; also possible: (assoc xs :x 1)"
         (require hyrule [ncut])   
 
     ;; one elem getters:

@@ -46,6 +46,24 @@ MACR: hyrule          | branch
 MACR: hyrule          | unless
 MACR: hyrule          | lif
 
+=== FP: Composition ===
+FROM: hyrule          | constantly               :: constantly(val)  ; constantly(30) is FUNCTION that always return val no matter the arguments
+FROM: funcy           | identity                 ; identity(n) -> n
+MACR: hyrule          | ->
+MACR: hyrule          | ->>
+MACR: hyrule          | as->
+MACR: hyrule          | doto                     ; mutating
+FROM: funcy           | curry
+FROM: funcy           | autocurry
+FROM: funcy           | partial                  ; applicator
+FROM: funcy           | rpartial                 ; applicator
+MACR: fptk._macros    | p:                       ; aplicator, pipe of partials
+FROM: funcy           | compose                  :: compose(f1, f2, ..., fn) = f1(f2(..fn(***)))  ; applicator
+FROM: funcy           | rcompose                 :: rcompose(f1, f2, ..., fn) = fn(..(f2(f1(***))))  ; applicator
+FROM: funcy           | ljuxt                    :: ljuxt(*fs) = [f1, f2, ...](***)  ; applicator
+DEFN: fptk            | pflip                    :: pflip(f, a)  ; applicator for function f(a,b) of 2 args; example: pflip(div, 4)(1) == 0.25
+DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; calls f with flipped args
+
 === FP: threading ===
 MACR: fptk._macros    | fm                       :: (fm (* it 3))  ; anonymous function that accepts args in form of 'it' or '%1', '%2', ... '%9'
 MACR: fptk._macros    | f>                       :: (f> (* %1 %2) 3 4)  ; calculate anonymous function (with fm-syntax)
@@ -112,7 +130,7 @@ FROM: funcy           | with_prev                :: with_prev(seq, fill=None) ->
 FROM: funcy           | with_next                :: with_next(seq, fill=None) -> iterator  ; supposed to be used in loops
 
 === APL: working with lists ===
-FROM: hyrule          | flatten                  ; flattens to the bottom, non-mutating
+FROM: hyrule          | flatten                  :: flatten(coll)  ; flattens to the bottom, non-mutating
 DEFN: fptk            | lprint                   :: lprint(seq, sep=None)  ; prints every elem of seq on new line
 INFO: py              | reversed /base/          :: reversed(sequence) -> iterator
 DEFN: fptk            | lreversed                :: lreversed(sequence)  ; list version of reversed
@@ -131,7 +149,7 @@ INFO: hy              | get /macro/              :: (get xs n #* keys) -> xs[n][
 FROM: funcy           | nth                      :: nth(n, seq) -> Optional elem  ; 0-based index; works also with dicts
 INFO: py              | slice /base/             :: (slice start end step)  ; returns empty list when not found
 INFO: hy              | cut /macro/              :: (cut xs start end step) -> (get xs (slice start end step)) -> List  ; returns empty list when none found
-FROM: hyrule          | assoc                    :: (assoc xs k1 v1 k2 v2 ...) ~ (setv (get xs k1) v1 (get xs k2) v2) -> None  ; also possible: (assoc xs :x 1)
+FROM: hyrule          | assoc                    :: assoc(xs, k1, v1, k2, v2, ...) -> None  ; ≈ (setv (get xs k1) v1 (get xs k2) v2) ; also possible: (assoc xs :x 1)
 MACR: hyrule          | ncut
 FROM: funcy           | first                    :: first(seq) -> Optional elem
 FROM: funcy           | second                   :: second(seq) -> Optional elem
@@ -156,8 +174,8 @@ MACR: fptk._macros    | pluckm                   :: (pluckm n xs) (pluckm key ys
 MACR: fptk._macros    | lpluckm                  ; list version of pluckm
 
 === Typing: Base ===
-MACR: hyrule          | of                       ; (of List int) -> List[int]
-MACR: fptk._macros    | f::                      ; (f:: int -> int -> (of Tuple int str))
+MACR: hyrule          | of                       ; example: (of List int) which is equiv to py-code: List[int]
+MACR: fptk._macros    | f::                      ; example: (f:: int -> int -> (of Tuple int str))
 FROM: dataclasses     | dataclass
 FROM: enum            | Enum
 FROM: typing          | List
@@ -175,7 +193,7 @@ FROM: typing          | TypeVar
 FROM: typing          | Generic
 FROM: funcy           | noneQ (<-isnone)
 FROM: funcy           | notnoneQ (<-notnone)
-DEFN: fptk            | oftypeQ                  :: (oftypeQ tp x) -> (= (type x) tp)
+DEFN: fptk            | oftypeQ                  :: oftypeQ(tp, x)  ; checks directly via (= (type x) tp)
 DEFN: fptk            | intQ                     :: intQ(x)  ; checks literally if type(x) == int, will also work with StrictInt from pydantic
 DEFN: fptk            | floatQ                   :: floatQ(x)  ; checks literally if type(x) == float, will also work with StrictFloat from pydantic
 DEFN: fptk            | numberQ                  :: numberQ(x)  ; checks for intQ or floatQ, will also work with StrictInt/StrictFloat from pydantic
@@ -215,9 +233,9 @@ DEFN: fptk            | ln                       :: ln(x)  ; = math.log(x, math.
 FROM: math            | log10                    :: log10(x)
 FROM: funcy           | evenQ (<-even)           :: evenQ(x)
 FROM: funcy           | oddQ (<-odd)             :: oddQ(x)
-DEFN: fptk            | zeroQ                    ; checks directly via (= x 0)
-DEFN: fptk            | negativeQ                ; checks directly via (< x 0)
-DEFN: fptk            | positiveQ                ; checks directly via (> x 0)
+DEFN: fptk            | zeroQ                    :: zeroQ(x)  ; checks directly via (= x 0)
+DEFN: fptk            | negativeQ                :: negativeQ(x)  ; checks directly via (< x 0)
+DEFN: fptk            | positiveQ                :: positiveQ(x)  ; checks directly via (> x 0)
 
 === Math and logic: Trigonometry ===
 FROM: math            | pi                       ; literally just float pi=3.14...

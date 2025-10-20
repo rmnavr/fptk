@@ -41,8 +41,8 @@
     (require hyrule [as->])
     (require hyrule [doto])         #_ "| mutating "
 
-    ; (import  funcy  [curry])
-    ; (import  funcy  [autocurry])
+    ;; (import  funcy  [curry])
+    ;; (import  funcy  [autocurry])
     (import  funcy  [partial])      #_ "| applicator"
     (import  funcy  [rpartial])     #_ "| applicator"
     (require fptk._macros [p:])     #_ "| aplicator, pipe of partials"
