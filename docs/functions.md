@@ -56,9 +56,9 @@ MACR: hyrule          | doto                     ; mutating
 FROM: funcy           | partial                  ; applicator
 FROM: funcy           | rpartial                 ; applicator
 MACR: fptk._macros    | p:                       ; aplicator, pipe of partials
-FROM: funcy           | compose                  :: compose(f1, f2, ..., fn) = f1(f2(..fn(***)))  ; applicator
-FROM: funcy           | rcompose                 :: rcompose(f1, f2, ..., fn) = fn(..(f2(f1(***))))  ; applicator
-FROM: funcy           | ljuxt                    :: ljuxt(*fs) = [f1, f2, ...](***)  ; applicator
+FROM: funcy           | compose                  :: compose(f1, f2, ..., fn)  ; = f1(f2(..fn(***))) ; applicator
+FROM: funcy           | rcompose                 :: rcompose(f1, f2, ..., fn)  ; = fn(..(f2(f1(***)))) ; applicator
+FROM: funcy           | ljuxt                    :: ljuxt(*fs)  ; = [f1, f2, ...](***) ; applicator
 DEFN: fptk            | pflip                    :: pflip(f, a)  ; applicator for function f(a,b) of 2 args; example: pflip(div, 4)(1) == 0.25
 DEFN: fptk            | flip                     :: flip(f, a, b) = f(b, a)  ; calls f with flipped args
 

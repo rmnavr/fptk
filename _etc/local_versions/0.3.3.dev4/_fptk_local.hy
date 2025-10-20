@@ -38,10 +38,10 @@
     (import  funcy  [rpartial])     #_ "| applicator"
     ; ///fptk_local: removed import of fptk._macros///     #_ "| aplicator, pipe of partials"
 
-    (import  funcy  [compose])      #_ "compose(f1, f2, ..., fn) = f1(f2(..fn(***))) | applicator"
-    (import  funcy  [rcompose])     #_ "rcompose(f1, f2, ..., fn) = fn(..(f2(f1(***)))) | applicator"
+    (import  funcy  [compose])      #_ "compose(f1, f2, ..., fn) | = f1(f2(..fn(***))) ; applicator"
+    (import  funcy  [rcompose])     #_ "rcompose(f1, f2, ..., fn) | = fn(..(f2(f1(***)))) ; applicator"
 
-    (import  funcy  [ljuxt])        #_ "ljuxt(*fs) = [f1, f2, ...](***) | applicator" ;;
+    (import  funcy  [ljuxt])        #_ "ljuxt(*fs) | = [f1, f2, ...](***) ; applicator" ;;
 
     #_ "pflip(f, a) | applicator for function f(a,b) of 2 args; example: pflip(div, 4)(1) == 0.25"
     (defn pflip
