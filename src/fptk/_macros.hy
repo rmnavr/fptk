@@ -398,7 +398,7 @@
                      (try ~arg2
                           (print ">>" ~_arg2 "=" ~arg2)
                           (except [e2 Exception]
-                                  (print ">> Can't calc" ~_arg2 "|" (type e1) ":" e2)))
+                                  (print ">> Can't calc" ~_arg2 "|" (type e2) ":" e2)))
                                   (print)
                      eFull )))
 
