@@ -20,5 +20,5 @@
 
     ->  (Point 3 4) (getattr "x") (print)
     ->> (Point 3 4) (flip getattr "x") (print)
-    -> (Point 3 4) (getattrm .y) (print)
+    ->  (Point 3 4) (getattrm .y) (print)
 

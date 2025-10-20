@@ -154,3 +154,6 @@
 	- apply [list]
 
 	lmapm/lfilterm -> when no it/%1 found, fall-back to map/filter?
+
+	- getattr obj arg1 arg2
+	- attrget arg obj

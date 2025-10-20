@@ -58,7 +58,7 @@ Utilities:
     (unwrapR    r)          ; returns contained Success value or throws error when not Success
     (unwrapR_or r default)  ; returns contained Success value or falls back to default
     (unwrapE    r)          ; returns contained Failure value or throws error when not Failure
-    (unwrapE_or r default)  ; returns contained Success value or falls back to default
+    (unwrapE_or r default)  ; returns contained Failure value or falls back to default
 
     ; If you need to access contained value no matter if it is Success or Failure, use:
     r.value

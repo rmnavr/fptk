@@ -37,16 +37,16 @@
 
     ;;
 
-    #_ "(half x) = (/ x 2)"
+    #_ "half(x) | = x/2"
     (defn half       [x] "half(x) = x / 2" (/ x 2))
 
-    #_ "(double x) = (* x 2)"
+    #_ "double(x) | = x*2"
     (defn double     [x] "double(x) = x * 2" (* x 2))
 
-    #_ "(squared x) = (pow x 2)"
+    #_ "squared(x) | = pow(x,2)"
     (defn squared    [x] "squared(x) = pow(x, 2)" (pow x 2))
 
-    #_ "reciprocal(x) = 1/x literally | throws error for x=0"
+    #_ "reciprocal(x) | = 1/x ; throws error for x=0"
     (defn reciprocal [x] "reciprocal(x) = 1 / x" (/ 1 x))
 
     (import math [sqrt])    #_ "sqrt(n) | = √n"
@@ -67,9 +67,9 @@
 
     (import math [exp]) #_ "exp(x) |"
 
-    (import math [log]) #_ "log(x, base=math.e)" ;;
+    (import math [log]) #_ "log(x, base=math.e) |" ;;
 
-    #_ "ln(x) = math.log(x, math.e) | coexists with log for clarity"
+    #_ "ln(x) | = math.log(x, math.e) ; coexists with log for clarity"
     (defn ln [x] (log x))
 
     (import math [log10])  #_ "log10(x) |"
@@ -183,17 +183,17 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Math and logic: Logic checks ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    #_ "fnot(f, *args, **kwargs) = not(f(*args, **kwargs)) | "
+    #_ "fnot(f, *args, **kwargs) | = not(f(*args, **kwargs)) "
     (defn fnot [f #* args #** kwargs]
         "fnot(f, *args, **kwargs) = not(f(*args, **kwargs))"
         (not (f #* args #** kwargs)))
 
-    #_ "(eq_any x values) | (or (eq x value1) (eq x value2) ...)"
+    #_ "eq_any(x, values) | = (or (eq x value1) (eq x value2) ...)"
     (defn eq_any [x values]
         "eq_any(x, [v1, v2, ...]) = or(eq(x, v1), eq(x, v2), ...)"
         (or #* (list (map (fn [it] (= x it)) values))))
 
-    #_ "(on f check x y) | (on len eq xs ys) -> (eq (len xs) (len yx))"
+    #_ "on(f, check, x, y) | example: (on len eq xs ys) -> (eq (len xs) (len yx))"
     (defn on [f check x y]
         "on(f, check, x, y) = check(f(x), f(y))
          inspired by Haskell's 'on' function"
@@ -209,16 +209,16 @@
         "all_fs([f1, f2, ...], *args, **kwargs) = or(f1(*args, **kwargs), f2, ...)"
         (or #* (lfor &f fs (&f #* args #** kwargs))))
 
-    #_ "| checks directly via (= x True)"
+    #_ "trueQ(x) | checks directly via (= x True)"
     (defn trueQ [x] "checks literally if x == True" (= x True))
 
-    #_ "| checks directly via (= x False)"
+    #_ "falseQ(x) | checks directly via (= x False)"
     (defn falseQ [x] "checks literally if x == False" (= x False))
 
-    #_ "oflenQ(n, xs) -> (= (len xs) n) |"
+    #_ "oflenQ(n, xs) | checks directly via (= (len xs) n)"
     (defn oflenQ [n xs] "checks literally if len(xs) == n" (= (len xs) n))
 
-    #_ "| checks literally if (= (len xs) 0)"
+    #_ "zerolenQ(xs) | checks directly via (= (len xs) 0)"
     (defn zerolenQ [xs] "checks literally if len(xs) == 0" (= (len xs) 0))
 
 ; _____________________________________________________________________________/ }}}1

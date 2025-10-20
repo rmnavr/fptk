@@ -82,7 +82,7 @@
     (require fptk._macros [mapm])     #_ "| same as map, but expects fm-syntax for func"
     (require fptk._macros [lmapm])    #_ "| same as lmap, but expects fm-syntax for func"
 
-    (import itertools [starmap])    #_ "starmap(function, iterable)" ;;
+    (import itertools [starmap])    #_ "starmap(function, iterable) |" ;;
 
     #_ "lstarmap(function, iterable) -> list | list version of starmap"
     (defn lstarmap [function iterable]

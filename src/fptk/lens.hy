@@ -10,7 +10,7 @@
 
 ; [GROUP] Lens ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    (import lenses [lens])      #_ "3rd party module (for working with immutable structures)"
+    (import lenses [lens])         #_ "main object of lenses library (for working with immutable structures)"
 
     (require fptk._macros [lns])   #_ "macros for working with lens, see lens macros docs for details"
     (require fptk._macros [&+])    #_ "macros for working with lens, see lens macros docs for details"
