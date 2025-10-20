@@ -85,7 +85,7 @@
             (lfor &n ns (get seq &n)))
 
 ; _____________________________________________________________________________/ }}}1
-; [GROUP] Getters: 1-based-index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; [GROUP] Getters: one based index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
     (import hyrule [thru :as range_])      #_ "range_(start, end=None, step=1) -> List | same as range, but with 1-based index"
 

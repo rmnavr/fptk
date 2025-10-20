@@ -53,8 +53,6 @@ MACR: hyrule          | ->
 MACR: hyrule          | ->>
 MACR: hyrule          | as->
 MACR: hyrule          | doto                     ; mutating
-FROM: funcy           | curry
-FROM: funcy           | autocurry
 FROM: funcy           | partial                  ; applicator
 FROM: funcy           | rpartial                 ; applicator
 MACR: fptk._macros    | p:                       ; aplicator, pipe of partials
@@ -162,6 +160,14 @@ DEFN: fptk            | butlast                  :: butlast(seq) -> List  ; drop
 DEFN: fptk            | drop                     :: drop(n, seq) -> List  ; drops n>=0 elems from start of the list; when n<0, drops from end of the list
 DEFN: fptk            | take                     :: take(n, seq) -> List  ; takes n elems from start; when n<0, takes from end of the list
 DEFN: fptk            | pick                     :: pick(ns, seq) -> List  ; throws error if some of ns doesn't exist; ns can be list of ints or dict keys
+
+=== Getters: one based index ===
+FROM: hyrule          | range_ (<-thru)          :: range_(start, end=None, step=1) -> List  ; same as range, but with 1-based index
+DEFN: fptk            | lrange_                  :: lrange_(start, end=None, step=1) -> List  ; list version of range_
+DEFN: fptk            | get_                     :: get_(seq, *ns) -> elem  ; same as get, but with 1-based index (will throw error for n=0)
+DEFN: fptk            | nth_                     :: nth_(n, seq) -> Optional elem  ; same as nth, but with 1-based index; will return None for n=0
+DEFN: fptk            | slice_                   :: slice_(start, end, step=None)  ; similar to slice, but with 1-based index; will throw error for start=0 or end=0
+DEFN: fptk            | cut_                     :: cut_(seq, start, end, step=None) -> List  ; similar to cut, but with 1-based index; will throw error for start=0 or end=0
 
 === Getters: keys and attrs ===
 INFO: py              | getattr /base/           :: getattr(object, name[, default]) -> value  ; arg name should be given as str

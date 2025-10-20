@@ -34,12 +34,9 @@
     (require hyrule [as->])
     (require hyrule [doto])         #_ "| mutating "
 
-    ;; (import  funcy  [curry])
-    ;; (import  funcy  [autocurry])
     (import  funcy  [partial])      #_ "| applicator"
     (import  funcy  [rpartial])     #_ "| applicator"
     ; ///fptk_local: removed import of fptk._macros///     #_ "| aplicator, pipe of partials"
-
 
     (import  funcy  [compose])      #_ "compose(f1, f2, ..., fn) = f1(f2(..fn(***))) | applicator"
     (import  funcy  [rcompose])     #_ "rcompose(f1, f2, ..., fn) = fn(..(f2(f1(***)))) | applicator"
@@ -431,7 +428,7 @@
             (lfor &n ns (get seq &n)))
 
 ; ________________________________________________________________________/ }}}2
-; [GROUP] Getters: 1-based-index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+; [GROUP] Getters: one based index ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
     (import hyrule [thru :as range_])      #_ "range_(start, end=None, step=1) -> List | same as range, but with 1-based index"
 

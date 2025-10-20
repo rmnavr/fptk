@@ -41,12 +41,9 @@
     (require hyrule [as->])
     (require hyrule [doto])         #_ "| mutating "
 
-    ;; (import  funcy  [curry])
-    ;; (import  funcy  [autocurry])
     (import  funcy  [partial])      #_ "| applicator"
     (import  funcy  [rpartial])     #_ "| applicator"
     (require fptk._macros [p:])     #_ "| aplicator, pipe of partials"
-
 
     (import  funcy  [compose])      #_ "compose(f1, f2, ..., fn) = f1(f2(..fn(***))) | applicator"
     (import  funcy  [rcompose])     #_ "rcompose(f1, f2, ..., fn) = fn(..(f2(f1(***)))) | applicator"
