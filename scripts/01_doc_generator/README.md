@@ -3,8 +3,8 @@
 
 # FPTK Doc Generator
 
-Purpose of **FPTK Doc Generator** is to auto-generate short doc table of all
-fptk imports/funcs/classes with short description.
+Purpose of **FPTK Doc Generator** is to auto-generate short doc table of most
+fptk funcs/classes with short description like:
 
 ```hy
 === Group name 1 ===
@@ -22,7 +22,7 @@ Simply run `doc_generator.hy` file to generate this table.
 
 # Recognized entities
 
-For generator to work, main fptk file `fpext.hy` need to use special syntax.
+For generator to work, fptk files in `src` need to use special syntax.
 
 Below, "signature" and "description" are arbitrary texts.
 The only rule they must follow is to use `|` symbol only as separator (see examples below). 
@@ -42,7 +42,7 @@ Only code inside specially defined comments (marked with `[GROUP]`) will be reco
 
 Inside groups, line-comments MUST use two semicolons:
 ```hy
-    ;  ✗ when inside Vim Cell, this comment will break doc-info recognition
+    ;  ✗ when inside GROUP, this comment will break doc-info recognition
 
     ;; ✓ such a comment is OK
 ```
@@ -52,12 +52,13 @@ it is strongly recommended to separate them with `;;` comment.
 Reason for this is because parser might be confused with to what entity to attach `#_ ...` :
 ```hy
     ;; may be problematic:
-    (import math) #_ "description"
-    (defn some_func [x y] ...)
+        (import math) #_ "description"
+        (defn some_func [x y] ...)
 
     ;; good:
-    (import math) #_ "description" ;;
-    (defn some_func [x y] ...)
+        (import math) #_ "description"
+        ;;
+        (defn some_func [x y] ...)
 ```
 
 <!-- __________________________________________________________________________/ }}}1 -->
@@ -99,9 +100,11 @@ Entities that support optional signature and description:
     #_ "signature |"
     #_ "description"
     #_ "signature | description"
+    #_ "| description"
 ```
 
-Dummy functions (intention for adding this to full list of funcs is only for giving more context on relation between py/hy/fptk functions):
+Dummy functions (intention for adding this to full list of funcs is only
+for giving more context on relation between py/hy/fptk functions):
 ```hy
     (comment "source_lib | kind_str | name | signature | description ")
 
