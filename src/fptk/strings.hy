@@ -85,30 +85,6 @@
 ; _____________________________________________________________________________/ }}}1
 ; [GROUP] Strings: Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    ;; re:
-    ;; - match
-    ;; - search
-    ;; - findall
-    ;; - finditer
-    ;; - split
-    ;; - compile
-    ;; - fullmatch
-    ;; - escape
-
-    ;; Chars:
-    ;; - non-escaped (commands):   .  ^  $  *  +  ? {2,4} [abc]      ( | )
-    ;; - escaped (literals):      \. \^ \$ \* \+ \? \{ \} $$_bracket $_parenthesis \| \\ \' \"
-    ;; - special:                 \d \D \w \W \s \S \b \B \n \r \f \v
-    ;; - raw strings:             r"\d+" = "\\d+"
-
-    ;; flags:
-    ;; - re.IGNORECASE or re.I  Makes the pattern matching case-insensitive.
-    ;; - re.MULTILINE or re.M   Changes the behavior of ^ and $ to match the start and end of each line within the string, not just the start and end of the entire string.
-    ;; - re.DOTALL or re.S      Allows the . character to match any character, including newline characters.
-    ;; - re.VERBOSE or re.X     Allows you to write more readable regex by ignoring whitespace and comments.
-    ;; - re.ASCII or re.A       Makes the character classes only match ASCII characters (affects \w, \W, \b, and \B).
-    ;; - re.LOCALE or re.L      Makes the character classes dependent on the current locale settings (this flag is less commonly used).
-
     (import re        [sub :as re_sub])         #_ "re_sub(rpattern, replacement, string, count=0, flags=0) |"
     (import re        [split :as re_split])     #_ "re_split(rpattern, string) |"
     (import funcy     [re_find])                #_ "re_find(rpattern, string, flags=0) -> str| returns first found"

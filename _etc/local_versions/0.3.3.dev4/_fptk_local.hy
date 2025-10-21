@@ -892,30 +892,6 @@
 ; ________________________________________________________________________/ }}}2
 ; [GROUP] Strings: Regex ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    ;; re:
-    ;; - match
-    ;; - search
-    ;; - findall
-    ;; - finditer
-    ;; - split
-    ;; - compile
-    ;; - fullmatch
-    ;; - escape
-
-    ;; Chars:
-    ;; - non-escaped (commands):   .  ^  $  *  +  ? {2,4} [abc]      ( | )
-    ;; - escaped (literals):      \. \^ \$ \* \+ \? \{ \} $$_bracket $_parenthesis \| \\ \' \"
-    ;; - special:                 \d \D \w \W \s \S \b \B \n \r \f \v
-    ;; - raw strings:             r"\d+" = "\\d+"
-
-    ;; flags:
-    ;; - re.IGNORECASE or re.I  Makes the pattern matching case-insensitive.
-    ;; - re.MULTILINE or re.M   Changes the behavior of ^ and $ to match the start and end of each line within the string, not just the start and end of the entire string.
-    ;; - re.DOTALL or re.S      Allows the . character to match any character, including newline characters.
-    ;; - re.VERBOSE or re.X     Allows you to write more readable regex by ignoring whitespace and comments.
-    ;; - re.ASCII or re.A       Makes the character classes only match ASCII characters (affects \w, \W, \b, and \B).
-    ;; - re.LOCALE or re.L      Makes the character classes dependent on the current locale settings (this flag is less commonly used).
-
     (import re        [sub :as re_sub])         #_ "re_sub(rpattern, replacement, string, count=0, flags=0) |"
     (import re        [split :as re_split])     #_ "re_split(rpattern, string) |"
     (import funcy     [re_find])                #_ "re_find(rpattern, string, flags=0) -> str| returns first found"
@@ -1155,9 +1131,9 @@
 
 ; Import ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    (import  hyrule [rest butlast])
+	(import  hyrule [rest butlast])
 	(require hyrule [-> ->> of])
-    (import  operator)
+	(import  operator)
 
 ; ________________________________________________________________________/ }}}2
 
@@ -1310,15 +1286,15 @@
 
 ; Info ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
-    ; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
-    ; 
-    ; -> fm               -> ✗ does not work in dev file
-    ;                                  ✓ works from outside projs (it is essentially call to installed lib)
-    ;                                  ✓ this is how it is done in hyrule (I think this is due to their hy_init.hy importing everything)
-    ;                                        
-    ;    fm                         -> [✓ ✗] works from dev file
-    ;    hy.R.fptk_macros.fm        -> [✓ ✗] works from dev file
-    ;    fptk_macros.fm   -> [✗ ✗] does not work anywhere
+	; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
+	; 
+	; -> fm				-> ✗ does not work in dev file
+	;								   ✓ works from outside projs (it is essentially call to installed lib)
+	;								   ✓ this is how it is done in hyrule (I think this is due to their hy_init.hy importing everything)
+	;										 
+	;	 fm							-> [✓ ✗] works from dev file
+	;	 hy.R.fptk_macros.fm		-> [✓ ✗] works from dev file
+	;	 fptk_macros.fm	-> [✗ ✗] does not work anywhere
 
 ; ________________________________________________________________________/ }}}2
 
@@ -1369,16 +1345,16 @@
 					(_isDottedMth &arg)
 					(do (pargs.append `(hy.I.funcy.partial (fn [f x y] (f y x)) getattr
 											~(str (get (_extractDottedMth &arg) "head")))) ; -> mth)
-						(pargs.append `(hy.I.funcy.partial (fn [%args %mth] (%mth (unpack_iterable  %args)))
+						(pargs.append `(hy.I.funcy.partial (fn [%args %mth] (%mth (unpack_iterable	%args)))
 												[~@(get (_extractDottedMth &arg) "args")])))
 					; abs -> (partial abs)
 					(= (type &arg) hy.models.Symbol)
 					(pargs.append `(hy.I.funcy.partial ~&arg))
-	                ; (fn/fm ...) -> no change
-                    (or (_isExprWithHeadSymbol &arg "fn")
-                        (_isExprWithHeadSymbol &arg "fm")
-                        (_isExprWithHeadSymbol &arg "f>"))
-                    (pargs.append &arg)
+					; (fn/fm ...) -> no change
+					(or (_isExprWithHeadSymbol &arg "fn")
+						(_isExprWithHeadSymbol &arg "fm")
+						(_isExprWithHeadSymbol &arg "f>"))
+					(pargs.append &arg)
 					; (func 1 2) -> (partial func 1 2)
 					; (operator.add 3) -> (partial operator.add 3)
 					(= (type &arg) hy.models.Expression)
@@ -1401,32 +1377,32 @@
 
 	(defmacro lpluckm [indx iterable]
 		(cond (_isDottedAttr indx) (return `(hy.I.funcy.lpluck_attr ~(str (_extractDottedAttr indx)) ~iterable))
-			  True                 (return `(hy.I.funcy.lpluck ~indx ~iterable))))
+			  True				   (return `(hy.I.funcy.lpluck ~indx ~iterable))))
 
 	(defmacro getattrm [iterable #* args] ; first arg is «indx», second - is «default» (may be absent)
-        (setv indx (get args 0))
-        (cond (= (len args) 1)
-              (setv default_not_given True)
-              (= (len args) 2)
-              (do (setv default (get args 1))
-                  (setv default_not_given False)))
+		(setv indx (get args 0))
+		(cond (= (len args) 1)
+			  (setv default_not_given True)
+			  (= (len args) 2)
+			  (do (setv default (get args 1))
+				  (setv default_not_given False)))
 		(cond ; .attr -> "attr"
 			  (_isDottedAttr indx)
-              (if default_not_given
-                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx))))
-                  (return `(getattr ~iterable ~(str (_extractDottedAttr indx)) ~default)))
+			  (if default_not_given
+				  (return `(getattr ~iterable ~(str (_extractDottedAttr indx))))
+				  (return `(getattr ~iterable ~(str (_extractDottedAttr indx)) ~default)))
 			  ;
 			  True
 			  (if default_not_given
-                  (return `(getattr ~iterable ~indx))
-                  (return `(getattr ~iterable ~indx ~default)))))
+				  (return `(getattr ~iterable ~indx))
+				  (return `(getattr ~iterable ~indx ~default)))))
 
 ; ________________________________________________________________________/ }}}2
 ; fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	; recognizes "it" as solo-arg
-    ; or %1..%9 as multi args
-    ; 
+	; or %1..%9 as multi args
+	; 
 	; "it" cannot be used together with %i
 	; 
 	; nested fm calls will probably not work as intended
@@ -1434,33 +1410,40 @@
 	(defmacro fm [expr]
 		(import hyrule [flatten thru])
 		;
-        (setv args (->> expr
-                        flatten
-                        (filter (fn [%x] (or (= %x 'it)
-                                             (= %x '%1) (= %x '%2) (= %x '%3)
-                                             (= %x '%4) (= %x '%5) (= %x '%6)
-                                             (= %x '%7) (= %x '%8) (= %x '%9))))
-                        sorted))    ; example: [hy.models.Symbol('%1'), hy.models.Symbol('%2')]
-        (when (in 'it args) (return `(fn [it] ~expr)))
-		(if (= (len args) 0)
-			(setv maxN 0)
-			(setv maxN (int (get args -1 -1)))) 
+		(setv itargs (->> expr
+						  flatten
+						  (filter (fn [%x] (= %x 'it)))
+						  sorted))	; example: [hy.models.Symbol('it')]
+		(setv pargs  (->> expr
+						  flatten
+						  (filter (fn [%x] (or (= %x '%1) (= %x '%2) (= %x '%3)
+											   (= %x '%4) (= %x '%5) (= %x '%6)
+											   (= %x '%7) (= %x '%8) (= %x '%9))))
+						  sorted))	; example: [hy.models.Symbol('%1'), hy.models.Symbol('%2')]
+		(setv has_pargs (> (len pargs ) 0))
+		(setv has_itarg (> (len itargs) 0))
+		;
+		(when (and has_itarg has_pargs) (raise (SyntaxError "cannot mix 'it' and '%n' syntax in fm macro"))) ; both "it" and "%1"... are found
+		(when has_itarg (return `(fn [it] ~expr)))	; only "it" are found
+		(if has_pargs
+			(setv maxN (int (get pargs -1 -1)))		; only "%1"... args are found
+			(setv maxN 0))							; no args are found
 		(setv inputs (lfor n (thru 1 maxN) (hy.models.Symbol f"%{n}")))
 		(return `(fn [~@inputs] ~expr)))
 
 	(defmacro f> [lambda_def #* args]
 		(return `((fm ~lambda_def) ~@args)))
 
-    (defmacro mapm [one_shot_fm #* args]
+	(defmacro mapm [one_shot_fm #* args]
 		(return `(map (fm ~one_shot_fm) ~@args)))
 
-    (defmacro lmapm [one_shot_fm #* args]
+	(defmacro lmapm [one_shot_fm #* args]
 		(return `(list (map (fm ~one_shot_fm) ~@args))))
 
-    (defmacro filterm [one_shot_fm iterable]
+	(defmacro filterm [one_shot_fm iterable]
 		(return `(filter (fm ~one_shot_fm) ~iterable)))
 
-    (defmacro lfilterm [one_shot_fm iterable]
+	(defmacro lfilterm [one_shot_fm iterable]
 		(return `(list (filter (fm ~one_shot_fm) ~iterable))))
 
 ; ________________________________________________________________________/ }}}2
@@ -1534,33 +1517,33 @@
 ; assertm, gives_error_typeQ ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
 
 	(defmacro assertm [op arg1 arg2]
-        (setv to_test `(~op ~arg1 ~arg2))
-        (setv _test_expr (hy.repr `(~op ~arg1 ~arg2)))
-        (setv _arg1 (hy.repr arg1))
-        (setv _arg2 (hy.repr arg2))
-        ;
-        (setv _full_expr_result True)
-       `(try (assert ~to_test False)
-             True ; return
-             (except [eFull Exception]
-                     (print "Error in" ~_test_expr "|" (type eFull) ":" eFull)
-                     (setv _outp eFull)
-                     (try ~arg1
-                          (print ">>" ~_arg1 "=" ~arg1)
-                          (except [e1 Exception]
-                                  (print ">> Can't calc" ~_arg1 "|" (type e1) ":" e1)))
-                     (try ~arg2
-                          (print ">>" ~_arg2 "=" ~arg2)
-                          (except [e2 Exception]
-                                  (print ">> Can't calc" ~_arg2 "|" (type e2) ":" e2)))
-                                  (print)
-                     eFull )))
+		(setv to_test `(~op ~arg1 ~arg2))
+		(setv _test_expr (hy.repr `(~op ~arg1 ~arg2)))
+		(setv _arg1 (hy.repr arg1))
+		(setv _arg2 (hy.repr arg2))
+		;
+		(setv _full_expr_result True)
+	   `(try (assert ~to_test False)
+			 True ; return
+			 (except [eFull Exception]
+					 (print "Error in" ~_test_expr "|" (type eFull) ":" eFull)
+					 (setv _outp eFull)
+					 (try ~arg1
+						  (print ">>" ~_arg1 "=" ~arg1)
+						  (except [e1 Exception]
+								  (print ">> Can't calc" ~_arg1 "|" (type e1) ":" e1)))
+					 (try ~arg2
+						  (print ">>" ~_arg2 "=" ~arg2)
+						  (except [e2 Exception]
+								  (print ">> Can't calc" ~_arg2 "|" (type e2) ":" e2)))
+								  (print)
+					 eFull )))
 
 	(defmacro gives_error_typeQ [expr error_type]
-       `(try ~expr
-             False
-             (except [e Exception]
-                     (= ~error_type (type e)))))
+	   `(try ~expr
+			 False
+			 (except [e Exception]
+					 (= ~error_type (type e)))))
 
 ; ________________________________________________________________________/ }}}2
 

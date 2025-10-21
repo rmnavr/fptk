@@ -2,6 +2,7 @@
     (export :objects [ timing dt_print ])
 
     (import  typing [Tuple Any])
+    (import hyrule [assoc])
     (require hyrule [of do_n case])
 
 ; [GROUP] Benchmarking ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
