@@ -1,159 +1,58 @@
 
-// Log ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	11 Oct 2025
-		+ refactored to submodules
-
-	30 Jul 2025
-		+ added many iterator funcs and also tests for them
-
-	28 Jul 2025
-		+ lmulticut_by: full functionality and test
-		+ upd: enlengthen
-		+ removed funcs on strings (ends_with, subsitute or smth)
-		  that can be replaced with regex funcs with similar functionality
-
-// ____________________________________________________________________________/ }}}1
-// Later: Macro ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	new:
-	• [³macro⁺] defn::		// (defn:: [validateF] () str -> #* (of List Int) => str [ string #* kwargs ] ... )
-	• [³macro⁺] => =>>		// optional «it», .attr access
-
-	low priority:
-	• [³macro⁺] l>= // TODO: (dndr> ) & recognition (bitwise_and, see lens docs)
-
-	sleeping:
-	• [³macro⁺]  #L (deprecated)
-	• [³macro⁺]  <-
-
-// ____________________________________________________________________________/ }}}1
-// Later: ADTs and monads ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	ADT machinery: product/sum
-
-		defunion
-
-		- dataclass
-		- Synonims
-		- Union
-		- Optional
-		- Enum
-		- Generic Types <A>, GenericListExample[int]
-		- List, Tuple, Nested
-		- Type[Shape]
-		+ Inheritance?
-
-		type (exact)
-		isinstance (exact + subclasses) <- Union
-		Unions, Discr/Tagged Unions
-
-	Monads:
-
-		Maybe
-		Result
-
-		Possible libs:
-		- hy monad
-		- returns
-		- effects
-
-		Later:
-		- Transformers
-
-// ____________________________________________________________________________/ }}}1
-// Polishing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Polishing topics ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	- typecheck: with = or is, or type or smth?
 	- correctly pass through extra args/kwargs (in partial and such)
-	- iterator/generator/list (do not falsly consume iterators and such)
+	- iterator/generator/list/lazy (do not falsly consume iterators and such)
 	- consistent namings of args
 	- macro: hygensims
 
 // ____________________________________________________________________________/ }}}1
-// Prior 2 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// Bugs/Todos ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	• logically with_execution_time should give result of LAST execution ?
-	+ (flatten xs :level 3)
-	+ on_each(f, xs) -> None	// as map but with no result
-	+ juxt_apply(fs, *xi)
+	- rest returns iterator, drop returns list, wtf
+	- lbisect_by: option to include/exclude first found; negation in f in unclear
+	- strip/lstrip/rstrip should also pass kwargs and such
+
+	macros:
+	- fm: is nesting working? 
+	- fm: is combining with as-> working?
+
+	• 1-based-indexing:
+		- with dicts
+		- range, lrange, range_, lrange_
+		- assoc_
+		- pick_
+		- slice_/cut_ with 1 arg ?
+		+ ncut_ ?
 
 // ____________________________________________________________________________/ }}}1
-// Inbox 1 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+// New functions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-    ; add code coverage?
-    ; add funcy.interpose
+	apl:
+		+ funcy.interpose (str_join is for strings), inteleave (x1y2z3), interpose (x-y-z) // flatten(zip(..)) is enough?
+		+ enlengthen_list
+		+ append, prepend, insert
+		+ [1 2 3] [a b c] -> [1 2 3 a] [b c]
+	    + (flatten xs :level 3)
+		+ dedup
+		+ count_occurrences -> count_by, count_reps, count_elem
+	    + (on_each f xs) -> None
+	      // as map but actually calcs
+	      // as lmap, but no result is returned
+	    + applicators actually apply:
+	      + juxt				-> apply_juxt		
+	      + compose/rcompose	-> apply_compose
+	      + nested				-> apply_nested		-> apply_n
 
-	Polishing:
-	- check every function: iterator/sequence, truly lazy
-	- hy-only — in hy syntax
-	- split to many files?
+	getters:
+		+ getattr obj arg1 arg2
+		+ attrget arg obj
+		+ dataclass: replace (upd one field)
+		+ add/substract lists/dictionaries
 
-	·······························
-
-	fptk: nth -> ath
-	_fptk_local issue: imports in macros may redefine funcs defs in funcs lol
-
-	New funcs:
-		- dataclass: replace (upd one field)
-		- enlengthen_list
-		- append, prepend, insert
-		- upd one item in dataclass
-		- lrange, lrest
-		- funcy.tap, ltap (listprint)
-		- [1 2 3] [a b c] -> [1 2 3 a] [b c]
-		- is_distinct
-		- dedup
-
-	Learn and add:
-		• is_distinct, dedup
-		• count_occurrences -> count_by, count_reps, count_elem
-		• inteleave (x1y2z3), interpose (x-y-z)
-		• juxt/ljuxt, compose/lcompose, what does l-version do? is it really required?
-		• add/substract lists/dictionaries
-
-	Update existing funcs/macros:
-		• rest returns iterator, drop returns list, wtf
-		• lbisect_by: option to include/exclude first found; negation in f in unclear
-		• strig/lstrip/rstrip should also pass kwargs and such
-		• dt_print:
-			- return result
-			- :silent (no print, only return)
-			- return dT/total
-		• fm syntax:
-			- throw error when %1 and "it" is mixed
-	  		- allow (lmapm abs [1 2 3]) recognition?
-	  		- reducem
-		• 1-based-indexing:
-			- with dicts
-	  		- range, lrange, range_, lrange_
-	  		- assoc_
-	  		- pick_
-	  		- slice_/cut_ with 1 arg ?
-	  		+ ncut_ ?
-
-	Tests:
-		- check if macros can be imported by themselves
-	  	- check if pip install fptk (without -e) works
-	  	? test funcy funtions also?
-
-    Other:
-		+ jump to F def: not working when decorator is present
-		+ test speed: validateF (slow?), validateF_ blank (mid?), nothing (fast?)
-
-
+	debug:
+		+ funcy.tap, ltap (listprint), tee
 
 // ____________________________________________________________________________/ }}}1
 
-	- macros mini-descriptions
-	- fm (print '(f"123{it}123"))
-	- add dataclass updaters
-
-	- ljuxt [list]		variadic or list? apply or applicator?
-	- compose [list]
-	- apply [list]
-
-	lmapm/lfilterm -> when no it/%1 found, fall-back to map/filter?
-
-	- getattr obj arg1 arg2
-	- attrget arg obj

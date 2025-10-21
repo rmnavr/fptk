@@ -63,17 +63,14 @@ Macros description:
 (filterm (> it 1) [1 2 3])  ; -> (filter (fn [it] (> it 1)) [1 2 3])
 (lfilterm (> %1 1) [1 2 3]) ; -> (list (filter (fn [%1] (> %1 1)) [1 2 3]))
 
-; notice that (l)mapm and (l)filterm won't work as expected if lambda-syntax is not used:
+; notice that fm  generate 0-arg lambdas if no arg ("it" or "%1" and such) is provided,
+; thus making such use of (l)mapm and (l)filterm incorrect:
 (lmapm abs [1 2 3])         ; -> (list (map (fn [] abs) [1 2 3]))
 
 ; Just as original fn, fm will also work correctly with non-() forms:
 (fm abs)                    ; -> (fn [] abs)
 (fm [%1 (str %2)])          ; -> (fn [%1 %2] [%1 (str %2)])
 ```
-
-Current limitations:
-- nesting fm inside fm won't work as expected
-- `fm` supports only args of form `it` and `%1`..`%9` (while hyrule `#%` reader macro can also work with args and kwargs)
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- p: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

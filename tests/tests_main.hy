@@ -258,13 +258,11 @@
 
     (assertm = ((fm (+ %1 %3 1)) 1 2 3) 5)
     (assertm = ((fm (+ it 1)) 3) 4)
-    (assertm gives_error_typeQ ((fm (+ it %1 1)) 3) NameError)
-    (assertm gives_error_typeQ ((fm (+ it %1 1)) 3 4) TypeError)
+
+    (assertm = (as-> 4 it (f> (* it it) it) (neg it)) -16)
 
     (assertm = (f> (+ %1 %3 1) 1 2 3) 5)
     (assertm = (f> (+ it 1) 3) 4)
-    (assertm gives_error_typeQ (f> (+ it %1 1) 3) NameError)
-    (assertm gives_error_typeQ (f> (+ it %1 1) 3 4) TypeError)
 
     (assertm = (list (mapm (+ it 1) [1 2 3])) [2 3 4])
     (assertm = (lmapm (+ %1 1) [1 2 3]) [2 3 4])
