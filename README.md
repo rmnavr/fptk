@@ -3,10 +3,10 @@
 
 # **fptk** — functional toolkit for hy-lang
 
-fptk is general purpose functional programming language extension for hy-lang.
+fptk is functional programming language extension for hy-lang.
 
 It is implemented as a curated list of FP-related types/classes, functions and macroses,
-that are supposed to be imported into main scope altogether to always have them at your fingertips.
+that can be imported into main scope altogether to always have them at your fingertips.
 > Having high amount of functions available in main context is inspired by Wolfram Language,
 > in which all (yes, ALL) standard functions are always in the main context.
 
@@ -43,9 +43,11 @@ Typing:
 - Dynamic type checking to an extent that is offered by [pydantic](https://github.com/pydantic/pydantic)
 
 Other quirky things:
-- 1-based index variants of basic getters (don't worry, fptk does not force using them)
-- macros for lenses ([lenses](https://github.com/ingolemo/python-lenses) is Haskell-ish approach for manipulating deeply nested immutable data)
-- Generic Result type (inspired by Haskell's Either monad) that can be type-checked by pydantic
+- 1-based index variants of basic getters (don't worry, fptk does not force using them in any way)
+- Inspired by Haskell:
+  - macros for [lenses](https://github.com/ingolemo/python-lenses) library
+  - Result type (AKA Either monad) that can be type-checked by pydantic
+  - macros for annotating functions via signatures like `int -> int => float`
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- Dependencies ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

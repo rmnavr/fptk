@@ -1,6 +1,5 @@
 
-
-# 20 Oct 2025 (in preparation for 0.4.0):
+# Version 0.4.0 (20 Oct 2025)
 - changed order of args for oflenQ: from `oflenQ(xs,n)` to `oflenQ(n,xs)`
 - removed `with_execution_time`, replaced with simplier `timing`
 - removed `curry`, `rcurry` and `autocurry` (because `partial` is enough for fptk needs)

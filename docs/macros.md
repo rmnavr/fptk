@@ -13,6 +13,7 @@ fptk docs:
 
 This doc will cover following macros:
 * `f::` — macro for annotating callables
+* `def::` — macros for annotating functions via haskell-style signature
 * `fm`, `f>`, `(l)mapm`, `(l)filterm` — anonymous functions with special syntax for arguments
 * `p:` — pipe of partials
 * `(l)pluckm` — getter for collection of collections
@@ -26,7 +27,8 @@ There are also lens related macros described in separate doc
 <!-- f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
 
 ## `f::` — macros for annotating Callables
-Used for annotating functions.
+
+Expanded into `Callable` annotation (with args and return types).
 One possible usage might be defining interfaces (if functions are used in that role).
 
 ```hy
@@ -34,8 +36,46 @@ One possible usage might be defining interfaces (if functions are used in that r
 ; equivalent py-code: ICaller = Callable[[int, int], Tuple[int, str]]
 ```
 
-Inside `f::` macro, symbols `->` (and `=>`) are recognized just as argument separator rather than hyrule's macro `->`.
-Also, `->` can be used instead of last `=>` (this is simply visual preference and has no impact on the code).
+> Inside `f::` macro, symbols `->` (and `=>`) are recognized just as arguments separators rather than hyrule's macro `->`
+
+<!-- __________________________________________________________________________/ }}}1 -->
+<!-- def:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->
+
+## `def::` — macros for annotating functions via haskell-style signature
+
+Functions defined with `def::` macro will be annotated by values derived from user-given signature.
+
+Use `->` to separate arguments, and `=>` to mark function return type.
+> Inside `def::` macro, symbols `->` (and `=>`) are recognized just as arguments separators rather than hyrule's macro `->`
+
+Special symbols, used in args definition (`/`, `*`, `#*` and `#**`) will be successfully recognized too (see expected syntax below).
+Obviously, their order in signature and their order in function args list should match.
+
+Examples:
+```hy
+    (def:: int -> int => int
+        f1 [a b] (+ a b))
+    ; which will be expanded to:
+    (defn #^ int f1
+        [#^ int a #^ int b] (+ a b))
+
+    ; decorators list can be given before function name:
+    (def:: int -> int => int
+        [decorator] f2 [a b] (+ a b))
+
+    (def:: int -> int -> / -> int -> * -> int -> #** dict => int
+        f3 [a b / c * d #** kwargs] (+ a b c d))
+
+    (def:: int -> int -> / -> int -> #* int -> #** dict => int
+        f4 [a b / c #* args #** kwargs] (+ a b c))
+
+    ; traditional hy syntax for types applies as usual,
+    ; you can even use fptk f:: macro (for example for factories, closures and such)
+    (def:: (of List int) -> (of Optional float) => (f:: int => float)
+        ff [xs t] (defn innerF [n] (+ (get xs n) (if (= t None) 0 t))))
+
+    ; You can call (help ff) to see that function indeed was annotated correctly
+```
 
 <!-- __________________________________________________________________________/ }}}1 -->
 <!-- fm, f>, (l)mapm, (l)filterm ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1 -->

@@ -579,7 +579,79 @@
 
 ; _____________________________________________________________________________/ }}}1
 ; testing.hy    | MACROS: assertm, gives_error_typeQ | tested by this file directly lol
-; typing.hy     | MACROS: f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; typing.hy     | MACROS: f:: def:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+; ■ def:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    ; incorrect position/number of args always throws errors
+    ; and cannot be captured by try/except :( ,
+    ; so only correct options are tested below
+
+    (import io)
+    (import contextlib)
+
+    (defn capture_help [f]
+        (setv output (io.StringIO))
+        (with [s (contextlib.redirect_stdout output)] (help f))
+        (return (output.getvalue)))
+
+    ; -------------------
+
+    (def:: (of List int) -> (of Optional float) => (f:: int => float)
+        ff [xs t] (defn innerF [n] (+ (get xs n) (if (= t None) 0 t))))
+    (assertm in "ff(xs: List[int], t: Optional[float]) -> Callable[[int], float]"
+                (capture_help ff))
+    (assertm eq ff.__annotations__
+                {"xs" (of List int) "t" (of Optional float) "return" (f:: int => float)})
+
+    ; -------------------
+
+    (def:: int -> / -> int => (of List float) f_div [x / y] [(/ x y) (/ y x)])
+    (assertm eq (f_div 10 5) [2.0 0.5])
+    (assertm in "f_div(x: int, /, y: int) -> List[float]" (capture_help f_div))
+    (assertm eq f_div.__annotations__ {"y" int "x" int "return" (of List float)})
+
+    (def:: int -> / -> int => (of List float) [validateF] f_div [x / y] [(/ x y) (/ y x)])
+    (assertm eq (f_div 10 5) [2.0 0.5])
+    (assertm in "f_div(x: int, /, y: int) -> List[float]" (capture_help f_div))
+    (assertm eq f_div.__annotations__ {"y" int "x" int "return" (of List float)})
+
+    ; -------------------
+
+    (def:: int -> * -> int => (of List int) f_mul [x * y] [(* x y) (* y x)])
+    (assertm eq (f_mul 10 :y 5) [50 50])
+    (assertm in "f_mul(x: int, *, y: int) -> List[int]" (capture_help f_mul))
+    (assertm eq f_mul.__annotations__ {"y" int "x" int "return" (of List int)})
+
+    (def:: int -> * -> int => (of List int) [validateF] f_mul [x * y] [(* x y) (* y x)])
+    (assertm eq (f_mul 10 :y 5) [50 50])
+    (assertm in "f_mul(x: int, *, y: int) -> List[int]" (capture_help f_mul))
+    (assertm eq f_mul.__annotations__ {"y" int "x" int "return" (of List int)})
+
+    ; -------------------
+
+    (def:: int -> int -> / -> int -> * -> int -> #** dict => int
+        [validateF] f_many1 [a b / c * d #** kwargs] (+ a b c d))
+
+    (assertm eq (f_many1 1 2 3 :d 4) 10)
+    (assertm in "f_many1(a: int, b: int, /, c: int, *, d: int, **kwargs: dict) -> int"
+                (capture_help f_many1))
+    (assertm eq f_many1.__annotations__
+                {"a" int "b" int "c" int "d" int "kwargs" dict "return" int})
+
+    ; -------------------
+
+    (def:: int -> int -> / -> int -> #* int -> #** dict => int
+        [validateF] f_many2 [a b / c #* args #** kwargs] (+ a b c))
+
+    (assertm eq (f_many2 1 2 3) 6)
+    (assertm in "f_many2(a: int, b: int, /, c: int, *args: int, **kwargs: dict) -> int"
+                (capture_help f_many2))
+    (assertm eq f_many2.__annotations__
+                {"a" int "b" int "c" int "args" int "kwargs" dict "return" int})
+
+
+; ________________________________________________________________________/ }}}2
 
     (assertm = (f:: int -> int => int) (of Callable [int int] int))
     (assertm = (f:: int -> int -> (of Tuple int str)) (of Callable [int int] (of Tuple int str)))
@@ -634,4 +706,5 @@
     (assertm = (iterableQ {"x" 2}) True)
 
 ; _____________________________________________________________________________/ }}}1
+    
 

@@ -8,10 +8,10 @@
 ; _____________________________________________________________________________/ }}}1
 
 ; === Helpers (precompiled functions) ===
-; neg integer expr ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
-	; (- 1)
-	(-> (defn _isNegIntegerExpr
+; expr type checkers ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+
+	(-> (defn _isNegIntegerExpr ; (_isNegIntegerExpr '(- 3))
 			[ arg
 			]
 			(and (= (type arg) hy.models.Expression)
@@ -20,13 +20,8 @@
 				 (= (type (get arg 1)) hy.models.Integer)))
 		eval_and_compile)
 
-	; (_isNegIntegerExpr '(- 3))
-
-; _____________________________________________________________________________/ }}}1
-; expr with head symbol ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
-
-	; (head ...)
-	(-> (defn _isExprWithHeadSymbol
+	
+	(-> (defn _isExprWithHeadSymbol ; (head ...)
 			[ #^ hy.models.Expression arg
 			  #^ str head
 			]
@@ -34,9 +29,23 @@
 				 (= (get arg 0) (hy.models.Symbol head))))
 		eval_and_compile)
 
+	(-> (defn _isUnpackMappingQ  ; #**
+			[ arg
+			]
+			(and (= (type arg)  hy.models.Expression)
+                 (= (get arg 0) (hy.models.Symbol "unpack-mapping"))))
+		eval_and_compile)
+
+	(-> (defn _isUnpackIterableQ  ; #*
+			[ arg
+			]
+			(and (= (type arg)  hy.models.Expression)
+                 (= (get arg 0) (hy.models.Symbol "unpack-iterable"))))
+		eval_and_compile)
+
 ; _____________________________________________________________________________/ }}}1
 ;
-; DEVDOC: Dot Macro Expressions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; INFO: Dot Macro Expressions ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 (when False
 
 	;in normal code:
@@ -121,6 +130,7 @@
 	 ; (_extractDottedCall '(.obj obj 1 2))
 
 ; _____________________________________________________________________________/ }}}1
+;
 ; [ARCHIVE] :attr: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; leftover from lns macro:
@@ -154,7 +164,7 @@
 
 ; === Macros ===
 
-; Info ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
+; Info on importing ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	; when only importing (import fptk [f>]), f> is required to have fm internally, and it can be called as:
 	; 
@@ -167,7 +177,93 @@
 	;	 hy.R.fptk.fptk_macros.fm	-> [✗ ✗] does not work anywhere
 
 ; _____________________________________________________________________________/ }}}1
+; def:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
+; ■ info ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{2
+
+    ; int -> / -> int -> * -> int -> #* int -> #** int => float
+    ; ***    *    ***    *    ***    ******    *******    *****     those are seen as one marg by hy
+    ;                                                       ↑ last_sign_n 
+    ; 
+
+    ; hy.models.Symbol('int')
+    ; hy.models.Symbol('/')
+    ; hy.models.Symbol('*')
+    ; hy.models.Expression([
+    ;    hy.models.Symbol('unpack-iterable'),
+    ;    hy.models.Symbol('int')])
+    ; hy.models.Expression([
+    ;    hy.models.Symbol('unpack-mapping'),
+    ;    hy.models.Symbol('int')])
+
+    ; '(annotate x int) = #^ int x
+
+    ; in python only one * is available:
+    ; f(a, b, /, c, *args, **kwargs)
+    ; f(a, b, /, c, *, d, **kwargs)
+
+; ________________________________________________________________________/ }}}2
+
+    ; marg = macros arg
+    ; sarg = signature args 
+    ; sret = signature return type
+    ; farg = function args
+    ; aarg = annotated arg
+
+	(defmacro def:: [#* margs]
+        ; deconstruct margs:
+        (for [[&n &arg] (enumerate margs)]
+            (when (= &arg '=>)
+                  (setv _last_sign_n (+ &n 1))
+                  (break)))
+        (setv _sargs (cut margs 0 (- _last_sign_n 1) 2))
+        (setv _sreturn (get margs _last_sign_n))
+        ;
+        (setv decs_or_funcname (get margs (+ _last_sign_n 1)))
+        (setv has_decorators_list (= (type decs_or_funcname) (type '[]))) ; empty list = counted as list exists
+        (if has_decorators_list 
+            (setv i0 (+ _last_sign_n 2))
+            (setv i0 (+ _last_sign_n 1)))
+        (if has_decorators_list
+            (setv _decorators (get margs (- i0 1)))
+            (setv _decorators '[]))
+        (setv [_fname _fargs _body]
+              [(get margs i0) (get margs (+ i0 1)) (cut margs (+ i0 2) None)])
+        (when (!= (len _sargs) (len _fargs))
+              (raise (SyntaxError "number of args in signature does not match with number of function args")))
+        ; build annotations:
+        (setv _aargs []) 
+        (for [[&sarg &farg] (zip _sargs _fargs)]
+                  
+            (cond ; * and / case:
+                  (or (= &farg '*) (= &sarg '*))
+                  (if (= &farg &sarg)
+                      (_aargs.append &farg)
+                      (raise (SyntaxError "position of * in signature does not match with args")))
+                  (or (= &farg '/) (= &sarg '/))
+                  (if (= &farg &sarg)
+                      (_aargs.append &farg)
+                      (raise (SyntaxError "position of / in signature does not match with args")))
+                  ; #* and #** case:
+                  (or (_isUnpackIterableQ &sarg) (_isUnpackIterableQ &farg))
+                  (if (and (_isUnpackIterableQ &sarg) (_isUnpackIterableQ &farg))
+                      (_aargs.append `(annotate ~&farg ~(get &sarg 1)))
+                      (raise (SyntaxError "position of #* in signature does not match with args")))
+                  (or (_isUnpackMappingQ &sarg) (_isUnpackMappingQ &farg))
+                  (if (and (_isUnpackMappingQ &sarg) (_isUnpackMappingQ &farg))
+                      (_aargs.append `(annotate ~&farg ~(get &sarg 1)))
+                      (raise (SyntaxError "position of #** in signature does not match with args")))
+                  ; everything else:
+                  True
+                  (_aargs.append `(annotate ~&farg ~&sarg))))
+        ; build function:
+        `(defn ~_decorators
+               (annotate ~_fname ~_sreturn)
+               ~_aargs
+               ~@_body))
+
+
+; _____________________________________________________________________________/ }}}1
 ; f:: ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\ {{{1
 
 	(defmacro f:: [#* macro_args]

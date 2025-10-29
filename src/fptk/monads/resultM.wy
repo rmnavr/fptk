@@ -6,11 +6,11 @@
     import  funcy    [compose rcompose lmap partial]
     require hyrule   [of unless]
 
-    export :objects [ Success Failure Result
-                      successQ failureQ
-                      mapR bindR
-                      unwrapR unwrapR_or unwrapE unwrapE_or
-                    ]
+    export :objects  [ Success Failure Result
+                       successQ failureQ
+                       mapR bindR
+                       unwrapR unwrapR_or unwrapE unwrapE_or
+                     ]
 
 ; _____________________________________________________________________________/ }}}1
 
