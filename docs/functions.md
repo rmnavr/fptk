@@ -181,7 +181,8 @@ MACR: fptk._macros    | lpluckm                  ; list version of pluckm
 
 === Typing: Base ===
 MACR: hyrule          | of                       ; example: (of List int) which is equiv to py-code: List[int]
-MACR: fptk._macros    | f::                      ; example: (f:: int -> int -> (of Tuple int str))
+MACR: fptk._macros    | f::                      ; example: (f:: int -> int => (of Tuple int str)) -> Callable[[int, int], Tuple[int,str]]
+MACR: fptk._macros    | def::                    ; define function with signature; example: (def:: int -> int -> float fdivide [x y] (/ x y))
 FROM: dataclasses     | dataclass
 FROM: enum            | Enum
 FROM: typing          | List

@@ -1,4 +1,7 @@
 
+# Version 0.5.0 (in the process)
+- added def:: macro
+
 # Version 0.4.0 (20 Oct 2025)
 - changed order of args for oflenQ: from `oflenQ(xs,n)` to `oflenQ(n,xs)`
 - removed `with_execution_time`, replaced with simplier `timing`
